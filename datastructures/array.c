@@ -2,22 +2,26 @@
 #include "array.h"
 
 
-Array* array_create(Allocator* allocator, uint32 size, ARRAY_TYPE init_value)
+Array* array_create(Allocator* allocator, uint32 n_members,  uint32 member_size)
 {
-    return NULL;
+    // TODO: check for NULL pointer to allocator
+
+    void* memory = allocator->memory_allocate(sizeof(uint32) + n_members * member_size);
+    if (memory == NULL)
+        return NULL;
+
+    Array *array = (Array*) memory;
+    array->length = n_members;
+    array->member_size = member_size;
+    array->data = memory + sizeof(uint32);
+
+    // TODO: types and intialization
+    return array;
 }
 
-void array_insert(Array* array, uint32 index, ARRAY_TYPE item)
+
+void array_free(Allocator *allocator, Array *array)
 {
-
-}
-
-ARRAY_TYPE* array_get(Array* array, uint32 index)
-{
-    return NULL;
-}
-
-void array_free(Allocator* allocator)
-{
-
+    // TODO: check for NULL pointer to allocator & array
+    allocator->memory_free(array, sizeof(uint32) + array->member_size * array->length);
 }

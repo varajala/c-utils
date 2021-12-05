@@ -4,23 +4,18 @@
 #include "integer_types.h"
 #include "allocator.h"
 
-#ifndef ARRAY_TYPE
-#define ARRAY_TYPE void*
-#endif
+#define ARRAY_LENGTH_INT_TYPE uint32
 
 typedef struct Array
 {
     uint32 length;
-    ARRAY_TYPE *data;
+    uint32 member_size;
+    uint8 *data;
 } Array;
 
 
-Array* array_create(Allocator*, uint32, ARRAY_TYPE);
+Array* array_create(Allocator*, uint32, uint32);
 
-void array_insert(Array*, uint32, ARRAY_TYPE);
-
-ARRAY_TYPE* array_get(Array*, uint32);
-
-void array_free(Allocator*);
+void array_free(Allocator*, Array*);
 
 #endif

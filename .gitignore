@@ -1,0 +1,5 @@
+*bin
+*lib
+
+# gdb gui
+*venv
