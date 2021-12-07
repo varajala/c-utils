@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdio.h>
 #include "array.h"
 
 
@@ -7,18 +8,18 @@ Array* array_create(Allocator* allocator, uint32 n_members,  uint32 member_size)
     if (allocator == NULL)
         return NULL;
 
-    void* memory = allocator->memory_allocate(sizeof(uint32) + n_members * member_size);
+    void* memory = allocator->memory_allocate(sizeof(Array) + n_members * member_size);
     if (memory == NULL)
         return NULL;
 
     Array *array = (Array*) memory;
     array->length = n_members;
     array->member_size = member_size;
-    array->data = memory + offsetof(Array, data);
+    array->data = memory + sizeof(Array);
 
     for (int i = 0; i < n_members * member_size; i++)
         array->data[i] = 0x00;
-    
+
     return array;
 }
 
