@@ -51,6 +51,30 @@ void array_insert(Array *array, uint32 index, uint8 *memory)
 }
 
 
+void array_get_slice(Array *src, Array *dst, uint32 start, uint32 end)
+{
+
+}
+
+
+void array_foreach(Array *array, void (*func)(uint8*))
+{
+
+}
+
+
+void array_map(Array *src, Array *dst, uint8* (*func)(uint8*))
+{
+
+}
+
+
+void array_sort(Array *array, enum ComparisonResult (*compare_func)(uint8*, uint8*))
+{
+
+}
+
+
 void array_free(Allocator *allocator, Array *array)
 {
     if (allocator == NULL || array == NULL)
