@@ -36,6 +36,9 @@ int test_array_bound_check(Allocator *allocator)
     Array* array = array_create(allocator, 8, sizeof(int32));
     int32 memory;
     array_get(array, 4096, (uint8*)&memory);
+    array_get(array, -4096, (uint8*)&memory);
+    array_insert(array, 4096, (uint8*)&memory);
+    array_insert(array, -4096, (uint8*)&memory);
     array_free(allocator, array);
     return 0;
 }

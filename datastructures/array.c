@@ -28,7 +28,7 @@ void array_get(Array *array, uint32 index, uint8 *memory)
     if (array == NULL || memory == NULL)
         return;
     
-    if (index >= array->length)
+    if (index < 0 || index >= array->length)
         return;
     
     uint32 offset = array->member_size * index;
@@ -42,7 +42,7 @@ void array_insert(Array *array, uint32 index, uint8 *memory)
     if (array == NULL || memory == NULL)
         return;
     
-    if (index >= array->length)
+    if (index < 0 || index >= array->length)
         return;
 
     uint32 offset = array->member_size * index;
