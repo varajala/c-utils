@@ -130,12 +130,50 @@ int test_array_foreach(Allocator *allocator)
 }
 
 
+int test_array_sorting(Allocator *allocator)
+{
+    const int NUMBERS_LENGTH = 16;
+    int numbers[] = {
+        2, -6, 4, 16,
+        44, 2, 0, -1,
+        32, 26, 2, -8,
+        0, 1, 1, 9
+    };
+    
+    Array *array  = array_create(allocator, NUMBERS_LENGTH, sizeof(int));
+    if (array == NULL)
+        return 1;
+
+    uint8 *memory = (uint8*) numbers;
+    array_copy_memory(array, (uint8*)numbers, NUMBERS_LENGTH * sizeof(int));
+
+    enum ComparisonResult compare(uint8 *a_bytes, uint8 *b_bytes)
+    {
+        int a, b;
+        a = *((int*) a_bytes);
+        b = *((int*) b_bytes);
+        
+        if (a > b)
+            return FIRST_IS_LARGER;
+        if (a < b)
+            return FIRST_IS_SMALLER;
+        return ARE_EQUAL;
+    }
+    
+    array_sort(array, compare);
+
+    array_free(allocator, array);
+    return 0;
+}
+
+
 int (*tests[])(Allocator*) = {
     test_basic_array_use,
     test_array_bound_check,
     test_array_copy_memory,
     test_array_slicing,
     test_array_foreach,
+    test_array_sorting,
     NULL
 };
 

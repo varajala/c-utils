@@ -59,7 +59,7 @@ void array_copy_memory(Array *array, uint8 *memory, uint32 max_length)
     if (array == NULL)
         return;
 
-    for (int i = 0; i < array->length; i++)
+    for (int i = 0; i < array->length * array->member_size; i++)
     {
         if (i >= max_length)
             break;
@@ -107,9 +107,60 @@ void array_foreach(Array *array, void (*func)(uint8*))
 }
 
 
-void array_sort(Array *array, enum ComparisonResult (*compare_func)(uint8*, uint8*))
+static void merge(uint8 *a_data, uint8 *b_data, uint8 *data, uint32 a_items, uint32 b_items, uint32 member_size, enum ComparisonResult (*compare)(uint8*, uint8*))
 {
+    uint32 i = 0;
+    uint32 index_a = 0;
+    uint32 index_b = 0;
+    
+    while (a_items > 0 && b_items > 0)
+    {
+        if (compare(&a_data[index_a], &b_data[index_b]) == FIRST_IS_SMALLER)
+        {
+            data[i++] = a_data[index_a];
+            index_a += member_size;
+            a_items--;
+        } else {
+            data[i++] = b_data[index_b];
+            index_b += member_size;
+            b_items--;
+        }
+    }
 
+    while (a_items > 0)
+    {
+        data[i++] = a_data[index_a];
+        index_a += member_size;
+        a_items--;
+    }
+
+    while (b_items > 0)
+    {
+        data[i++] = b_data[index_b];
+        index_b += member_size;
+        b_items--;
+    }
+}
+
+
+static void mergesort(uint8 *data, uint32 length, uint32 member_size, enum ComparisonResult (*compare)(uint8*, uint8*))
+{
+    if (length <= 1)
+        return;
+
+    uint32 midpoint = length / 2;
+    mergesort(data, midpoint, member_size, compare);
+    mergesort(data + midpoint, length - midpoint, member_size, compare);
+    merge(data, data + midpoint, data, midpoint, length - midpoint, member_size, compare);
+}
+
+
+void array_sort(Array *array, enum ComparisonResult (*compare)(uint8*, uint8*))
+{
+    if (array == NULL || compare == NULL)
+        return;
+    
+    mergesort(array->data, array->member_size * array->length, array->member_size, compare);
 }
 
 
