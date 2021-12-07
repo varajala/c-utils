@@ -7,6 +7,9 @@ Array* array_create(Allocator* allocator, uint32 n_members,  uint32 member_size)
 {
     if (allocator == NULL)
         return NULL;
+    
+    if (n_members <= 0 )
+        return NULL;
 
     void* memory = allocator->memory_allocate(offsetof(Array, data) + n_members * member_size);
     if (memory == NULL)
@@ -51,10 +54,31 @@ void array_insert(Array *array, uint32 index, uint8 *memory)
 }
 
 
-void array_get_slice(Array *src, Array *dst, uint32 start, uint32 end)
+Array* array_create_slice(Array *src_array, Allocator *allocator, uint32 start, uint32 end)
 {
+    if (src_array == NULL || allocator == NULL)
+        return NULL;
+    
+    if (start < 0 || start >= src_array->length)
+        return NULL;
 
-}
+    if (end < 0 || end >= src_array->length)
+        return NULL;
+
+    if (end-start <= 0)
+        return NULL;
+
+    Array *slice_array = array_create(allocator, end-start, src_array->member_size);
+    if (slice_array == NULL)
+        return NULL;
+
+    uint32 offset = start * src_array->member_size;
+    uint32 i_last = (end-start) * src_array->member_size;
+    for (int i = 0; i < i_last; i++)
+        slice_array->data[i] = src_array->data[offset+i];
+    
+    return slice_array;
+}   
 
 
 void array_foreach(Array *array, void (*func)(uint8*))

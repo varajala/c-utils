@@ -28,7 +28,7 @@ void array_get(Array*, uint32, uint8*);
 
 void array_insert(Array*, uint32, uint8*);
 
-void array_get_slice(Array*, Array*, uint32, uint32);
+Array* array_create_slice(Array*, Allocator*, uint32, uint32);
 
 void array_foreach(Array *array, void (*func)(uint8*));
 
