@@ -83,7 +83,12 @@ Array* array_create_slice(Array *src_array, Allocator *allocator, uint32 start, 
 
 void array_foreach(Array *array, void (*func)(uint8*))
 {
+    if (array == NULL)
+        return;
 
+    uint32 array_size_in_bytes = array->member_size * array->length;
+    for (int i = 0; i < array_size_in_bytes; i += array->member_size)
+        func(&array->data[i]);
 }
 
 

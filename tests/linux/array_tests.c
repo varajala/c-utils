@@ -1,6 +1,7 @@
 #include "allocator_implementation.h"
 #include "array.h"
 #include <stdio.h>
+#include <string.h>
 
 
 int test_basic_array_use(Allocator *allocator)
@@ -85,10 +86,37 @@ int test_array_slicing(Allocator *allocator)
 }
 
 
+int test_array_foreach(Allocator *allocator)
+{
+    char buffer[6];
+    char *str = "hello";
+    int buffer_index = 0;
+    
+    Array *array  = array_create(allocator, 6, sizeof(char));
+    if (array == NULL)
+        return 1;
+
+    for (int i = 0; i < array->member_size * array->length; i += array->member_size)
+    {
+        array->data[i] = str[i];
+    }
+
+    void write_char_to_buffer(uint8 *c)
+    {
+        buffer[buffer_index++] = *c;
+    }
+    array_foreach(array, write_char_to_buffer);
+
+    array_free(allocator, array);
+    return strcmp(buffer, str);
+}
+
+
 int (*tests[])(Allocator*) = {
     test_basic_array_use,
     test_array_bound_check,
     test_array_slicing,
+    test_array_foreach,
     NULL
 };
 
