@@ -54,6 +54,21 @@ void array_insert(Array *array, uint32 index, uint8 *memory)
 }
 
 
+void array_copy_memory(Array *array, uint8 *memory, uint32 max_length)
+{
+    if (array == NULL)
+        return;
+
+    for (int i = 0; i < array->length; i++)
+    {
+        if (i >= max_length)
+            break;
+
+        array->data[i] = memory[i];
+    }
+}
+
+
 Array* array_create_slice(Array *src_array, Allocator *allocator, uint32 start, uint32 end)
 {
     if (src_array == NULL || allocator == NULL)
@@ -89,12 +104,6 @@ void array_foreach(Array *array, void (*func)(uint8*))
     uint32 array_size_in_bytes = array->member_size * array->length;
     for (int i = 0; i < array_size_in_bytes; i += array->member_size)
         func(&array->data[i]);
-}
-
-
-void array_map(Array *src, Array *dst, uint8* (*func)(uint8*))
-{
-
 }
 
 

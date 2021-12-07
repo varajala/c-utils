@@ -35,6 +35,9 @@ int test_basic_array_use(Allocator *allocator)
 int test_array_bound_check(Allocator *allocator)
 {
     Array* array = array_create(allocator, 8, sizeof(int32));
+    if (array == NULL)
+        return 1;
+    
     int32 memory;
     array_get(array, 4096, (uint8*)&memory);
     array_get(array, -4096, (uint8*)&memory);
@@ -42,6 +45,21 @@ int test_array_bound_check(Allocator *allocator)
     array_insert(array, -4096, (uint8*)&memory);
     array_free(allocator, array);
     return 0;
+}
+
+
+int test_array_copy_memory(Allocator *allocator)
+{
+    char *str =  "hello";
+    Array* array = array_create(allocator, 8, sizeof(char));
+    if (array == NULL)
+        return 1;
+
+    array_copy_memory(array, (uint8*)str, strlen(str));
+
+    int result = strcmp(str, (char*)array->data);
+    array_free(allocator, array);
+    return result;
 }
 
 
@@ -115,6 +133,7 @@ int test_array_foreach(Allocator *allocator)
 int (*tests[])(Allocator*) = {
     test_basic_array_use,
     test_array_bound_check,
+    test_array_copy_memory,
     test_array_slicing,
     test_array_foreach,
     NULL

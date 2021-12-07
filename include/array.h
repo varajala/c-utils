@@ -17,7 +17,7 @@ typedef struct Array
 typedef enum ComparisonResult
 {
     FIRST_IS_LARGER,
-    EQUAL,
+    ARE_EQUAL,
     FIRST_IS_SMALLER
 } ComparisonResult;
 
@@ -28,11 +28,11 @@ void array_get(Array*, uint32, uint8*);
 
 void array_insert(Array*, uint32, uint8*);
 
+void array_copy_memory(Array*, uint8*, uint32);
+
 Array* array_create_slice(Array*, Allocator*, uint32, uint32);
 
 void array_foreach(Array *array, void (*func)(uint8*));
-
-void array_map(Array *src, Array *dst, uint8* (*func)(uint8*));
 
 void array_sort(Array *array, enum ComparisonResult (*compare_func)(uint8*, uint8*));
 
