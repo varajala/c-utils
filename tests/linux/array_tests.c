@@ -130,6 +130,65 @@ int test_array_foreach(Allocator *allocator)
 }
 
 
+static void merge(int *array, int start, int mid, int end)
+{
+    int temp[end-start+1];
+    int *num_a, *num_b;
+    int a_length, b_length, i;
+    
+    for (i = 0; i < end-start+1; i++)
+    {
+        temp[i] = array[start+i];
+    }
+
+    a_length = mid-start+1;
+    b_length = end-mid;
+    num_a = temp;
+    num_b = temp + a_length;
+    i = 0;
+
+    while (a_length > 0 && b_length > 0)
+    {
+        if (*num_a <= *num_b)
+        {
+            array[start+i] = *num_a++;
+            a_length--;
+        }
+        else
+        {
+            array[start+i] = *num_b++;
+            b_length--;
+        }
+        i++;
+    }
+
+    while (a_length > 0)
+    {
+        array[start+i] = *num_a++;
+        a_length--;
+        i++;
+    }
+
+    while (b_length > 0)
+    {
+        array[start+i] = *num_b++;
+        b_length--;
+        i++;
+    }
+}
+
+static void mergesort(int numbers[], int start, int end)
+{
+    if (start < end)
+    {
+        int mid = start + (end-start) / 2;
+        mergesort(numbers, start, mid);
+        mergesort(numbers, mid+1, end);
+        merge(numbers, start, mid, end);   
+    }
+}
+
+
 int test_array_sorting(Allocator *allocator)
 {
     const int NUMBERS_LENGTH = 16;
@@ -140,39 +199,53 @@ int test_array_sorting(Allocator *allocator)
         0, 1, 1, 9
     };
     
-    Array *array  = array_create(allocator, NUMBERS_LENGTH, sizeof(int));
-    if (array == NULL)
-        return 1;
+    // Array *array  = array_create(allocator, NUMBERS_LENGTH, sizeof(int));
+    // if (array == NULL)
+    //     return 1;
 
-    uint8 *memory = (uint8*) numbers;
-    array_copy_memory(array, (uint8*)numbers, NUMBERS_LENGTH * sizeof(int));
+    // uint8 *memory = (uint8*) numbers;
+    // array_copy_memory(array, (uint8*)numbers, NUMBERS_LENGTH * sizeof(int));
 
-    enum ComparisonResult compare(uint8 *a_bytes, uint8 *b_bytes)
-    {
-        int a, b;
-        a = *((int*) a_bytes);
-        b = *((int*) b_bytes);
+    // enum ComparisonResult compare(uint8 *a_bytes, uint8 *b_bytes)
+    // {
+    //     int a, b;
+    //     a = *((int*) a_bytes);
+    //     b = *((int*) b_bytes);
         
-        if (a > b)
-            return FIRST_IS_LARGER;
-        if (a < b)
-            return FIRST_IS_SMALLER;
-        return ARE_EQUAL;
-    }
+    //     if (a > b)
+    //         return FIRST_IS_LARGER;
+    //     if (a < b)
+    //         return FIRST_IS_SMALLER;
+    //     return ARE_EQUAL;
+    // }
     
-    array_sort(array, compare);
+    // array_sort(array, compare);
 
-    array_free(allocator, array);
+    // array_free(allocator, array);
+
+    for (int i = 0; i < NUMBERS_LENGTH; i++)
+    {
+        printf("%d ", numbers[i]);
+    }
+    printf("\n");
+    
+    mergesort(numbers, 0, NUMBERS_LENGTH-1);
+
+    for (int i = 0; i < NUMBERS_LENGTH; i++)
+    {
+        printf("%d ", numbers[i]);
+    }
+    printf("\n");
     return 0;
 }
 
 
 int (*tests[])(Allocator*) = {
-    test_basic_array_use,
-    test_array_bound_check,
-    test_array_copy_memory,
-    test_array_slicing,
-    test_array_foreach,
+    // test_basic_array_use,
+    // test_array_bound_check,
+    // test_array_copy_memory,
+    // test_array_slicing,
+    // test_array_foreach,
     test_array_sorting,
     NULL
 };
