@@ -106,66 +106,78 @@ void array_foreach(Array *array, void (*func)(uint8*))
         func(&array->data[i]);
 }
 
-
-static void merge(uint8 *array, uint32 member_size, int start, int mid, int end, enum ComparisonResult (*compare)(uint8*, uint8*))
+static void merge(
+    uint8 *array,
+    uint32 member_size,
+    int start,
+    int mid,
+    int end,
+    enum ComparisonResult (*compare)(uint8*, uint8*)
+    )
 {
     uint32 partition_size = (end - start + 1) * member_size;
     uint32 offset = start * member_size;
     
     uint8 temp[partition_size];
-    uint8 *num_a, *num_b;
-    int a_nmembers, b_nmembers, member_index;
+    uint8 *ptr_a, *ptr_b;
+    int members_in_a, members_in_b, member_index;
     
     for (member_index = 0; member_index < partition_size; member_index++)
     {
         temp[member_index] = array[offset + member_index];
     }
 
-    a_nmembers = mid - start + 1;
-    b_nmembers = end - mid;
-    num_a = temp;
-    num_b = temp + (a_nmembers * member_size);
+    members_in_a = mid - start + 1;
+    members_in_b = end - mid;
+    ptr_a = temp;
+    ptr_b = temp + (members_in_a * member_size);
     member_index = 0;
 
-    while (a_nmembers > 0 && b_nmembers > 0)
+    while (members_in_a > 0 && members_in_b > 0)
     {
-        if (compare(num_a, num_b) != FIRST_IS_LARGER)
+        if (compare(ptr_a, ptr_b) != FIRST_IS_LARGER)
         {
             for (int i = 0; i < member_size; i++)
-                array[offset + member_size * member_index + i] = num_a[i];
-            num_a += member_size;
-            a_nmembers--;
+                array[offset + member_size * member_index + i] = ptr_a[i];
+            ptr_a += member_size;
+            members_in_a--;
         }
         else
         {
             for (int i = 0; i < member_size; i++)
-                array[offset + member_size * member_index + i] = num_b[i];
-            num_b += member_size;
-            b_nmembers--;
+                array[offset + member_size * member_index + i] = ptr_b[i];
+            ptr_b += member_size;
+            members_in_b--;
         }
         member_index++;
     }
 
-    while (a_nmembers > 0)
+    while (members_in_a > 0)
     {
         for (int i = 0; i < member_size; i++)
-            array[offset + member_size * member_index + i] = num_a[i];
-        num_a += member_size;
-        a_nmembers--;
+            array[offset + member_size * member_index + i] = ptr_a[i];
+        ptr_a += member_size;
+        members_in_a--;
         member_index++;
     }
 
-    while (b_nmembers > 0)
+    while (members_in_b > 0)
     {
         for (int i = 0; i < member_size; i++)
-            array[offset + member_size * member_index + i] = num_b[i];
-        num_b += member_size;
-        b_nmembers--;
+            array[offset + member_size * member_index + i] = ptr_b[i];
+        ptr_b += member_size;
+        members_in_b--;
         member_index++;
     }
 }
 
-static void mergesort(uint8 *numbers, uint32 member_size, int start, int end, enum ComparisonResult (*compare)(uint8*, uint8*))
+static void mergesort(
+    uint8 *numbers,
+    uint32 member_size,
+    int start,
+    int end,
+    enum ComparisonResult (*compare)(uint8*, uint8*)
+    )
 {
     if (start < end)
     {
