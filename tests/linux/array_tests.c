@@ -130,78 +130,9 @@ int test_array_foreach(Allocator *allocator)
 }
 
 
-static void merge(uint8 *array, uint32 member_size, int start, int mid, int end, enum ComparisonResult (*compare)(uint8*, uint8*))
-{
-    const uint32 PARTITION_SIZE = (end-start+1) * member_size;
-    uint32 offset = start * member_size;
-    
-    uint8 temp[PARTITION_SIZE];
-    uint8 *num_a, *num_b;
-    int a_length, b_length, i;
-    
-    for (i = 0; i < PARTITION_SIZE; i++)
-    {
-        temp[i] = array[offset + i];
-    }
-
-    a_length = mid-start+1;
-    b_length = end-mid;
-    num_a = temp;
-    num_b = temp + (a_length * member_size);
-    i = 0;
-
-    while (a_length > 0 && b_length > 0)
-    {
-        if (compare(num_a, num_b) != FIRST_IS_LARGER)
-        {
-            for (int j = 0; j < member_size; j++)
-                array[offset + member_size * i + j] = num_a[j];
-            num_a += member_size;
-            a_length--;
-        }
-        else
-        {
-            for (int j = 0; j < member_size; j++)
-                array[offset + member_size * i + j] = num_b[j];
-            num_b += member_size;
-            b_length--;
-        }
-        i++;
-    }
-
-    while (a_length > 0)
-    {
-        for (int j = 0; j < member_size; j++)
-            array[offset + member_size * i + j] = num_a[j];
-        num_a += member_size;
-        a_length--;
-        i++;
-    }
-
-    while (b_length > 0)
-    {
-        for (int j = 0; j < member_size; j++)
-            array[offset + member_size * i + j] = num_b[j];
-        num_b += member_size;
-        b_length--;
-        i++;
-    }
-}
-
-static void mergesort(uint8 *numbers, uint32 member_size, int start, int end, enum ComparisonResult (*compare)(uint8*, uint8*))
-{
-    if (start < end)
-    {
-        int mid = start + (end-start) / 2;
-        mergesort(numbers, member_size, start, mid, compare);
-        mergesort(numbers, member_size, mid+1, end, compare);
-        merge(numbers, member_size, start, mid, end, compare);   
-    }
-}
-
-
 int test_array_sorting(Allocator *allocator)
 {
+    int error = 0;
     const int NUMBERS_LENGTH = 16;
     int numbers[] = {
         2, -6, 4, 16,
@@ -209,13 +140,19 @@ int test_array_sorting(Allocator *allocator)
         32, 26, 2, -8,
         0, 1, 1, 9
     };
-    
-    // Array *array  = array_create(allocator, NUMBERS_LENGTH, sizeof(int));
-    // if (array == NULL)
-    //     return 1;
 
-    // uint8 *memory = (uint8*) numbers;
-    // array_copy_memory(array, (uint8*)numbers, NUMBERS_LENGTH * sizeof(int));
+    int sorted_numbers[] = {
+        -8, -6, -1, 0,
+        0, 1, 1, 2,
+        2, 2, 4, 9,
+        16, 26, 32, 44
+    };
+    
+    Array *array  = array_create(allocator, NUMBERS_LENGTH, sizeof(int));
+    if (array == NULL)
+        return 1;
+
+    array_copy_memory(array, (uint8*)numbers, NUMBERS_LENGTH * sizeof(int));
 
     void read_int(uint8 *bytes, uint8 *integer)
     {
@@ -239,33 +176,29 @@ int test_array_sorting(Allocator *allocator)
         return ARE_EQUAL;
     }
     
-    // array_sort(array, compare);
+    array_sort(array, compare);
 
-    // array_free(allocator, array);
-
-    for (int i = 0; i < NUMBERS_LENGTH; i++)
+    int *array_numbers = (int*)array->data;
+    for (int i = 0; i < array->length; i++)
     {
-        printf("%d ", numbers[i]);
+        if (array_numbers[i] != sorted_numbers[i])
+        {
+            error = 1;
+            break;
+        }
     }
-    printf("\n");
-    
-    mergesort((uint8*)numbers, 4, 0, NUMBERS_LENGTH-1, compare);
 
-    for (int i = 0; i < NUMBERS_LENGTH; i++)
-    {
-        printf("%d ", numbers[i]);
-    }
-    printf("\n");
-    return 0;
+    array_free(allocator, array);
+    return error;
 }
 
 
 int (*tests[])(Allocator*) = {
-    // test_basic_array_use,
-    // test_array_bound_check,
-    // test_array_copy_memory,
-    // test_array_slicing,
-    // test_array_foreach,
+    test_basic_array_use,
+    test_array_bound_check,
+    test_array_copy_memory,
+    test_array_slicing,
+    test_array_foreach,
     test_array_sorting,
     NULL
 };
