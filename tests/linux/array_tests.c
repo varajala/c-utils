@@ -130,33 +130,40 @@ int test_array_foreach(Allocator *allocator)
 }
 
 
-static void merge(int *array, int start, int mid, int end)
+static void merge(uint8 *array, uint32 member_size, int start, int mid, int end, enum ComparisonResult (*compare)(uint8*, uint8*))
 {
-    int temp[end-start+1];
-    int *num_a, *num_b;
+    const uint32 PARTITION_SIZE = (end-start+1) * member_size;
+    uint32 offset = start * member_size;
+    
+    uint8 temp[PARTITION_SIZE];
+    uint8 *num_a, *num_b;
     int a_length, b_length, i;
     
-    for (i = 0; i < end-start+1; i++)
+    for (i = 0; i < PARTITION_SIZE; i++)
     {
-        temp[i] = array[start+i];
+        temp[i] = array[offset + i];
     }
 
     a_length = mid-start+1;
     b_length = end-mid;
     num_a = temp;
-    num_b = temp + a_length;
+    num_b = temp + (a_length * member_size);
     i = 0;
 
     while (a_length > 0 && b_length > 0)
     {
-        if (*num_a <= *num_b)
+        if (compare(num_a, num_b) != FIRST_IS_LARGER)
         {
-            array[start+i] = *num_a++;
+            for (int j = 0; j < member_size; j++)
+                array[offset + member_size * i + j] = num_a[j];
+            num_a += member_size;
             a_length--;
         }
         else
         {
-            array[start+i] = *num_b++;
+            for (int j = 0; j < member_size; j++)
+                array[offset + member_size * i + j] = num_b[j];
+            num_b += member_size;
             b_length--;
         }
         i++;
@@ -164,27 +171,31 @@ static void merge(int *array, int start, int mid, int end)
 
     while (a_length > 0)
     {
-        array[start+i] = *num_a++;
+        for (int j = 0; j < member_size; j++)
+            array[offset + member_size * i + j] = num_a[j];
+        num_a += member_size;
         a_length--;
         i++;
     }
 
     while (b_length > 0)
     {
-        array[start+i] = *num_b++;
+        for (int j = 0; j < member_size; j++)
+            array[offset + member_size * i + j] = num_b[j];
+        num_b += member_size;
         b_length--;
         i++;
     }
 }
 
-static void mergesort(int numbers[], int start, int end)
+static void mergesort(uint8 *numbers, uint32 member_size, int start, int end, enum ComparisonResult (*compare)(uint8*, uint8*))
 {
     if (start < end)
     {
         int mid = start + (end-start) / 2;
-        mergesort(numbers, start, mid);
-        mergesort(numbers, mid+1, end);
-        merge(numbers, start, mid, end);   
+        mergesort(numbers, member_size, start, mid, compare);
+        mergesort(numbers, member_size, mid+1, end, compare);
+        merge(numbers, member_size, start, mid, end, compare);   
     }
 }
 
@@ -206,18 +217,27 @@ int test_array_sorting(Allocator *allocator)
     // uint8 *memory = (uint8*) numbers;
     // array_copy_memory(array, (uint8*)numbers, NUMBERS_LENGTH * sizeof(int));
 
-    // enum ComparisonResult compare(uint8 *a_bytes, uint8 *b_bytes)
-    // {
-    //     int a, b;
-    //     a = *((int*) a_bytes);
-    //     b = *((int*) b_bytes);
+    void read_int(uint8 *bytes, uint8 *integer)
+    {
+        for (int i = 0; i < sizeof(int); i++)
+        {
+            integer[i] = bytes[i];
+        }
+    }
+
+    enum ComparisonResult compare(uint8 *a_bytes, uint8 *b_bytes)
+    {
+        int a, b;
+
+        read_int(a_bytes, (uint8*)&a);
+        read_int(b_bytes, (uint8*)&b);
         
-    //     if (a > b)
-    //         return FIRST_IS_LARGER;
-    //     if (a < b)
-    //         return FIRST_IS_SMALLER;
-    //     return ARE_EQUAL;
-    // }
+        if (a > b)
+            return FIRST_IS_LARGER;
+        if (a < b)
+            return FIRST_IS_SMALLER;
+        return ARE_EQUAL;
+    }
     
     // array_sort(array, compare);
 
@@ -229,7 +249,7 @@ int test_array_sorting(Allocator *allocator)
     }
     printf("\n");
     
-    mergesort(numbers, 0, NUMBERS_LENGTH-1);
+    mergesort((uint8*)numbers, 4, 0, NUMBERS_LENGTH-1, compare);
 
     for (int i = 0; i < NUMBERS_LENGTH; i++)
     {
