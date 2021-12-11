@@ -5,6 +5,7 @@
 // Test files
 #include "array_tests.c"
 #include "bump_allocator_tests.c"
+#include "arena_allocator_tests.c"
 
 
 void* _memory_allocate(uint64 size)

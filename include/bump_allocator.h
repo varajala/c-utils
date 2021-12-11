@@ -4,7 +4,6 @@
 #include <stddef.h>
 #include "integer_types.h"
 
-#define bump_allocator_size(BUF_SIZE) (offsetof(BumpAllocator, buffer) + BUF_SIZE)
 
 typedef struct BumpAllocator
 {
@@ -12,6 +11,12 @@ typedef struct BumpAllocator
     uint64 end_index;
     uint8 buffer[];
 } BumpAllocator;
+
+
+static inline uint64 bump_allocator_size(uint64 buf_size)
+{
+    return offsetof(BumpAllocator, buffer) + buf_size;
+}
 
 
 void bump_allocator_init(BumpAllocator*, uint64);
