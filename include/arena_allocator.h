@@ -21,4 +21,13 @@ static inline uint64 arena_allocator_size(uint32 max_arenas)
 }
 
 
+void arena_allocator_init(ArenaAllocator*, uint64, uint32);
+
+void* arena_allocator_memory_allocate(ArenaAllocator*, uint64);
+
+void* arena_allocator_memory_resize(ArenaAllocator*, void*, uint64);
+
+void arena_allocator_memory_free(ArenaAllocator*, void*, uint64);
+
+
 #endif
