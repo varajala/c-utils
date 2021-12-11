@@ -1,5 +1,5 @@
 #include <stddef.h>
-#include "array.h"
+#include "datastructures/array.h"
 
 
 Array* array_create(Allocator* allocator, uint32 member_count,  uint32 member_size)

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "array.h"
+#include "datastructures/array.h"
 
 
 int test_basic_array_use(Allocator *allocator)
