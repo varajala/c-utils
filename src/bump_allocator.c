@@ -36,7 +36,7 @@ void bump_allocator_memory_free(BumpAllocator *allocator, void *memory, uint64 s
     if (allocator == NULL || memory == NULL)
         return;
     
-    if (memory != allocator->buffer + allocator->end_index)
+    if (memory + size != allocator->buffer + allocator->end_index)
         return;
     
     allocator->end_index -= size;

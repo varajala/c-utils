@@ -56,6 +56,8 @@ int (*tests[])(Allocator*) = {
     test_array_sorting,
 
     test_bump_allocator_memory_allocation,
+    test_bump_allocator_bound_check,
+    test_bump_allocator_memory_free,
     NULL
 };
 
