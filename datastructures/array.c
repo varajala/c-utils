@@ -2,23 +2,23 @@
 #include "array.h"
 
 
-Array* array_create(Allocator* allocator, uint32 n_members,  uint32 member_size)
+Array* array_create(Allocator* allocator, uint32 member_count,  uint32 member_size)
 {
     if (allocator == NULL)
         return NULL;
     
-    if (n_members <= 0 )
+    if (member_count <= 0 )
         return NULL;
 
-    void* memory = allocator->memory_allocate(offsetof(Array, data) + n_members * member_size);
+    void* memory = allocator->memory_allocate(offsetof(Array, data) + member_count * member_size);
     if (memory == NULL)
         return NULL;
 
     Array *array = (Array*) memory;
-    array->length = n_members;
+    array->member_count = member_count;
     array->member_size = member_size;
 
-    for (int i = 0; i < n_members * member_size; i++)
+    for (int i = 0; i < member_count * member_size; i++)
         array->data[i] = 0x00;
 
     return array;
@@ -30,7 +30,7 @@ void array_get(Array *array, uint32 index, uint8 *memory)
     if (array == NULL || memory == NULL)
         return;
     
-    if (index < 0 || index >= array->length)
+    if (index < 0 || index >= array->member_count)
         return;
     
     uint32 offset = array->member_size * index;
@@ -44,7 +44,7 @@ void array_insert(Array *array, uint32 index, uint8 *memory)
     if (array == NULL || memory == NULL)
         return;
     
-    if (index < 0 || index >= array->length)
+    if (index < 0 || index >= array->member_count)
         return;
 
     uint32 offset = array->member_size * index;
@@ -58,7 +58,7 @@ void array_copy_memory(Array *array, uint8 *memory, uint32 max_length)
     if (array == NULL)
         return;
 
-    for (int i = 0; i < array->length * array->member_size; i++)
+    for (int i = 0; i < array->member_count * array->member_size; i++)
     {
         if (i >= max_length)
             break;
@@ -73,10 +73,10 @@ Array* array_create_slice(Array *src_array, Allocator *allocator, uint32 start, 
     if (src_array == NULL || allocator == NULL)
         return NULL;
     
-    if (start < 0 || start >= src_array->length)
+    if (start < 0 || start >= src_array->member_count)
         return NULL;
 
-    if (end < 0 || end >= src_array->length)
+    if (end < 0 || end >= src_array->member_count)
         return NULL;
 
     if (end-start <= 0)
@@ -100,8 +100,7 @@ void array_foreach(Array *array, void (*func)(uint8*))
     if (array == NULL)
         return;
 
-    uint32 array_size_in_bytes = array->member_size * array->length;
-    for (int i = 0; i < array_size_in_bytes; i += array->member_size)
+    for (int i = 0; i < array->member_count * array->member_size; i += array->member_size)
         func(&array->data[i]);
 }
 
@@ -193,7 +192,7 @@ void array_sort(Array *array, enum ComparisonResult (*compare)(uint8*, uint8*))
     if (array == NULL || compare == NULL)
         return;
 
-    mergesort(array->data, array->member_size, 0, array->length-1, compare);
+    mergesort(array->data, array->member_size, 0, array->member_count-1, compare);
 }
 
 
@@ -201,5 +200,5 @@ void array_free(Allocator *allocator, Array *array)
 {
     if (allocator == NULL || array == NULL)
         return;
-    allocator->memory_free(array, sizeof(uint32) + array->member_size * array->length);
+    allocator->memory_free(array, sizeof(uint32) + array->member_size * array->member_count);
 }

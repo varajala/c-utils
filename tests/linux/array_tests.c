@@ -10,14 +10,14 @@ int test_basic_array_use(Allocator *allocator)
     Array* array = array_create(allocator, 8, sizeof(int32));
 
     int32 number, i;
-    for (i = 0; i < array->length; i++)
+    for (i = 0; i < array->member_count; i++)
     {
         number = i + 1;
         array_insert(array, i, (uint8*)&number);
     }
 
     number = -1;
-    for ( i = 0; i < array->length; i++)
+    for ( i = 0; i < array->member_count; i++)
     {
         array_get(array, i, (uint8*)&number);
         if (number != i+1)
@@ -74,7 +74,7 @@ int test_array_slicing(Allocator *allocator)
         return 1;
     
     int32 *numbers = (int32*) array->data;
-    for (int i = 0; i < array->length;  i++)
+    for (int i = 0; i < array->member_count;  i++)
         numbers[i] = i;
 
     start = 4;
@@ -114,7 +114,7 @@ int test_array_foreach(Allocator *allocator)
     if (array == NULL)
         return 1;
 
-    for (int i = 0; i < array->member_size * array->length; i += array->member_size)
+    for (int i = 0; i < array->member_size * array->member_count; i += array->member_size)
     {
         array->data[i] = str[i];
     }
@@ -179,7 +179,7 @@ int test_array_sorting(Allocator *allocator)
     array_sort(array, compare);
 
     int *array_numbers = (int*)array->data;
-    for (int i = 0; i < array->length; i++)
+    for (int i = 0; i < array->member_count; i++)
     {
         if (array_numbers[i] != sorted_numbers[i])
         {

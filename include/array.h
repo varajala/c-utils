@@ -8,7 +8,7 @@
 
 typedef struct Array
 {
-    uint32 length;
+    uint32 member_count;
     uint32 member_size;
     uint8 data[];
 } Array;
