@@ -1,7 +1,7 @@
-#include "allocator_implementation.h"
-#include "array.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include "array.h"
 
 
 int test_basic_array_use(Allocator *allocator)
@@ -204,23 +204,42 @@ int (*tests[])(Allocator*) = {
 };
 
 
+void* _memory_allocate(uint64 size)
+{
+    return malloc(size);
+}
+
+
+void* _memory_resize(void* memory, uint64 size)
+{
+    return realloc(memory, size);
+}
+
+
+void _memory_free(void* memory, uint64 size)
+{
+    free(memory);
+}
+
+
 int main(int argc, char *argv[])
 {
-    Allocator *allocator = allocator_create();
+    Allocator allocator;
+    allocator.memory_allocate = _memory_allocate;
+    allocator.memory_resize = _memory_resize;
+    allocator.memory_free = _memory_free;
 
     int i = 0;
     while (1)
     {
         int (*test_func)(Allocator*) = tests[i];
         if (test_func == NULL) break;
-        if (test_func(allocator) > 0)
+        if (test_func(&allocator) > 0)
         {
             printf("Error in testcase %d\n", i);
         }
         i++;
     }
-
-    allocator_free(allocator);
 
     printf("%d tests executed.\n\n", i);
     return 0;
