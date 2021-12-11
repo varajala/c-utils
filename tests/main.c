@@ -54,6 +54,8 @@ int (*tests[])(Allocator*) = {
     test_array_slicing,
     test_array_foreach,
     test_array_sorting,
+
+    test_bump_allocator_memory_allocation,
     NULL
 };
 

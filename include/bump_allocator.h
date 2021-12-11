@@ -1,8 +1,10 @@
 #ifndef BUMP_ALLOCATOR_H
 #define BUMP_ALLOCATOR_H
 
+#include <stddef.h>
 #include "integer_types.h"
 
+#define bump_allocator_size(BUF_SIZE) (offsetof(BumpAllocator, buffer) + BUF_SIZE)
 
 typedef struct BumpAllocator
 {
@@ -11,6 +13,8 @@ typedef struct BumpAllocator
     uint8 buffer[];
 } BumpAllocator;
 
+
+void bump_allocator_init(BumpAllocator*, uint64);
 
 void* bump_allocator_memory_allocate(BumpAllocator*, uint64);
 
