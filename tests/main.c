@@ -60,6 +60,7 @@ int (*tests[])(Allocator*) = {
     test_bump_allocator_bound_check,
     test_bump_allocator_memory_free,
 
+    test_arena_allocator_uniform_memory_allocation,
     test_arena_allocator_memory_allocation,
     NULL
 };
