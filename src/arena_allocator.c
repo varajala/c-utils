@@ -47,12 +47,6 @@ void* arena_allocator_memory_allocate(ArenaAllocator *allocator, uint64 size)
 }
 
 
-void* arena_allocator_memory_free(ArenaAllocator *allocator, void *memory, uint64 size)
-{
-    return NULL;
-}
-
-
 void arena_allocator_destroy(ArenaAllocator *allocator, void (*free_memory)(void*, uint64))
 {
     for (uint32 i = 0; i < allocator->num_arenas; i++)

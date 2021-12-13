@@ -26,8 +26,6 @@ void arena_allocator_init(ArenaAllocator*, void* (*)(uint64), uint64, uint32);
 
 void* arena_allocator_memory_allocate(ArenaAllocator*, uint64);
 
-void* arena_allocator_memory_free(ArenaAllocator*, void*, uint64);
-
 void arena_allocator_destroy(ArenaAllocator*, void (*)(void*, uint64));
 
 
