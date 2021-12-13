@@ -23,8 +23,6 @@ void bump_allocator_init(BumpAllocator*, uint64);
 
 void* bump_allocator_memory_allocate(BumpAllocator*, uint64);
 
-void* bump_allocator_memory_resize(BumpAllocator*, void*, uint64);
-
 void bump_allocator_memory_free(BumpAllocator*, void*, uint64);
 
 

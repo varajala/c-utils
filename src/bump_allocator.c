@@ -24,12 +24,6 @@ void* bump_allocator_memory_allocate(BumpAllocator *allocator, uint64 size)
 }
 
 
-void* bump_allocator_memory_resize(BumpAllocator *allocator, void *memory, uint64 size)
-{
-    return NULL;
-}
-
-
 void bump_allocator_memory_free(BumpAllocator *allocator, void *memory, uint64 size)
 {
     if (allocator == NULL || memory == NULL)
