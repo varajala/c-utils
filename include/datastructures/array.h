@@ -4,8 +4,6 @@
 #include "integer_types.h"
 #include "allocator.h"
 
-#define ARRAY_LENGTH_INT_TYPE uint32
-
 typedef struct Array
 {
     uint32 member_count;
@@ -32,9 +30,9 @@ void array_copy_memory(Array*, uint8*, uint32);
 
 Array* array_create_slice(Array*, Allocator*, uint32, uint32);
 
-void array_foreach(Array *array, void (*func)(uint8*));
+void array_foreach(Array*, void (*func)(uint8*));
 
-void array_sort(Array *array, enum ComparisonResult (*compare)(uint8*, uint8*));
+void array_sort(Array*, enum ComparisonResult (*compare)(uint8*, uint8*));
 
 void array_free(Allocator*, Array*);
 
