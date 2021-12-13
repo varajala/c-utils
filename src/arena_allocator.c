@@ -23,7 +23,6 @@ void arena_allocator_init(ArenaAllocator *allocator, void* (*get_memory)(uint64)
 
 void* arena_allocator_memory_allocate(ArenaAllocator *allocator, uint64 size)
 {
-    // TODO: toggle memory allocation strategy: lookup all arenas / try only latest
     void *memory;
     BumpAllocator *arena;
     for (uint32 i = 0; i < allocator->num_arenas; i++)
