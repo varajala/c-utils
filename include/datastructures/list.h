@@ -3,17 +3,22 @@
 
 #include "datastructures/array.h"
 
-#ifndef INITIAL_LIST_SIZE
-#define INITIAL_LIST_SIZE 16
+#ifndef LIST_INITIAL_SIZE
+#define LIST_INITIAL_SIZE 16
+#endif
+
+#ifndef LIST_RESIZE_THRESHOLD
+#define LIST_RESIZE_THRESHOLD 1.00
 #endif
 
 
 typedef struct List
 {
+    Allocator *_allocator;
+    uint64 _allocated_space;
     uint32 member_count;
     uint32 member_size;
-    Allocator *_allocator;
-    Array *_array;
+    uint8 data[];
 } List;
 
 
@@ -21,7 +26,7 @@ List* list_create(Allocator*, uint32);
 
 void list_get(List*, uint32, uint8*);
 
-void list_insert(List*, uint32, uint8*);
+List* list_insert(List*, uint32, uint8*);
 
 void list_remove(List*, uint32);
 

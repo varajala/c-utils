@@ -4,6 +4,7 @@
 
 // Test files
 #include "array_tests.c"
+#include "list_tests.c"
 #include "bump_allocator_tests.c"
 #include "arena_allocator_tests.c"
 
@@ -49,19 +50,21 @@ int run_tests(int (*tests[])(Allocator*), Allocator* allocator)
 
 
 int (*tests[])(Allocator*) = {
-    test_basic_array_use,
-    test_array_bound_check,
-    test_array_copy_memory,
-    test_array_slicing,
-    test_array_foreach,
-    test_array_sorting,
+    // test_basic_array_use,
+    // test_array_bound_check,
+    // test_array_copy_memory,
+    // test_array_slicing,
+    // test_array_foreach,
+    // test_array_sorting,
 
-    test_bump_allocator_memory_allocation,
-    test_bump_allocator_bound_check,
-    test_bump_allocator_memory_free,
+    // test_bump_allocator_memory_allocation,
+    // test_bump_allocator_bound_check,
+    // test_bump_allocator_memory_free,
 
-    test_arena_allocator_uniform_memory_allocation,
-    test_arena_allocator_memory_allocation,
+    // test_arena_allocator_uniform_memory_allocation,
+    // test_arena_allocator_memory_allocation,
+
+    test_basic_list_use,
     NULL
 };
 
