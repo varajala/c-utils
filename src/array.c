@@ -200,5 +200,5 @@ void array_free(Allocator *allocator, Array *array)
 {
     if (allocator == NULL || array == NULL)
         return;
-    allocator->memory_free(array, sizeof(uint32) + array->member_size * array->member_count);
+    allocator->memory_free(array, offsetof(Array, data) + array->member_size * array->member_count);
 }
