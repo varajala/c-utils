@@ -42,8 +42,7 @@ int test_list_insertion(Allocator *allocator)
     data.low        = 'A';
     
     list = list_append(list, (uint8*) &data);
-    for (int i = 0; i < list->member_count * list->member_size; i++)
-        buffer[i] = list->data[i];
+    memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "AAAA            ") == 0;
 
     data.high       = 'B';
@@ -52,8 +51,7 @@ int test_list_insertion(Allocator *allocator)
     data.low        = 'B';
 
     list = list_insert(list, 0, (uint8*) &data);
-    for (int i = 0; i < list->member_count * list->member_size; i++)
-        buffer[i] = list->data[i];
+    memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "BBBBAAAA        ") == 0;
 
     data.high       = 'C';
@@ -62,8 +60,7 @@ int test_list_insertion(Allocator *allocator)
     data.low        = 'C';
 
     list = list_insert(list, 1, (uint8*) &data);
-    for (int i = 0; i < list->member_count * list->member_size; i++)
-        buffer[i] = list->data[i];
+    memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "BBBBCCCCAAAA    ") == 0;
 
     data.high       = 'D';
@@ -72,9 +69,39 @@ int test_list_insertion(Allocator *allocator)
     data.low        = 'D';
 
     list = list_insert(list, 0, (uint8*) &data);
-    for (int i = 0; i < list->member_count * list->member_size; i++)
-        buffer[i] = list->data[i];
+    memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "DDDDBBBBCCCCAAAA") == 0;
+
+    list_free(list);
+    return error;
+}
+
+
+int test_list_removing(Allocator *allocator)
+{
+    char *str = "AAAABBBBCCCCDDDD";
+    const int buffer_length = strlen(str);
+    char buffer[buffer_length + 1];
+    int error = 3;
+    
+    List *list = list_create(allocator, 4);
+    list->member_count = 4;
+    memcpy(list->data, str, buffer_length);
+
+    list_remove_at(list, buffer_length / 4);
+    memset(buffer, 0x00, buffer_length + 1);
+    memcpy(buffer, list->data, list->member_count * list->member_size);
+    error -= strcmp(buffer, str) == 0;
+
+    list_remove_at(list, 1);
+    memset(buffer, 0x00, buffer_length + 1);
+    memcpy(buffer, list->data, list->member_count * list->member_size);
+    error -= strcmp(buffer, "AAAACCCCDDDD") == 0;
+
+    list_remove_at(list, 0);
+    memset(buffer, 0x00, buffer_length + 1);
+    memcpy(buffer, list->data, list->member_count * list->member_size);
+    error -= strcmp(buffer, "CCCCDDDD") == 0;
 
     list_free(list);
     return error;
