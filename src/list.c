@@ -50,6 +50,12 @@ List* list_insert(List *list, uint32 index, uint8 *memory)
     if (list == NULL || memory == NULL)
         return list;
 
+    if (index < 0)
+        return list;
+
+    if (index >= list->member_count)
+        index = list->member_count;
+
     list->member_count += 1;
     uint64 used_space = list->member_count * list->member_size;
     uint64 buffer_size = list->_allocated_space - offsetof(List, data);

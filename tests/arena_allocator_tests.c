@@ -72,3 +72,32 @@ int test_arena_allocator_memory_allocation(Allocator *allocator)
     arena_allocator_destroy(arena_alloc, allocator->memory_free);
     return 0;
 }
+
+
+int test_arena_allocator_size_check(Allocator *allocator)
+{
+    const int arena_size = 32;
+    void *memory;
+    int error = 0;
+    
+    ArenaAllocator *arena_alloc = allocator->memory_allocate(arena_allocator_size(arena_size));
+    arena_allocator_init(arena_alloc, allocator->memory_allocate, arena_size, 4);
+
+    memory = arena_allocator_memory_allocate(arena_alloc, 2 * arena_size);
+    if (memory != NULL)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    memory = arena_allocator_memory_allocate(arena_alloc, arena_size);
+    if (memory == NULL)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    cleanup:
+        arena_allocator_destroy(arena_alloc, allocator->memory_free);
+    return error;
+}

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "allocator.h"
 
 // Test files
@@ -63,8 +64,10 @@ int (*tests[])(Allocator*) = {
 
     test_arena_allocator_uniform_memory_allocation,
     test_arena_allocator_memory_allocation,
+    test_arena_allocator_size_check,
 
     test_basic_list_use,
+    test_list_insertion,
     NULL
 };
 
