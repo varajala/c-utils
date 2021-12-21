@@ -28,7 +28,9 @@ void list_get(List*, uint32, uint8*);
 
 List* list_insert(List*, uint32, uint8*);
 
-void list_remove(List*, uint32);
+List* list_append(List*, uint8*);
+
+void list_remove_at(List*, uint32);
 
 void list_copy_memory(List*, uint8*, uint32);
 

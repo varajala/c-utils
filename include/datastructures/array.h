@@ -3,6 +3,7 @@
 
 #include "integer_types.h"
 #include "allocator.h"
+#include <stddef.h>
 
 typedef struct Array
 {
