@@ -160,3 +160,52 @@ int test_list_getting_items(Allocator *allocator)
         list_free(list);
     return error;
 }
+
+
+int test_list_copy_memory(Allocator *allocator)
+{
+    char *short_str = "AABBCCDD";
+    char *long_str = "AAAABBBBCCCCDDDDEEEEFFFF";
+    const int buffer_length = 32;
+    char buffer[buffer_length];
+    int error = 0;
+    
+    List *list, *new_list; 
+    list = list_create(allocator, 1);
+    new_list = list_copy_memory(list, (uint8*) short_str, strlen(short_str));
+
+    if (new_list != list)
+    {
+        list = new_list;
+        error = 1;
+        goto cleanup;
+    }
+
+    memset(buffer, 0x00, buffer_length);
+    memcpy(buffer, list->data, list->member_count * list->member_size);
+    if (strcmp((char*)buffer, short_str) != 0)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    new_list = list_copy_memory(list, (uint8*) long_str, strlen(long_str));
+    if (new_list == list)
+    {
+        error = 1;
+        goto cleanup;
+    }
+    
+    list = new_list;
+    memset(buffer, 0x00, buffer_length);
+    memcpy(buffer, list->data, list->member_count * list->member_size);
+    if (strcmp((char*)buffer, long_str) != 0)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    cleanup:
+        list_free(list);
+    return error;
+}

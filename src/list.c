@@ -7,6 +7,12 @@ static inline Array* list_to_array(List *list)
 }
 
 
+static inline uint64 list_get_allocated_buffer_size(List *list)
+{
+    return list->_allocated_space - offsetof(List, data);
+}
+
+
 List* list_create(Allocator *allocator, uint32 member_size)
 {
     if (allocator == NULL)
@@ -57,9 +63,9 @@ List* list_insert(List *list, uint32 index, uint8 *memory)
     list->member_count += 1;
     
     uint64 used_space = list->member_count * list->member_size;
-    uint64 buffer_size = list->_allocated_space - offsetof(List, data);
+    uint64 buffer_size = list_get_allocated_buffer_size(list);
     
-    if (used_space >= LIST_RESIZE_THRESHOLD * buffer_size)
+    if (used_space > LIST_RESIZE_THRESHOLD * buffer_size)
     {
         List *new_list = list->_allocator->memory_resize(list, list->_allocated_space + buffer_size);
         if (new_list == NULL)
@@ -116,9 +122,26 @@ void list_remove_at(List *list, uint32 index)
 }
 
 
-void list_copy_memory(List *list, uint8 *memory, uint32 max_size)
+List* list_copy_memory(List *list, uint8 *memory, uint32 max_size)
 {
+    if (list == NULL || memory == NULL)
+        return list;
 
+    uint64 buffer_size = list_get_allocated_buffer_size(list);
+    
+    if (max_size > LIST_RESIZE_THRESHOLD * buffer_size)
+    {
+        List *new_list = list->_allocator->memory_resize(list, list->_allocated_space + buffer_size);
+        if (new_list == NULL)
+            return list;
+
+        list = new_list;
+        list->_allocated_space += buffer_size;
+    }
+
+    list->member_count = max_size / list->member_size;
+    array_copy_memory(list_to_array(list), memory, max_size);
+    return list;
 }
 
 

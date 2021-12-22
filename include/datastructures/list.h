@@ -32,7 +32,7 @@ List* list_append(List*, uint8*);
 
 void list_remove_at(List*, uint32);
 
-void list_copy_memory(List*, uint8*, uint32);
+List* list_copy_memory(List*, uint8*, uint32);
 
 Array* list_create_slice(List*, uint32, uint32);
 
