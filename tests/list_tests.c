@@ -106,3 +106,57 @@ int test_list_removing(Allocator *allocator)
     list_free(list);
     return error;
 }
+
+
+int test_list_getting_items(Allocator *allocator)
+{
+    int number, error;
+    int array[4] = { 1, 2, 3, 4 };
+    
+    List *list = list_create(allocator, sizeof(int));
+    list->member_count = 4;
+    memcpy(list->data, array, 4 * sizeof(int));
+
+    error = 0;
+    
+    list_get(list, 0, (uint8*) &number);
+    if (number != 1)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    list_get(list, 1, (uint8*) &number);
+    if (number != 2)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    list_get(list, 3, (uint8*) &number);
+    if (number != 4)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    number = 0;
+    
+    list_get(list, -1, (uint8*) &number);
+    if (number != 0)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    list_get(list, 8, (uint8*) &number);
+    if (number != 0)
+    {
+        error = 1;
+        goto cleanup;
+    }
+    
+    cleanup:
+        list_free(list);
+    return error;
+}

@@ -69,6 +69,7 @@ int (*tests[])(Allocator*) = {
     test_basic_list_use,
     test_list_insertion,
     test_list_removing,
+    test_list_getting_items,
     NULL
 };
 
