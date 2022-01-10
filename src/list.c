@@ -13,15 +13,15 @@ static inline uint64 list_get_allocated_buffer_size(List *list)
 }
 
 
-List* list_create(Allocator *allocator, uint32 member_size)
+List* list_create(Allocator *allocator, uint32 initial_member_count, uint32 member_size)
 {
     if (allocator == NULL)
         return NULL;
     
-    if (LIST_INITIAL_SIZE <= 0 )
+    if (initial_member_count <= 0 )
         return NULL;
 
-    uint64 buffer_size = LIST_INITIAL_SIZE * member_size;
+    uint64 buffer_size = initial_member_count * member_size;
     uint64 required_space = offsetof(List, data) + buffer_size;
     
     List *list = (List*) allocator->memory_allocate(required_space);

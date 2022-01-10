@@ -1,9 +1,11 @@
 #include "datastructures/list.h"
 
+const int LIST_INITIAL_SIZE = 16;
+
 
 int test_basic_list_use(Allocator *allocator)
 {
-    List *list = list_create(allocator, sizeof(int));
+    List *list = list_create(allocator, LIST_INITIAL_SIZE, sizeof(int));
 
     for (int i = 0; i < 100; i++)
     {
@@ -30,7 +32,7 @@ int test_list_insertion(Allocator *allocator)
     char buffer[17];
     int error = 4;
 
-    List *list = list_create(allocator, 4);
+    List *list = list_create(allocator, LIST_INITIAL_SIZE, 4);
 
     for (int i = 0; i < 16; i++)
         buffer[i] = ' ';
@@ -84,7 +86,7 @@ int test_list_removing(Allocator *allocator)
     char buffer[buffer_length + 1];
     int error = 3;
     
-    List *list = list_create(allocator, 4);
+    List *list = list_create(allocator, LIST_INITIAL_SIZE, 4);
     list->member_count = 4;
     memcpy(list->data, str, buffer_length);
 
@@ -113,7 +115,7 @@ int test_list_getting_items(Allocator *allocator)
     int number, error;
     int array[4] = { 1, 2, 3, 4 };
     
-    List *list = list_create(allocator, sizeof(int));
+    List *list = list_create(allocator, LIST_INITIAL_SIZE, sizeof(int));
     list->member_count = 4;
     memcpy(list->data, array, 4 * sizeof(int));
 
@@ -171,7 +173,7 @@ int test_list_copy_memory(Allocator *allocator)
     int error = 0;
     
     List *list, *new_list; 
-    list = list_create(allocator, 1);
+    list = list_create(allocator, LIST_INITIAL_SIZE, 1);
     new_list = list_copy_memory(list, (uint8*) short_str, strlen(short_str));
 
     if (new_list != list)
@@ -216,7 +218,7 @@ int test_list_create_slice(Allocator *allocator)
     int error = 0;
     Array *slice;
     
-    List *list = list_create(allocator, 1);
+    List *list = list_create(allocator, LIST_INITIAL_SIZE, 1);
     memcpy(list->data, "abcdef", 6);
     list->member_count = 6;
 
@@ -240,7 +242,7 @@ int test_list_foreach(Allocator *allocator)
     int data[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
     int modified_data[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
     
-    List *list = list_create(allocator, sizeof(int));
+    List *list = list_create(allocator, LIST_INITIAL_SIZE, sizeof(int));
     memcpy(list->data, data, 8 * sizeof(int));
     list->member_count = 8;
 
@@ -265,7 +267,7 @@ int test_list_sort(Allocator *allocator)
     int data[] = { 2, 5, 8, 1, 7, 6, 4, 3 };
     int sorted_data[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
     
-    List *list = list_create(allocator, sizeof(int));
+    List *list = list_create(allocator, LIST_INITIAL_SIZE, sizeof(int));
     memcpy(list->data, data, 8 * sizeof(int));
     list->member_count = 8;
 

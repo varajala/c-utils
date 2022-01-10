@@ -3,10 +3,6 @@
 
 #include "datastructures/array.h"
 
-#ifndef LIST_INITIAL_SIZE
-#define LIST_INITIAL_SIZE 16
-#endif
-
 #ifndef LIST_RESIZE_THRESHOLD
 #define LIST_RESIZE_THRESHOLD 1.00
 #endif
@@ -22,7 +18,7 @@ typedef struct List
 } List;
 
 
-List* list_create(Allocator*, uint32);
+List* list_create(Allocator*, uint32, uint32);
 
 void list_get(List*, uint32, uint8*);
 
