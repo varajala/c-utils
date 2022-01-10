@@ -147,20 +147,23 @@ List* list_copy_memory(List *list, uint8 *memory, uint32 max_size)
 
 Array* list_create_slice(List *list, uint32 start, uint32 end)
 {
-    return NULL;
+    if (list == NULL)
+        return NULL;
+    return array_create_slice(list_to_array(list), list->_allocator, start, end);
 }
 
 
 void list_foreach(List *list, void (*func)(uint8*))
 {
-
+    array_foreach(list_to_array(list), func);
 }
 
 
 void list_sort(List *list, enum ComparisonResult (*compare)(uint8*, uint8*))
 {
-
+    array_sort(list_to_array(list), compare);
 }
+
 
 void list_free(List *list)
 {

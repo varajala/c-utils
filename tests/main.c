@@ -71,6 +71,9 @@ int (*tests[])(Allocator*) = {
     test_list_removing,
     test_list_getting_items,
     test_list_copy_memory,
+    test_list_create_slice,
+    test_list_foreach,
+    test_list_sort,
     NULL
 };
 

@@ -209,3 +209,93 @@ int test_list_copy_memory(Allocator *allocator)
         list_free(list);
     return error;
 }
+
+
+int test_list_create_slice(Allocator *allocator)
+{
+    int error = 0;
+    Array *slice;
+    
+    List *list = list_create(allocator, 1);
+    memcpy(list->data, "abcdef", 6);
+    list->member_count = 6;
+
+    slice = list_create_slice(list, 0, 3);
+    if (slice == NULL || memcmp(slice->data, "abc", 3) != 0)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    cleanup:
+        if (slice != NULL) array_free(allocator, slice);
+        list_free(list);
+    return error;
+}
+
+
+int test_list_foreach(Allocator *allocator)
+{
+    int error = 0;
+    int data[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    int modified_data[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
+    
+    List *list = list_create(allocator, sizeof(int));
+    memcpy(list->data, data, 8 * sizeof(int));
+    list->member_count = 8;
+
+    void incr(uint8 *item)
+    {
+        int *number = (int*)item;
+        *number = (*number) + 1;
+    }
+
+    list_foreach(list, incr);
+    if (memcmp(list->data, modified_data, 8 * sizeof(int)) != 0)
+        error = 1;
+    
+    list_free(list);
+    return error;
+}
+
+
+int test_list_sort(Allocator *allocator)
+{
+    int error = 0;
+    int data[] = { 2, 5, 8, 1, 7, 6, 4, 3 };
+    int sorted_data[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    
+    List *list = list_create(allocator, sizeof(int));
+    memcpy(list->data, data, 8 * sizeof(int));
+    list->member_count = 8;
+
+    void read_int(uint8 *bytes, uint8 *integer)
+    {
+        for (int i = 0; i < sizeof(int); i++)
+        {
+            integer[i] = bytes[i];
+        }
+    }
+
+    enum ComparisonResult compare(uint8 *a_bytes, uint8 *b_bytes)
+    {
+        int a, b;
+
+        read_int(a_bytes, (uint8*)&a);
+        read_int(b_bytes, (uint8*)&b);
+        
+        if (a > b)
+            return FIRST_IS_LARGER;
+        if (a < b)
+            return FIRST_IS_SMALLER;
+        return ARE_EQUAL;
+    }
+
+    list_sort(list, compare);
+
+    if (memcmp(list->data, sorted_data, 8 * sizeof(int)) != 0)
+        error = 1;
+    
+    list_free(list);
+    return error;
+}
