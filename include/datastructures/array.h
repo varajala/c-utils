@@ -21,20 +21,43 @@ enum ComparisonResult
 };
 
 
+/*
+ Allocate space and initialize the array.
+ All bytes are initialized into 0x00 values.
+*/
 Array* array_create(Allocator*, uint32, uint32);
 
+/*
+ Copy memory from array.data[index * array.member_size] to the provided address.
+ The provided memory must be atleast array.member_size bytes.
+*/
 void array_get(Array*, uint32, uint8*);
 
+/*
+ Copy memory into the array from to the provided address
+ for a total of array.member_size bytes.
+*/
 void array_insert(Array*, uint32, uint8*);
 
+/*
+ Copy memory into the array from to the provided address
+ for a total length of MIN(array.member_count * array.member_size, max_length).
+*/
 void array_copy_memory(Array*, uint8*, uint32);
 
+/*
+ Create a new array and copy the original array's data into it
+ from start_index to end_index.
+*/
 Array* array_create_slice(Array*, Allocator*, uint32, uint32);
 
 void array_foreach(Array*, void (*func)(uint8*));
 
 void array_sort(Array*, enum ComparisonResult (*compare)(uint8*, uint8*));
 
+/*
+ Free memory used by the array.
+*/
 void array_free(Allocator*, Array*);
 
 #endif

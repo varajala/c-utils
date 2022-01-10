@@ -3,6 +3,12 @@
 
 #include "datastructures/array.h"
 
+/*
+ Every time an insertion is made, the fraction
+ used_space / allocated_space is checked. If the
+ fraction >= LIST_RESIZE_THRESHOLD,
+ the list is reallocated to double the size.
+*/
 #ifndef LIST_RESIZE_THRESHOLD
 #define LIST_RESIZE_THRESHOLD 1.00
 #endif
@@ -17,7 +23,11 @@ typedef struct List
     uint8 data[];
 } List;
 
-
+/*
+ Allocate memory and initialize the list.
+ The list stores the pointer to the allocator,
+ it must be valid for entire lifetime of the list.
+*/
 List* list_create(Allocator*, uint32, uint32);
 
 void list_get(List*, uint32, uint8*);

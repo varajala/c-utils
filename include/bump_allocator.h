@@ -18,11 +18,16 @@ static inline uint64 bump_allocator_size(uint64 buf_size)
     return offsetof(BumpAllocator, buffer) + buf_size;
 }
 
-
+/*
+ Initialize the bump allocator, memory needs to be allocated by the caller.
+*/
 void bump_allocator_init(BumpAllocator*, uint64);
 
 void* bump_allocator_memory_allocate(BumpAllocator*, uint64);
 
+/*
+ This has effect only if memory + size == allocator.end_index.
+*/
 void bump_allocator_memory_free(BumpAllocator*, void*, uint64);
 
 

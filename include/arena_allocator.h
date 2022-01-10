@@ -21,11 +21,18 @@ static inline uint64 arena_allocator_size(uint32 max_arenas)
     return offsetof(ArenaAllocator, arenas) + max_arenas * sizeof(void*);
 }
 
-
+/*
+ Initialize the ArenaAllocator. Memory needs to be allocated by the caller.
+ The pointer to the get_memory-function must be valid for the entire lifetime of
+ the ArenaAllocator.
+*/
 void arena_allocator_init(ArenaAllocator*, void* (*)(uint64), uint64, uint32);
 
 void* arena_allocator_memory_allocate(ArenaAllocator*, uint64);
 
+/*
+ Free all memory used by the ArenaAllocator.
+*/
 void arena_allocator_destroy(ArenaAllocator*, void (*)(void*, uint64));
 
 
