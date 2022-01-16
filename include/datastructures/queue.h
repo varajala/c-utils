@@ -12,7 +12,7 @@ void queue_pop(Queue*, uint8*);
 
 void queue_peek(Queue*, uint8*);
 
-void queue_push(Queue*, uint8*);
+Queue* queue_push(Queue*, uint8*);
 
 void queue_free(Queue*);
 

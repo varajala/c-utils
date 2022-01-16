@@ -12,7 +12,7 @@ void stack_pop(Stack*, uint8*);
 
 void stack_peek(Stack*, uint8*);
 
-void stack_push(Stack*, uint8*);
+Stack* stack_push(Stack*, uint8*);
 
 void stack_free(Stack*);
 

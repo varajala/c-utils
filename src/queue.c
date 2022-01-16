@@ -26,9 +26,9 @@ void queue_peek(Queue *queue, uint8 *memory)
 }
 
 
-void queue_push(Queue *queue, uint8 *memory)
+Queue* queue_push(Queue *queue, uint8 *memory)
 {
-    list_insert((List*) queue, 0, memory);
+    return (Queue*) list_insert((List*) queue, 0, memory);
 }
 
 

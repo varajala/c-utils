@@ -26,9 +26,9 @@ void stack_peek(Stack *stack, uint8 *memory)
 }
 
 
-void stack_push(Stack *stack, uint8 *memory)
+Stack* stack_push(Stack *stack, uint8 *memory)
 {
-    list_append((List*) stack, memory);
+    return (Stack*) list_append((List*) stack, memory);
 }
 
 

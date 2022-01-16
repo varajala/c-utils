@@ -13,13 +13,13 @@ int test_queue_push(Allocator *allocator)
     Queue *queue = queue_create(allocator, QUEUE_INITIAL_SIZE, sizeof(int));
 
     number = 2;
-    queue_push(queue, (uint8*) &number);
+    queue = queue_push(queue, (uint8*) &number);
 
     number = 4;
-    queue_push(queue, (uint8*) &number);
+    queue = queue_push(queue, (uint8*) &number);
 
     number = 8;
-    queue_push(queue, (uint8*) &number);
+    queue = queue_push(queue, (uint8*) &number);
 
     error = memcmp(queue->data, numbers, 3 * sizeof(int)) != 0;
 
