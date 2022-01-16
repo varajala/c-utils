@@ -7,21 +7,28 @@ Stack* stack_create(Allocator *allocator, uint32 initial_member_count, uint32 me
 }
 
 
-uint8* stack_pop(Stack *stack)
+void stack_pop(Stack *stack, uint8 *memory)
 {
-    return NULL;
+    if (stack == NULL)
+        return;
+    
+    list_get((List*) stack, stack->member_count - 1, memory);
+    list_remove_at((List*) stack, stack->member_count - 1);
 }
 
 
-uint8* stack_peek(Stack *stack)
+void stack_peek(Stack *stack, uint8 *memory)
 {
-    return NULL;
+    if (stack == NULL)
+        return;
+    
+    list_get((List*) stack, stack->member_count - 1, memory);
 }
 
 
 void stack_push(Stack *stack, uint8 *memory)
 {
-
+    list_append((List*) stack, memory);
 }
 
 

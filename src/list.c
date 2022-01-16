@@ -78,16 +78,19 @@ List* list_insert(List *list, uint32 index, uint8 *memory)
         list->_allocated_space += buffer_size;
     }
 
-    for (int64 i = ((int64)list->member_count) - 2; i >= 0; i--)
+    if (index < list->member_count - 1)
     {
-        for (int32 j = ((int32)list->member_size) - 1; j >= 0; j--)
+        for (int64 i = list->member_count - 2; i >= index; i--)
         {
-            uint64 offset = i * list->member_size;
-            list->data[offset + list->member_size + j] = list->data[offset + j];   
+            for (uint32 j = 0; j < list->member_size; j++)
+            {
+                uint32 offset = i * list->member_size;
+                list->data[offset + list->member_size + j] = list->data[offset + j];
+            }
         }
     }
-    
-    uint32 offset = list->member_size * index;
+
+    uint32 offset = index * list->member_size;    
     for (uint32 i = 0; i < list->member_size; i++)
         list->data[offset + i] = memory[i];
     

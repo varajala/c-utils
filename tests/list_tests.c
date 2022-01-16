@@ -61,9 +61,9 @@ int test_list_insertion(Allocator *allocator)
     data.low_mid    = 'C';
     data.low        = 'C';
 
-    list = list_insert(list, 1, (uint8*) &data);
+    list = list_append(list, (uint8*) &data);
     memcpy(buffer, list->data, list->member_count * list->member_size);
-    error -= strcmp(buffer, "BBBBCCCCAAAA    ") == 0;
+    error -= strcmp(buffer, "BBBBAAAACCCC    ") == 0;
 
     data.high       = 'D';
     data.high_mid   = 'D';
@@ -72,7 +72,7 @@ int test_list_insertion(Allocator *allocator)
 
     list = list_insert(list, 0, (uint8*) &data);
     memcpy(buffer, list->data, list->member_count * list->member_size);
-    error -= strcmp(buffer, "DDDDBBBBCCCCAAAA") == 0;
+    error -= strcmp(buffer, "DDDDBBBBAAAACCCC") == 0;
 
     list_free(list);
     return error;

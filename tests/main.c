@@ -75,6 +75,8 @@ int (*tests[])(Allocator*) = {
     test_list_create_slice,
     test_list_foreach,
     test_list_sort,
+
+    test_stack_push,
     NULL
 };
 
