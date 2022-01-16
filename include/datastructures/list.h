@@ -32,12 +32,27 @@ List* list_create(Allocator*, uint32, uint32);
 
 void list_get(List*, uint32, uint8*);
 
+/*
+ Insert the data read from the given pointer into the given index and 
+ reallocate the list if needed. Returns the pointer to the list,
+ which can be different than the pointer passed in as argument.
+*/
 List* list_insert(List*, uint32, uint8*);
 
+/*
+ Insert the data read from the given pointer into the end of the list and 
+ reallocate the list if needed. Returns the pointer to the list,
+ which can be different than the pointer passed in as argument.
+*/
 List* list_append(List*, uint8*);
 
 void list_remove_at(List*, uint32);
 
+/*
+ Copy the memory from the pointer given into the list and 
+ reallocate the list if needed. Returns the pointer to the list,
+ which can be different than the pointer passed in as argument.
+*/
 List* list_copy_memory(List*, uint8*, uint32);
 
 Array* list_create_slice(List*, uint32, uint32);
