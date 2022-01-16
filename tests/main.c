@@ -77,6 +77,7 @@ int (*tests[])(Allocator*) = {
     test_list_sort,
 
     test_stack_push,
+    test_stack_pop_and_peek,
     NULL
 };
 
