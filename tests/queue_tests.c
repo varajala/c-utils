@@ -13,17 +13,17 @@ int test_queue_push(Allocator *allocator)
     Queue *queue = queue_create(allocator, QUEUE_INITIAL_SIZE, sizeof(int));
 
     number = 2;
-    queue = queue_push(queue, (uint8*) &number);
+    queue_push(queue, (uint8*) &number);
 
     number = 4;
-    queue = queue_push(queue, (uint8*) &number);
+    queue_push(queue, (uint8*) &number);
 
     number = 8;
-    queue = queue_push(queue, (uint8*) &number);
+    queue_push(queue, (uint8*) &number);
 
     error = memcmp(queue->data, numbers, 3 * sizeof(int)) != 0;
 
-    queue_free(queue);
+    queue_free(allocator, queue);
     return error;
 }
 
@@ -75,6 +75,6 @@ int test_queue_pop_and_peek(Allocator *allocator)
     error -= queue->member_count == 0;
     c = 0x00;
     
-    queue_free(queue);
+    queue_free(allocator, queue);
     return error;
 }

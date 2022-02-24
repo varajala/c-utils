@@ -22,8 +22,8 @@ void stack_peek(Stack*, uint8*);
  Returns the pointer to the stack, which can be different than
  the pointer passed in as argument.
 */
-Stack* stack_push(Stack*, uint8*);
+void stack_push(Stack*, uint8*);
 
-void stack_free(Stack*);
+void stack_free(Allocator*, Stack*);
 
 #endif

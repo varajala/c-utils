@@ -26,13 +26,13 @@ void stack_peek(Stack *stack, uint8 *memory)
 }
 
 
-Stack* stack_push(Stack *stack, uint8 *memory)
+void stack_push(Stack *stack, uint8 *memory)
 {
-    return (Stack*) list_append((List*) stack, memory);
+    list_append((List*) stack, memory);
 }
 
 
-void stack_free(Stack *stack)
+void stack_free(Allocator *allocator, Stack *stack)
 {
-    list_free((List*) stack);
+    list_free(allocator, (List*) stack);
 }

@@ -26,13 +26,13 @@ void queue_peek(Queue *queue, uint8 *memory)
 }
 
 
-Queue* queue_push(Queue *queue, uint8 *memory)
+void queue_push(Queue *queue, uint8 *memory)
 {
-    return (Queue*) list_insert((List*) queue, 0, memory);
+    list_insert((List*) queue, 0, memory);
 }
 
 
-void queue_free(Queue *queue)
+void queue_free(Allocator *allocator, Queue *queue)
 {
-    list_free((List*) queue);
+    list_free(allocator, (List*) queue);
 }

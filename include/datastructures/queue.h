@@ -22,8 +22,8 @@ void queue_peek(Queue*, uint8*);
  Returns the pointer to the queue, which can be different than
  the pointer passed in as argument.
 */
-Queue* queue_push(Queue*, uint8*);
+void queue_push(Queue*, uint8*);
 
-void queue_free(Queue*);
+void queue_free(Allocator*, Queue*);
 
 #endif

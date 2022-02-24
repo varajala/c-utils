@@ -6,8 +6,8 @@
 // Test files
 #include "array_tests.c"
 #include "list_tests.c"
-// #include "stack_tests.c"
-// #include "queue_tests.c"
+#include "stack_tests.c"
+#include "queue_tests.c"
 #include "bump_allocator_tests.c"
 #include "arena_allocator_tests.c"
 
@@ -76,11 +76,11 @@ int (*tests[])(Allocator*) = {
     test_list_foreach,
     test_list_sort,
 
-    // test_stack_push,
-    // test_stack_pop_and_peek,
+    test_stack_push,
+    test_stack_pop_and_peek,
 
-    // test_queue_push,
-    // test_queue_pop_and_peek,
+    test_queue_push,
+    test_queue_pop_and_peek,
     NULL
 };
 
