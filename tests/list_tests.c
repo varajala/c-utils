@@ -7,12 +7,12 @@ int test_basic_list_use(Allocator *allocator)
 {
     List *list = list_create(allocator, LIST_INITIAL_SIZE, sizeof(int));
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < LIST_INITIAL_SIZE + 1; i++)
     {
-        list = list_insert(list, list->member_count, (uint8*) &i);
+        list_insert(list, list->member_count, (uint8*) &i);
     }
     
-    list_free(list);
+    list_free(allocator, list);
     return 0;
 }
 
@@ -43,7 +43,7 @@ int test_list_insertion(Allocator *allocator)
     data.low_mid    = 'A';
     data.low        = 'A';
     
-    list = list_append(list, (uint8*) &data);
+    list_append(list, (uint8*) &data);
     memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "AAAA            ") == 0;
 
@@ -52,7 +52,7 @@ int test_list_insertion(Allocator *allocator)
     data.low_mid    = 'B';
     data.low        = 'B';
 
-    list = list_insert(list, 0, (uint8*) &data);
+    list_insert(list, 0, (uint8*) &data);
     memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "BBBBAAAA        ") == 0;
 
@@ -61,7 +61,7 @@ int test_list_insertion(Allocator *allocator)
     data.low_mid    = 'C';
     data.low        = 'C';
 
-    list = list_append(list, (uint8*) &data);
+    list_append(list, (uint8*) &data);
     memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "BBBBAAAACCCC    ") == 0;
 
@@ -70,11 +70,11 @@ int test_list_insertion(Allocator *allocator)
     data.low_mid    = 'D';
     data.low        = 'D';
 
-    list = list_insert(list, 0, (uint8*) &data);
+    list_insert(list, 0, (uint8*) &data);
     memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "DDDDBBBBAAAACCCC") == 0;
 
-    list_free(list);
+    list_free(allocator, list);
     return error;
 }
 
@@ -105,7 +105,7 @@ int test_list_removing(Allocator *allocator)
     memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "CCCCDDDD") == 0;
 
-    list_free(list);
+    list_free(allocator, list);
     return error;
 }
 
@@ -159,7 +159,7 @@ int test_list_getting_items(Allocator *allocator)
     }
     
     cleanup:
-        list_free(list);
+        list_free(allocator, list);
     return error;
 }
 
@@ -167,21 +167,13 @@ int test_list_getting_items(Allocator *allocator)
 int test_list_copy_memory(Allocator *allocator)
 {
     char *short_str = "AABBCCDD";
-    char *long_str = "AAAABBBBCCCCDDDDEEEEFFFF";
+    char *long_str = "AAAABBBBCCCCDDDD";
     const int buffer_length = 32;
     char buffer[buffer_length];
     int error = 0;
     
-    List *list, *new_list; 
-    list = list_create(allocator, LIST_INITIAL_SIZE, 1);
-    new_list = list_copy_memory(list, (uint8*) short_str, strlen(short_str));
-
-    if (new_list != list)
-    {
-        list = new_list;
-        error = 1;
-        goto cleanup;
-    }
+    List *list = list_create(allocator, LIST_INITIAL_SIZE, 1);
+    list_copy_memory(list, (uint8*) short_str, strlen(short_str));
 
     memset(buffer, 0x00, buffer_length);
     memcpy(buffer, list->data, list->member_count * list->member_size);
@@ -191,14 +183,7 @@ int test_list_copy_memory(Allocator *allocator)
         goto cleanup;
     }
 
-    new_list = list_copy_memory(list, (uint8*) long_str, strlen(long_str));
-    if (new_list == list)
-    {
-        error = 1;
-        goto cleanup;
-    }
-    
-    list = new_list;
+    list_copy_memory(list, (uint8*) long_str, strlen(long_str));
     memset(buffer, 0x00, buffer_length);
     memcpy(buffer, list->data, list->member_count * list->member_size);
     if (strcmp((char*)buffer, long_str) != 0)
@@ -208,7 +193,7 @@ int test_list_copy_memory(Allocator *allocator)
     }
 
     cleanup:
-        list_free(list);
+        list_free(allocator, list);
     return error;
 }
 
@@ -222,7 +207,7 @@ int test_list_create_slice(Allocator *allocator)
     memcpy(list->data, "abcdef", 6);
     list->member_count = 6;
 
-    slice = list_create_slice(list, 0, 3);
+    slice = list_create_slice(allocator, list, 0, 3);
     if (slice == NULL || memcmp(slice->data, "abc", 3) != 0)
     {
         error = 1;
@@ -231,7 +216,7 @@ int test_list_create_slice(Allocator *allocator)
 
     cleanup:
         if (slice != NULL) array_free(allocator, slice);
-        list_free(list);
+        list_free(allocator, list);
     return error;
 }
 
@@ -256,7 +241,7 @@ int test_list_foreach(Allocator *allocator)
     if (memcmp(list->data, modified_data, 8 * sizeof(int)) != 0)
         error = 1;
     
-    list_free(list);
+    list_free(allocator, list);
     return error;
 }
 
@@ -298,6 +283,6 @@ int test_list_sort(Allocator *allocator)
     if (memcmp(list->data, sorted_data, 8 * sizeof(int)) != 0)
         error = 1;
     
-    list_free(list);
+    list_free(allocator, list);
     return error;
 }

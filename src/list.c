@@ -13,22 +13,21 @@ static inline uint64 list_get_allocated_buffer_size(List *list)
 }
 
 
-List* list_create(Allocator *allocator, uint32 initial_member_count, uint32 member_size)
+List* list_create(Allocator *allocator, uint32 max_members, uint32 member_size)
 {
     if (allocator == NULL)
         return NULL;
     
-    if (initial_member_count <= 0 )
+    if (max_members <= 0 )
         return NULL;
 
-    uint64 buffer_size = initial_member_count * member_size;
+    uint64 buffer_size = max_members * member_size;
     uint64 required_space = offsetof(List, data) + buffer_size;
     
     List *list = (List*) allocator->memory_allocate(required_space);
     if (list == NULL)
         return NULL;
 
-    list->_allocator = allocator;
     list->_allocated_space = required_space;
     list->member_count = 0;
     list->member_size = member_size;
@@ -49,34 +48,25 @@ void list_get(List *list, uint32 index, uint8 *memory)
 }
 
 
-List* list_insert(List *list, uint32 index, uint8 *memory)
+void list_insert(List *list, uint32 index, uint8 *memory)
 {
     if (list == NULL || memory == NULL)
-        return list;
+        return;
 
     if (index < 0)
-        return list;
+        return;
 
-    if (index >= list->member_count)
+    if (index > list->member_count)
         index = list->member_count;
-
-    list->member_count += 1;
     
     uint64 used_space = list->member_count * list->member_size;
     uint64 buffer_size = list_get_allocated_buffer_size(list);
     
-    if (used_space > LIST_RESIZE_THRESHOLD * buffer_size)
-    {
-        List *new_list = list->_allocator->memory_resize(list, list->_allocated_space + buffer_size);
-        if (new_list == NULL)
-        {
-            list->member_count -= 1;
-            return list;
-        }
-
-        list = new_list;
-        list->_allocated_space += buffer_size;
+    if (buffer_size - used_space < list->member_size) {
+        return;
     }
+
+    list->member_count += 1;
 
     if (index < list->member_count - 1)
     {
@@ -93,14 +83,12 @@ List* list_insert(List *list, uint32 index, uint8 *memory)
     uint32 offset = index * list->member_size;    
     for (uint32 i = 0; i < list->member_size; i++)
         list->data[offset + i] = memory[i];
-    
-    return list;
 }
 
 
-List* list_append(List* list, uint8 *memory)
+void list_append(List* list, uint8 *memory)
 {
-    return list_insert(list, list->member_count, memory);
+    list_insert(list, list->member_count, memory);
 }
 
 
@@ -125,34 +113,24 @@ void list_remove_at(List *list, uint32 index)
 }
 
 
-List* list_copy_memory(List *list, uint8 *memory, uint32 max_size)
+void list_copy_memory(List *list, uint8 *memory, uint32 user_buffer_max_size)
 {
     if (list == NULL || memory == NULL)
-        return list;
+        return;
 
     uint64 buffer_size = list_get_allocated_buffer_size(list);
-    
-    if (max_size > LIST_RESIZE_THRESHOLD * buffer_size)
-    {
-        List *new_list = list->_allocator->memory_resize(list, list->_allocated_space + buffer_size);
-        if (new_list == NULL)
-            return list;
-
-        list = new_list;
-        list->_allocated_space += buffer_size;
-    }
+    uint64 max_size = user_buffer_max_size > buffer_size ? buffer_size : user_buffer_max_size;
 
     list->member_count = max_size / list->member_size;
     array_copy_memory(list_to_array(list), memory, max_size);
-    return list;
 }
 
 
-Array* list_create_slice(List *list, uint32 start, uint32 end)
+Array* list_create_slice(Allocator* allocator, List *list, uint32 start, uint32 end)
 {
-    if (list == NULL)
+    if (list == NULL || allocator == NULL)
         return NULL;
-    return array_create_slice(list_to_array(list), list->_allocator, start, end);
+    return array_create_slice(list_to_array(list), allocator, start, end);
 }
 
 
@@ -168,10 +146,10 @@ void list_sort(List *list, enum ComparisonResult (*compare)(uint8*, uint8*))
 }
 
 
-void list_free(List *list)
+void list_free(Allocator *allocator, List *list)
 {
-    if (list == NULL)
+    if (list == NULL || allocator == NULL)
         return;
     
-    list->_allocator->memory_free(list, list->_allocated_space);
+    allocator->memory_free(list, list->_allocated_space);
 }
