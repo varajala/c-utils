@@ -25,10 +25,5 @@ void bump_allocator_init(BumpAllocator*, uint64);
 
 void* bump_allocator_memory_allocate(BumpAllocator*, uint64);
 
-/*
- This has effect only if memory + size == allocator.end_index.
-*/
-void bump_allocator_memory_free(BumpAllocator*, void*, uint64);
-
 
 #endif

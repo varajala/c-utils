@@ -22,17 +22,3 @@ void* bump_allocator_memory_allocate(BumpAllocator *allocator, uint64 size)
     allocator->end_index += size;
     return memory;
 }
-
-
-void bump_allocator_memory_free(BumpAllocator *allocator, void *memory, uint64 size)
-{
-    if (allocator == NULL || memory == NULL)
-        return;
-    
-    if (memory + size != allocator->buffer + allocator->end_index)
-        return;
-    
-    allocator->end_index -= size;
-    if (allocator->end_index < 0)
-        allocator->end_index = 0;
-}
