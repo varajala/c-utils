@@ -9,6 +9,7 @@ build:
 	$(CC) -c src/list.c -o $(BIN_DIRECTORY)/list.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
 	$(CC) -c src/stack.c -o $(BIN_DIRECTORY)/stack.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
 	$(CC) -c src/queue.c -o $(BIN_DIRECTORY)/queue.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
+	$(CC) -c src/dict.c -o $(BIN_DIRECTORY)/dict.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
 	$(CC) -c src/bump_allocator.c -o $(BIN_DIRECTORY)/bump_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
 	$(CC) -c src/arena_allocator.c -o $(BIN_DIRECTORY)/arena_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
 	
@@ -17,16 +18,18 @@ build:
 	$(BIN_DIRECTORY)/list.obj \
 	$(BIN_DIRECTORY)/stack.obj \
 	$(BIN_DIRECTORY)/queue.obj \
+	$(BIN_DIRECTORY)/dict.obj \
 	$(BIN_DIRECTORY)/bump_allocator.obj \
 	$(BIN_DIRECTORY)/arena_allocator.obj \
 	-fPIC -shared
 
 
-tests:
+build-tests:
 	$(CC) -c src/array.c -o $(BIN_DIRECTORY)/array.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
 	$(CC) -c src/list.c -o $(BIN_DIRECTORY)/list.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
 	$(CC) -c src/stack.c -o $(BIN_DIRECTORY)/stack.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
-	$(CC) -c src/queue.c -o $(BIN_DIRECTORY)/queue.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
+	$(CC) -c src/queue.c -o $(BIN_DIRECTORY)/queue.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
+	$(CC) -c src/dict.c -o $(BIN_DIRECTORY)/dict.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
 	$(CC) -c src/bump_allocator.c -o $(BIN_DIRECTORY)/bump_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
 	$(CC) -c src/arena_allocator.c -o $(BIN_DIRECTORY)/arena_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
 
@@ -37,9 +40,13 @@ tests:
 	$(BIN_DIRECTORY)/list.obj \
 	$(BIN_DIRECTORY)/stack.obj \
 	$(BIN_DIRECTORY)/queue.obj \
+	$(BIN_DIRECTORY)/dict.obj \
 	$(BIN_DIRECTORY)/bump_allocator.obj \
 	$(BIN_DIRECTORY)/arena_allocator.obj \
 	$(BIN_DIRECTORY)/test_main.obj
+
+run-tests:
+	valgrind -q --leak-check=full $(BIN_DIRECTORY)/tests-exe
 
 
 clean:
