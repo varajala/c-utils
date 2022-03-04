@@ -157,6 +157,16 @@ void dict_pop(Dict *dict, uint8 *key, uint8 *memory)
 {
     if (dict == NULL || key == NULL || memory == NULL)
         return;
+    
+    int64 index = dict_get_index(dict, key);
+    if (index > -1)
+    {
+        list_get(dict->values, index, memory);
+        array_insert(dict->index_table, index, (uint8*)&REMOVED_SLOT);
+        list_remove_at(dict->keys, index);
+        list_remove_at(dict->values, index);
+        dict->member_count--;
+    }
 }
 
 

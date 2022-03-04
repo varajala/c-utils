@@ -86,7 +86,7 @@ int test_dict_usage(Allocator *allocator)
     dict_set(dict, (uint8*)&k, (uint8*)&v);
 
     memcpy(k.string, "ABCD", 5);
-    dict_get(dict, (uint8*)&k, (uint8*)&v);
+    dict_pop(dict, (uint8*)&k, (uint8*)&v);
     if (!(v.x == -100 && v.y == -200))
     {
         error = 1;
