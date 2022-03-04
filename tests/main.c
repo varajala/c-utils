@@ -84,7 +84,7 @@ int (*tests[])(Allocator*) = {
     test_queue_pop_and_peek, */
 
     test_dict_creation,
-    test_dict_insert,
+    test_dict_usage,
     NULL
 };
 

@@ -40,7 +40,7 @@ int test_dict_creation(Allocator *allocator)
 }
 
 
-int test_dict_insert(Allocator *allocator)
+int test_dict_usage(Allocator *allocator)
 {
     int error = 0;
     DictKey k;
@@ -55,26 +55,45 @@ int test_dict_insert(Allocator *allocator)
     k.number = 42;
     v.x = 100;
     v.y = 200;
-    dict_insert(dict, (uint8*)&k, (uint8*)&v);
-
-    memcpy(k.string, "EFGH", 5);
-    k.number = 42;
-    v.x = 200;
-    v.y = 300;
-    dict_insert(dict, (uint8*)&k, (uint8*)&v);
+    dict_set(dict, (uint8*)&k, (uint8*)&v);
 
     memcpy(k.string, "IJKL", 5);
     k.number = 42;
     v.x = 300;
     v.y = 400;
-    dict_insert(dict, (uint8*)&k, (uint8*)&v);
+    dict_set(dict, (uint8*)&k, (uint8*)&v);
+
+    memcpy(k.string, "ABCD", 5);
+    dict_get(dict, (uint8*)&k, (uint8*)&v);
+    if (!(v.x == 100 && v.y == 200))
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    memcpy(k.string, "IJKL", 5);
+    dict_get(dict, (uint8*)&k, (uint8*)&v);
+    if (!(v.x == 300 && v.y == 400))
+    {
+        error = 1;
+        goto cleanup;
+    }
 
     memcpy(k.string, "ABCD", 5);
     k.number = 42;
     v.x = -100;
     v.y = -200;
-    dict_insert(dict, (uint8*)&k, (uint8*)&v);
+    dict_set(dict, (uint8*)&k, (uint8*)&v);
+
+    memcpy(k.string, "ABCD", 5);
+    dict_get(dict, (uint8*)&k, (uint8*)&v);
+    if (!(v.x == -100 && v.y == -200))
+    {
+        error = 1;
+        goto cleanup;
+    }
     
-    dict_free(allocator, dict);
+    cleanup:
+        dict_free(allocator, dict);
     return error;
 }

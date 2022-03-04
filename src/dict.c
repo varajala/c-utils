@@ -27,6 +27,35 @@ static inline int mem_equals(uint8* src, uint8 *cmp, uint64 length)
 }
 
 
+static int64 dict_get_index(Dict *dict, uint8 *key)
+{
+    uint8 *key_value;
+    uint64 key_size = dict->keys->member_size;
+    int64 slot_value;
+    uint32 index;
+    uint32 tries = 1;
+
+    while (tries < dict->_num_slots)
+    {
+        index = probe_index(key, key_size, tries-1, dict->_num_slots);
+        array_get(dict->index_table, index, (uint8*)&slot_value);
+        
+        if (slot_value == EMPTY_SLOT)
+            return -1;
+
+        if (slot_value != REMOVED_SLOT)
+        {
+            key_value = &dict->keys->data[key_size * slot_value];
+            if (mem_equals(key, key_value, key_size)) {
+                return slot_value;
+            }
+        }
+        tries++;
+    }
+    return -1;
+}
+
+
 Dict* dict_create(Allocator *allocator, uint32 max_members, uint32 key_size, uint32 value_size)
 {
     if (allocator == NULL)
@@ -76,15 +105,15 @@ Dict* dict_create(Allocator *allocator, uint32 max_members, uint32 key_size, uin
 }
 
 
-void dict_insert(Dict *dict, uint8 *key, uint8* value)
+void dict_set(Dict *dict, uint8 *key, uint8* value)
 {
     if (dict == NULL || key == NULL || value == NULL)
         return;
 
     uint8 *key_value;
     uint64 key_size = dict->keys->member_size;
-    uint32 index;
     int64 slot_value;
+    uint32 index;
     uint32 tries = 1;
     
     while (tries < dict->_num_slots)
@@ -110,6 +139,24 @@ void dict_insert(Dict *dict, uint8 *key, uint8* value)
         }
         tries++;
     }
+}
+
+
+void dict_get(Dict *dict, uint8 *key, uint8 *memory)
+{
+    if (dict == NULL || key == NULL || memory == NULL)
+        return;
+
+    int64 index = dict_get_index(dict, key);
+    if (index > -1)
+        list_get(dict->values, index, memory);
+}
+
+
+void dict_pop(Dict *dict, uint8 *key, uint8 *memory)
+{
+    if (dict == NULL || key == NULL || memory == NULL)
+        return;
 }
 
 

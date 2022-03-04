@@ -15,7 +15,7 @@ typedef struct Dict {
 
 Dict* dict_create(Allocator*, uint32, uint32, uint32);
 
-void dict_insert(Dict*, uint8*, uint8*);
+void dict_set(Dict*, uint8*, uint8*);
 
 void dict_get(Dict*, uint8*, uint8*);
 
