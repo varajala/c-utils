@@ -80,10 +80,8 @@ void dict_insert(Dict *dict, uint8 *key, uint8* value)
 {
     if (dict == NULL || key == NULL || value == NULL)
         return;
-    
-    list_append(dict->keys, key);
-    list_append(dict->values, value);
 
+    uint8 *key_value;
     uint64 key_size = dict->keys->member_size;
     uint32 index;
     int64 slot_value;
@@ -98,7 +96,16 @@ void dict_insert(Dict *dict, uint8 *key, uint8* value)
         {
             slot_value = (int64) dict->member_count;
             array_insert(dict->index_table, index, (uint8*)&slot_value);
+            list_append(dict->keys, key);
+            list_append(dict->values, value);
             dict->member_count++;
+            break;
+        }
+
+        // Check if key is the same, and do updating instead...
+        key_value = &dict->keys->data[slot_value];
+        if (mem_equals(key, key_value, key_size)) {
+            array_insert(list_to_array(dict->values), slot_value, value);
             break;
         }
         tries++;

@@ -1,12 +1,6 @@
 #include "datastructures/list.h"
 
 
-static inline Array* list_to_array(List *list)
-{
-    return (Array*) &list->member_count;
-}
-
-
 static inline uint64 list_get_allocated_buffer_size(List *list)
 {
     return list->_allocated_space - offsetof(List, data);

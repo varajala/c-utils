@@ -11,6 +11,11 @@ typedef struct List
     uint8 data[];
 } List;
 
+static inline Array* list_to_array(List *list)
+{
+    return (Array*) &list->member_count;
+}
+
 /*
  Allocate memory and initialize the list.
  The list stores the pointer to the allocator,

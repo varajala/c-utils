@@ -68,6 +68,12 @@ int test_dict_insert(Allocator *allocator)
     v.x = 300;
     v.y = 400;
     dict_insert(dict, (uint8*)&k, (uint8*)&v);
+
+    memcpy(k.string, "ABCD", 5);
+    k.number = 42;
+    v.x = -100;
+    v.y = -200;
+    dict_insert(dict, (uint8*)&k, (uint8*)&v);
     
     dict_free(allocator, dict);
     return error;
