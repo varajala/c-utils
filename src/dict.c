@@ -13,7 +13,14 @@ static uint64 hash(uint8 *data, uint32 length)
 
 static inline uint32 probe_index(uint8 *key, uint32 key_length, uint32 tries, uint32 slots)
 {
-    return (hash(key, key_length) + tries) % slots;
+    // Quadratic probing, index = (h(k) + c1 * t + c2 * t^2) % num_slots
+    const uint32 MAGIC_PRIME_1 = 7841;
+    const uint32 MAGIC_PRIME_2 = 5903;
+    return (
+        hash(key, key_length)
+        + (MAGIC_PRIME_1 * tries)
+        + (MAGIC_PRIME_2 * tries * tries)
+    ) % slots;
 }
 
 static inline int mem_equals(uint8* src, uint8 *cmp, uint64 length)
