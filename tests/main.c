@@ -54,7 +54,7 @@ int run_tests(int (*tests[])(Allocator*), Allocator* allocator)
 
 
 int (*tests[])(Allocator*) = {
-    /* test_basic_array_use,
+    test_basic_array_use,
     test_array_bound_check,
     test_array_copy_memory,
     test_array_slicing,
@@ -81,7 +81,7 @@ int (*tests[])(Allocator*) = {
     test_stack_pop_and_peek,
 
     test_queue_push,
-    test_queue_pop_and_peek, */
+    test_queue_pop_and_peek,
 
     test_dict_creation,
     test_dict_usage,
