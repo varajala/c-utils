@@ -3,7 +3,7 @@
 const int LIST_INITIAL_SIZE = 16;
 
 
-int test_basic_list_use(Allocator *allocator)
+int test_basic_list_use(AllocatorInterface *allocator)
 {
     List *list = list_new(allocator, LIST_INITIAL_SIZE, sizeof(int));
 
@@ -26,7 +26,7 @@ typedef struct FourBytes
 } FourBytes;
 
 
-int test_list_insertion(Allocator *allocator)
+int test_list_insertion(AllocatorInterface *allocator)
 {
     FourBytes data;
     char buffer[17];
@@ -79,7 +79,7 @@ int test_list_insertion(Allocator *allocator)
 }
 
 
-int test_list_removing(Allocator *allocator)
+int test_list_removing(AllocatorInterface *allocator)
 {
     char *str = "AAAABBBBCCCCDDDD";
     const int buffer_length = strlen(str);
@@ -110,7 +110,7 @@ int test_list_removing(Allocator *allocator)
 }
 
 
-int test_list_getting_items(Allocator *allocator)
+int test_list_getting_items(AllocatorInterface *allocator)
 {
     int number, error;
     int array[4] = { 1, 2, 3, 4 };
@@ -164,7 +164,7 @@ int test_list_getting_items(Allocator *allocator)
 }
 
 
-int test_list_copy_memory(Allocator *allocator)
+int test_list_copy_memory(AllocatorInterface *allocator)
 {
     char *short_str = "AABBCCDD";
     char *long_str = "AAAABBBBCCCCDDDD";
@@ -198,7 +198,7 @@ int test_list_copy_memory(Allocator *allocator)
 }
 
 
-int test_list_create_slice(Allocator *allocator)
+int test_list_create_slice(AllocatorInterface *allocator)
 {
     int error = 0;
     Array *slice;
@@ -221,7 +221,7 @@ int test_list_create_slice(Allocator *allocator)
 }
 
 
-int test_list_foreach(Allocator *allocator)
+int test_list_foreach(AllocatorInterface *allocator)
 {
     int error = 0;
     int data[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -246,7 +246,7 @@ int test_list_foreach(Allocator *allocator)
 }
 
 
-int test_list_sort(Allocator *allocator)
+int test_list_sort(AllocatorInterface *allocator)
 {
     int error = 0;
     int data[] = { 2, 5, 8, 1, 7, 6, 4, 3 };

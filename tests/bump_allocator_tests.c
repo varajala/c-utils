@@ -1,7 +1,7 @@
 #include "bump_allocator.h"
 
 
-int test_bump_allocator_memory_allocation(Allocator *allocator)
+int test_bump_allocator_memory_allocation(AllocatorInterface *allocator)
 {
     int error = 0;
     int32 *a, *b;
@@ -31,7 +31,7 @@ int test_bump_allocator_memory_allocation(Allocator *allocator)
 }
 
 
-int test_bump_allocator_bound_check(Allocator *allocator)
+int test_bump_allocator_bound_check(AllocatorInterface *allocator)
 {
     int error = 0;
     int32 *a, *b;

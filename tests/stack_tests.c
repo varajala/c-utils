@@ -4,7 +4,7 @@
 const uint32 STACK_INITIAL_SIZE = 16;
 
 
-int test_stack_push(Allocator *allocator)
+int test_stack_push(AllocatorInterface *allocator)
 {
     int error, number;
     int numbers[3] = {2, 4, 8};
@@ -28,7 +28,7 @@ int test_stack_push(Allocator *allocator)
 }
 
 
-int test_stack_pop_and_peek(Allocator *allocator)
+int test_stack_pop_and_peek(AllocatorInterface *allocator)
 {
     int error;
     char *str = "ABCD";

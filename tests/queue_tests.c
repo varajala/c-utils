@@ -4,7 +4,7 @@
 const uint32 QUEUE_INITIAL_SIZE = 16;
 
 
-int test_queue_push(Allocator *allocator)
+int test_queue_push(AllocatorInterface *allocator)
 {
     int error, number;
     int numbers[3] = {8, 4, 2};
@@ -28,7 +28,7 @@ int test_queue_push(Allocator *allocator)
 }
 
 
-int test_queue_pop_and_peek(Allocator *allocator)
+int test_queue_pop_and_peek(AllocatorInterface *allocator)
 {
     int error;
     char *str = "ABCD";

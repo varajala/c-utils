@@ -14,7 +14,7 @@ typedef struct DictValue {
 } DictValue;
 
 
-int test_dict_creation(Allocator *allocator)
+int test_dict_creation(AllocatorInterface *allocator)
 {
     int error = 0;
     Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
@@ -40,7 +40,7 @@ int test_dict_creation(Allocator *allocator)
 }
 
 
-int test_dict_usage(Allocator *allocator)
+int test_dict_usage(AllocatorInterface *allocator)
 {
     int error = 0;
     DictKey k;

@@ -63,7 +63,7 @@ static int64 dict_get_index(Dict *dict, uint8 *key)
 }
 
 
-Dict* dict_new(Allocator *allocator, uint32 max_members, uint32 key_size, uint32 value_size)
+Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_size, uint32 value_size)
 {
     if (allocator == NULL)
         return NULL;
@@ -177,7 +177,7 @@ void dict_pop(Dict *dict, uint8 *key, uint8 *memory)
 }
 
 
-void dict_destroy(Allocator *allocator, Dict* dict)
+void dict_destroy(AllocatorInterface *allocator, Dict* dict)
 {
     if (allocator == NULL || dict == NULL)
         return;

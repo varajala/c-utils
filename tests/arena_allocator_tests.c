@@ -1,7 +1,7 @@
 #include "arena_allocator.h"
 
 
-int test_arena_allocator_uniform_memory_allocation(Allocator *allocator)
+int test_arena_allocator_uniform_memory_allocation(AllocatorInterface *allocator)
 {   
     uint32 i;
     ArenaAllocator *arena_alloc = allocator->memory_allocate(arena_allocator_size(4));
@@ -33,7 +33,7 @@ int test_arena_allocator_uniform_memory_allocation(Allocator *allocator)
 }
 
 
-int test_arena_allocator_memory_allocation(Allocator *allocator)
+int test_arena_allocator_memory_allocation(AllocatorInterface *allocator)
 {   
     uint8 *memory;
     uint32 i, alloc_size, memory_allocated;
@@ -74,7 +74,7 @@ int test_arena_allocator_memory_allocation(Allocator *allocator)
 }
 
 
-int test_arena_allocator_size_check(Allocator *allocator)
+int test_arena_allocator_size_check(AllocatorInterface *allocator)
 {
     const int arena_size = 32;
     void *memory;

@@ -1,7 +1,7 @@
 #include "datastructures/array.h"
 
 
-int test_basic_array_use(Allocator *allocator)
+int test_basic_array_use(AllocatorInterface *allocator)
 {
     int error = 0;
     Array* array = array_new(allocator, 8, sizeof(int32));
@@ -29,7 +29,7 @@ int test_basic_array_use(Allocator *allocator)
 }
 
 
-int test_array_bound_check(Allocator *allocator)
+int test_array_bound_check(AllocatorInterface *allocator)
 {
     Array* array = array_new(allocator, 8, sizeof(int32));
     if (array == NULL)
@@ -45,7 +45,7 @@ int test_array_bound_check(Allocator *allocator)
 }
 
 
-int test_array_copy_memory(Allocator *allocator)
+int test_array_copy_memory(AllocatorInterface *allocator)
 {
     char *str =  "hello";
     Array* array = array_new(allocator, 8, sizeof(char));
@@ -60,7 +60,7 @@ int test_array_copy_memory(Allocator *allocator)
 }
 
 
-int test_array_slicing(Allocator *allocator)
+int test_array_slicing(AllocatorInterface *allocator)
 {
     int error, start, end;
     Array *array, *slice;
@@ -101,7 +101,7 @@ int test_array_slicing(Allocator *allocator)
 }
 
 
-int test_array_foreach(Allocator *allocator)
+int test_array_foreach(AllocatorInterface *allocator)
 {
     char buffer[6];
     char *str = "hello";
@@ -127,7 +127,7 @@ int test_array_foreach(Allocator *allocator)
 }
 
 
-int test_array_sorting(Allocator *allocator)
+int test_array_sorting(AllocatorInterface *allocator)
 {
     int error = 0;
     const int NUMBERS_LENGTH = 16;

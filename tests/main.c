@@ -31,14 +31,14 @@ void _memory_free(void* memory, uint64 size)
 }
 
 
-int run_tests(int (*tests[])(Allocator*), Allocator* allocator)
+int run_tests(int (*tests[])(AllocatorInterface*), AllocatorInterface* allocator)
 {
     int errors = 0;
     int i = 0;
     
     while (1)
     {
-        int (*test_func)(Allocator*) = tests[i];
+        int (*test_func)(AllocatorInterface*) = tests[i];
         if (test_func == NULL) break;
         if (test_func(allocator) > 0)
         {
@@ -53,7 +53,7 @@ int run_tests(int (*tests[])(Allocator*), Allocator* allocator)
 }
 
 
-int (*tests[])(Allocator*) = {
+int (*tests[])(AllocatorInterface*) = {
     test_basic_array_use,
     test_array_bound_check,
     test_array_copy_memory,
@@ -91,7 +91,7 @@ int (*tests[])(Allocator*) = {
 
 int main(int argc, char *argv[])
 {
-    Allocator allocator;
+    AllocatorInterface allocator;
     allocator.memory_allocate = _memory_allocate;
     allocator.memory_resize = _memory_resize;
     allocator.memory_free = _memory_free;

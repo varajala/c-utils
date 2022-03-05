@@ -1,7 +1,7 @@
 #include "datastructures/stack.h"
 
 
-Stack* stack_new(Allocator *allocator, uint32 initial_member_count, uint32 member_size)
+Stack* stack_new(AllocatorInterface *allocator, uint32 initial_member_count, uint32 member_size)
 {
     return (Stack*) list_new(allocator, initial_member_count, member_size);
 }
@@ -32,7 +32,7 @@ void stack_push(Stack *stack, uint8 *memory)
 }
 
 
-void stack_destroy(Allocator *allocator, Stack *stack)
+void stack_destroy(AllocatorInterface *allocator, Stack *stack)
 {
     list_destroy(allocator, (List*) stack);
 }

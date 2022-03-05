@@ -11,7 +11,7 @@ typedef List Stack;
  The stack stores the pointer to the allocator,
  it must be valid for entire lifetime of the stack.
 */
-Stack* stack_new(Allocator*, uint32, uint32);
+Stack* stack_new(AllocatorInterface*, uint32, uint32);
 
 void stack_pop(Stack*, uint8*);
 
@@ -24,6 +24,6 @@ void stack_peek(Stack*, uint8*);
 */
 void stack_push(Stack*, uint8*);
 
-void stack_destroy(Allocator*, Stack*);
+void stack_destroy(AllocatorInterface*, Stack*);
 
 #endif

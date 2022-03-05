@@ -1,7 +1,7 @@
 #include "datastructures/queue.h"
 
 
-Queue* queue_new(Allocator *allocator, uint32 initial_member_count, uint32 member_size)
+Queue* queue_new(AllocatorInterface *allocator, uint32 initial_member_count, uint32 member_size)
 {
     return (Queue*) list_new(allocator, initial_member_count, member_size);
 }
@@ -32,7 +32,7 @@ void queue_push(Queue *queue, uint8 *memory)
 }
 
 
-void queue_destroy(Allocator *allocator, Queue *queue)
+void queue_destroy(AllocatorInterface *allocator, Queue *queue)
 {
     list_destroy(allocator, (List*) queue);
 }

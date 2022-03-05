@@ -33,12 +33,12 @@
     return 0;
  }
 */
-typedef struct Allocator
+typedef struct AllocatorInterface
 {
     void* (*memory_allocate) (uint64);
     void* (*memory_resize)   (void*, uint64);
     void  (*memory_free)     (void*, uint64);
-} Allocator;
+} AllocatorInterface;
 
 
 #endif

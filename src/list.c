@@ -7,7 +7,7 @@ static inline uint64 list_get_allocated_buffer_size(List *list)
 }
 
 
-List* list_new(Allocator *allocator, uint32 max_members, uint32 member_size)
+List* list_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_size)
 {
     if (allocator == NULL)
         return NULL;
@@ -120,7 +120,7 @@ void list_copy_memory(List *list, uint8 *memory, uint32 user_buffer_max_size)
 }
 
 
-Array* list_create_slice(Allocator* allocator, List *list, uint32 start, uint32 end)
+Array* list_create_slice(AllocatorInterface* allocator, List *list, uint32 start, uint32 end)
 {
     if (list == NULL || allocator == NULL)
         return NULL;
@@ -140,7 +140,7 @@ void list_sort(List *list, enum ComparisonResult (*compare)(uint8*, uint8*))
 }
 
 
-void list_destroy(Allocator *allocator, List *list)
+void list_destroy(AllocatorInterface *allocator, List *list)
 {
     if (list == NULL || allocator == NULL)
         return;
