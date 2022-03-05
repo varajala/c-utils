@@ -10,7 +10,7 @@ int test_queue_push(Allocator *allocator)
     int numbers[3] = {8, 4, 2};
     error = 0;
     
-    Queue *queue = queue_create(allocator, QUEUE_INITIAL_SIZE, sizeof(int));
+    Queue *queue = queue_new(allocator, QUEUE_INITIAL_SIZE, sizeof(int));
 
     number = 2;
     queue_push(queue, (uint8*) &number);
@@ -23,7 +23,7 @@ int test_queue_push(Allocator *allocator)
 
     error = memcmp(queue->data, numbers, 3 * sizeof(int)) != 0;
 
-    queue_free(allocator, queue);
+    queue_destroy(allocator, queue);
     return error;
 }
 
@@ -34,7 +34,7 @@ int test_queue_pop_and_peek(Allocator *allocator)
     char *str = "ABCD";
     char c = 0x00;
     
-    Queue *queue = queue_create(allocator, STACK_INITIAL_SIZE, 1);
+    Queue *queue = queue_new(allocator, STACK_INITIAL_SIZE, 1);
     queue->member_count = 4;
     memcpy(queue->data, str, 4);
 
@@ -75,6 +75,6 @@ int test_queue_pop_and_peek(Allocator *allocator)
     error -= queue->member_count == 0;
     c = 0x00;
     
-    queue_free(allocator, queue);
+    queue_destroy(allocator, queue);
     return error;
 }

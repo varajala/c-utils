@@ -4,7 +4,7 @@
 int test_basic_array_use(Allocator *allocator)
 {
     int error = 0;
-    Array* array = array_create(allocator, 8, sizeof(int32));
+    Array* array = array_new(allocator, 8, sizeof(int32));
 
     int32 number, i;
     for (i = 0; i < array->member_count; i++)
@@ -24,14 +24,14 @@ int test_basic_array_use(Allocator *allocator)
         }
     }
 
-    array_free(allocator, array);
+    array_destroy(allocator, array);
     return error;
 }
 
 
 int test_array_bound_check(Allocator *allocator)
 {
-    Array* array = array_create(allocator, 8, sizeof(int32));
+    Array* array = array_new(allocator, 8, sizeof(int32));
     if (array == NULL)
         return 1;
     
@@ -40,7 +40,7 @@ int test_array_bound_check(Allocator *allocator)
     array_get(array, -4096, (uint8*)&memory);
     array_insert(array, 4096, (uint8*)&memory);
     array_insert(array, -4096, (uint8*)&memory);
-    array_free(allocator, array);
+    array_destroy(allocator, array);
     return 0;
 }
 
@@ -48,14 +48,14 @@ int test_array_bound_check(Allocator *allocator)
 int test_array_copy_memory(Allocator *allocator)
 {
     char *str =  "hello";
-    Array* array = array_create(allocator, 8, sizeof(char));
+    Array* array = array_new(allocator, 8, sizeof(char));
     if (array == NULL)
         return 1;
 
     array_copy_memory(array, (uint8*)str, strlen(str));
 
     int result = strcmp(str, (char*)array->data);
-    array_free(allocator, array);
+    array_destroy(allocator, array);
     return result;
 }
 
@@ -66,7 +66,7 @@ int test_array_slicing(Allocator *allocator)
     Array *array, *slice;
     error = 0;
     
-    array  = array_create(allocator, 8, sizeof(int32));
+    array  = array_new(allocator, 8, sizeof(int32));
     if (array == NULL)
         return 1;
     
@@ -94,8 +94,8 @@ int test_array_slicing(Allocator *allocator)
     }
 
     cleanup:
-        array_free(allocator, array);
-        array_free(allocator, slice);
+        array_destroy(allocator, array);
+        array_destroy(allocator, slice);
     
     return error;
 }
@@ -107,7 +107,7 @@ int test_array_foreach(Allocator *allocator)
     char *str = "hello";
     int buffer_index = 0;
     
-    Array *array  = array_create(allocator, 6, sizeof(char));
+    Array *array  = array_new(allocator, 6, sizeof(char));
     if (array == NULL)
         return 1;
 
@@ -122,7 +122,7 @@ int test_array_foreach(Allocator *allocator)
     }
     array_foreach(array, write_char_to_buffer);
 
-    array_free(allocator, array);
+    array_destroy(allocator, array);
     return strcmp(buffer, str);
 }
 
@@ -145,7 +145,7 @@ int test_array_sorting(Allocator *allocator)
         16, 26, 32, 44
     };
     
-    Array *array  = array_create(allocator, NUMBERS_LENGTH, sizeof(int));
+    Array *array  = array_new(allocator, NUMBERS_LENGTH, sizeof(int));
     if (array == NULL)
         return 1;
 
@@ -185,6 +185,6 @@ int test_array_sorting(Allocator *allocator)
         }
     }
 
-    array_free(allocator, array);
+    array_destroy(allocator, array);
     return error;
 }

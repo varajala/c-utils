@@ -17,7 +17,7 @@ typedef struct DictValue {
 int test_dict_creation(Allocator *allocator)
 {
     int error = 0;
-    Dict *dict = dict_create(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
+    Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
     if (dict == NULL)
         return 1;
     
@@ -35,7 +35,7 @@ int test_dict_creation(Allocator *allocator)
         }
     }
 
-    dict_free(allocator, dict);
+    dict_destroy(allocator, dict);
     return error;
 }
 
@@ -46,7 +46,7 @@ int test_dict_usage(Allocator *allocator)
     DictKey k;
     DictValue v;
 
-    Dict *dict = dict_create(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
+    Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
     if (dict == NULL)
         return 1;
 
@@ -94,6 +94,6 @@ int test_dict_usage(Allocator *allocator)
     }
     
     cleanup:
-        dict_free(allocator, dict);
+        dict_destroy(allocator, dict);
     return error;
 }

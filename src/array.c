@@ -2,7 +2,7 @@
 #include "datastructures/array.h"
 
 
-Array* array_create(Allocator* allocator, uint32 member_count,  uint32 member_size)
+Array* array_new(Allocator* allocator, uint32 member_count,  uint32 member_size)
 {
     if (allocator == NULL)
         return NULL;
@@ -82,7 +82,7 @@ Array* array_create_slice(Array *src_array, Allocator *allocator, uint32 start, 
     if (end-start <= 0)
         return NULL;
 
-    Array *slice_array = array_create(allocator, end-start, src_array->member_size);
+    Array *slice_array = array_new(allocator, end-start, src_array->member_size);
     if (slice_array == NULL)
         return NULL;
 
@@ -196,7 +196,7 @@ void array_sort(Array *array, enum ComparisonResult (*compare)(uint8*, uint8*))
 }
 
 
-void array_free(Allocator *allocator, Array *array)
+void array_destroy(Allocator *allocator, Array *array)
 {
     if (allocator == NULL || array == NULL)
         return;

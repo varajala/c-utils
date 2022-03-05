@@ -25,7 +25,7 @@ enum ComparisonResult
  Allocate space and initialize the array.
  All bytes are initialized into 0x00 values.
 */
-Array* array_create(Allocator*, uint32, uint32);
+Array* array_new(Allocator*, uint32, uint32);
 
 /*
  Copy memory from array.data[index * array.member_size] to the provided address.
@@ -58,6 +58,6 @@ void array_sort(Array*, enum ComparisonResult (*compare)(uint8*, uint8*));
 /*
  Free memory used by the array.
 */
-void array_free(Allocator*, Array*);
+void array_destroy(Allocator*, Array*);
 
 #endif

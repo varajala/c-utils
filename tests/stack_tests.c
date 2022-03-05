@@ -10,7 +10,7 @@ int test_stack_push(Allocator *allocator)
     int numbers[3] = {2, 4, 8};
     error = 0;
     
-    Stack *stack = stack_create(allocator, STACK_INITIAL_SIZE, sizeof(int));
+    Stack *stack = stack_new(allocator, STACK_INITIAL_SIZE, sizeof(int));
 
     number = 2;
     stack_push(stack, (uint8*) &number);
@@ -23,7 +23,7 @@ int test_stack_push(Allocator *allocator)
 
     error = memcmp(stack->data, numbers, 3 * sizeof(int)) != 0;
 
-    stack_free(allocator, stack);
+    stack_destroy(allocator, stack);
     return error;
 }
 
@@ -34,7 +34,7 @@ int test_stack_pop_and_peek(Allocator *allocator)
     char *str = "ABCD";
     char c = 0x00;
     
-    Stack *stack = stack_create(allocator, STACK_INITIAL_SIZE, 1);
+    Stack *stack = stack_new(allocator, STACK_INITIAL_SIZE, 1);
     stack->member_count = 4;
     memcpy(stack->data, str, 4);
 
@@ -75,6 +75,6 @@ int test_stack_pop_and_peek(Allocator *allocator)
     error -= stack->member_count == 0;
     c = 0x00;
     
-    stack_free(allocator, stack);
+    stack_destroy(allocator, stack);
     return error;
 }

@@ -7,7 +7,7 @@ static inline uint64 list_get_allocated_buffer_size(List *list)
 }
 
 
-List* list_create(Allocator *allocator, uint32 max_members, uint32 member_size)
+List* list_new(Allocator *allocator, uint32 max_members, uint32 member_size)
 {
     if (allocator == NULL)
         return NULL;
@@ -140,7 +140,7 @@ void list_sort(List *list, enum ComparisonResult (*compare)(uint8*, uint8*))
 }
 
 
-void list_free(Allocator *allocator, List *list)
+void list_destroy(Allocator *allocator, List *list)
 {
     if (list == NULL || allocator == NULL)
         return;

@@ -21,7 +21,7 @@ static inline Array* list_to_array(List *list)
  The list stores the pointer to the allocator,
  it must be valid for entire lifetime of the list.
 */
-List* list_create(Allocator*, uint32, uint32);
+List* list_new(Allocator*, uint32, uint32);
 
 void list_get(List*, uint32, uint8*);
 
@@ -54,6 +54,6 @@ void list_foreach(List*, void (*func)(uint8*));
 
 void list_sort(List*, enum ComparisonResult (*compare)(uint8*, uint8*));
 
-void list_free(Allocator *allocator, List*);
+void list_destroy(Allocator *allocator, List*);
 
 #endif

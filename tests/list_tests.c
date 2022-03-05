@@ -5,14 +5,14 @@ const int LIST_INITIAL_SIZE = 16;
 
 int test_basic_list_use(Allocator *allocator)
 {
-    List *list = list_create(allocator, LIST_INITIAL_SIZE, sizeof(int));
+    List *list = list_new(allocator, LIST_INITIAL_SIZE, sizeof(int));
 
     for (int i = 0; i < LIST_INITIAL_SIZE + 1; i++)
     {
         list_insert(list, list->member_count, (uint8*) &i);
     }
     
-    list_free(allocator, list);
+    list_destroy(allocator, list);
     return 0;
 }
 
@@ -32,7 +32,7 @@ int test_list_insertion(Allocator *allocator)
     char buffer[17];
     int error = 4;
 
-    List *list = list_create(allocator, LIST_INITIAL_SIZE, 4);
+    List *list = list_new(allocator, LIST_INITIAL_SIZE, 4);
 
     for (int i = 0; i < 16; i++)
         buffer[i] = ' ';
@@ -74,7 +74,7 @@ int test_list_insertion(Allocator *allocator)
     memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "DDDDBBBBAAAACCCC") == 0;
 
-    list_free(allocator, list);
+    list_destroy(allocator, list);
     return error;
 }
 
@@ -86,7 +86,7 @@ int test_list_removing(Allocator *allocator)
     char buffer[buffer_length + 1];
     int error = 3;
     
-    List *list = list_create(allocator, LIST_INITIAL_SIZE, 4);
+    List *list = list_new(allocator, LIST_INITIAL_SIZE, 4);
     list->member_count = 4;
     memcpy(list->data, str, buffer_length);
 
@@ -105,7 +105,7 @@ int test_list_removing(Allocator *allocator)
     memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "CCCCDDDD") == 0;
 
-    list_free(allocator, list);
+    list_destroy(allocator, list);
     return error;
 }
 
@@ -115,7 +115,7 @@ int test_list_getting_items(Allocator *allocator)
     int number, error;
     int array[4] = { 1, 2, 3, 4 };
     
-    List *list = list_create(allocator, LIST_INITIAL_SIZE, sizeof(int));
+    List *list = list_new(allocator, LIST_INITIAL_SIZE, sizeof(int));
     list->member_count = 4;
     memcpy(list->data, array, 4 * sizeof(int));
 
@@ -159,7 +159,7 @@ int test_list_getting_items(Allocator *allocator)
     }
     
     cleanup:
-        list_free(allocator, list);
+        list_destroy(allocator, list);
     return error;
 }
 
@@ -172,7 +172,7 @@ int test_list_copy_memory(Allocator *allocator)
     char buffer[buffer_length];
     int error = 0;
     
-    List *list = list_create(allocator, LIST_INITIAL_SIZE, 1);
+    List *list = list_new(allocator, LIST_INITIAL_SIZE, 1);
     list_copy_memory(list, (uint8*) short_str, strlen(short_str));
 
     memset(buffer, 0x00, buffer_length);
@@ -193,7 +193,7 @@ int test_list_copy_memory(Allocator *allocator)
     }
 
     cleanup:
-        list_free(allocator, list);
+        list_destroy(allocator, list);
     return error;
 }
 
@@ -203,7 +203,7 @@ int test_list_create_slice(Allocator *allocator)
     int error = 0;
     Array *slice;
     
-    List *list = list_create(allocator, LIST_INITIAL_SIZE, 1);
+    List *list = list_new(allocator, LIST_INITIAL_SIZE, 1);
     memcpy(list->data, "abcdef", 6);
     list->member_count = 6;
 
@@ -215,8 +215,8 @@ int test_list_create_slice(Allocator *allocator)
     }
 
     cleanup:
-        if (slice != NULL) array_free(allocator, slice);
-        list_free(allocator, list);
+        if (slice != NULL) array_destroy(allocator, slice);
+        list_destroy(allocator, list);
     return error;
 }
 
@@ -227,7 +227,7 @@ int test_list_foreach(Allocator *allocator)
     int data[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
     int modified_data[] = { 2, 3, 4, 5, 6, 7, 8, 9 };
     
-    List *list = list_create(allocator, LIST_INITIAL_SIZE, sizeof(int));
+    List *list = list_new(allocator, LIST_INITIAL_SIZE, sizeof(int));
     memcpy(list->data, data, 8 * sizeof(int));
     list->member_count = 8;
 
@@ -241,7 +241,7 @@ int test_list_foreach(Allocator *allocator)
     if (memcmp(list->data, modified_data, 8 * sizeof(int)) != 0)
         error = 1;
     
-    list_free(allocator, list);
+    list_destroy(allocator, list);
     return error;
 }
 
@@ -252,7 +252,7 @@ int test_list_sort(Allocator *allocator)
     int data[] = { 2, 5, 8, 1, 7, 6, 4, 3 };
     int sorted_data[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
     
-    List *list = list_create(allocator, LIST_INITIAL_SIZE, sizeof(int));
+    List *list = list_new(allocator, LIST_INITIAL_SIZE, sizeof(int));
     memcpy(list->data, data, 8 * sizeof(int));
     list->member_count = 8;
 
@@ -283,6 +283,6 @@ int test_list_sort(Allocator *allocator)
     if (memcmp(list->data, sorted_data, 8 * sizeof(int)) != 0)
         error = 1;
     
-    list_free(allocator, list);
+    list_destroy(allocator, list);
     return error;
 }

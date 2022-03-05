@@ -63,7 +63,7 @@ static int64 dict_get_index(Dict *dict, uint8 *key)
 }
 
 
-Dict* dict_create(Allocator *allocator, uint32 max_members, uint32 key_size, uint32 value_size)
+Dict* dict_new(Allocator *allocator, uint32 max_members, uint32 key_size, uint32 value_size)
 {
     if (allocator == NULL)
         return NULL;
@@ -72,7 +72,7 @@ Dict* dict_create(Allocator *allocator, uint32 max_members, uint32 key_size, uin
     if (dict == NULL)
         return NULL;
 
-    Array *index_table = array_create(allocator, max_members, 8);
+    Array *index_table = array_new(allocator, max_members, 8);
     if (index_table == NULL)
     {
         allocator->memory_free(dict, sizeof(dict));
@@ -80,20 +80,20 @@ Dict* dict_create(Allocator *allocator, uint32 max_members, uint32 key_size, uin
     }
     
     
-    List *key_list = list_create(allocator, max_members, key_size);
+    List *key_list = list_new(allocator, max_members, key_size);
     if (key_list == NULL)
     {
         allocator->memory_free(dict, sizeof(dict));
-        array_free(allocator, index_table);
+        array_destroy(allocator, index_table);
         return NULL;
     }
     
-    List *value_list = list_create(allocator, max_members, value_size);
+    List *value_list = list_new(allocator, max_members, value_size);
     if (value_list == NULL)
     {
         allocator->memory_free(dict, sizeof(dict));
-        array_free(allocator, index_table);
-        list_free(allocator, key_list);
+        array_destroy(allocator, index_table);
+        list_destroy(allocator, key_list);
         return NULL;
     }
 
@@ -177,19 +177,19 @@ void dict_pop(Dict *dict, uint8 *key, uint8 *memory)
 }
 
 
-void dict_free(Allocator *allocator, Dict* dict)
+void dict_destroy(Allocator *allocator, Dict* dict)
 {
     if (allocator == NULL || dict == NULL)
         return;
 
     if (dict->index_table != NULL)
-        array_free(allocator, dict->index_table);
+        array_destroy(allocator, dict->index_table);
     
     if (dict->keys != NULL)
-        list_free(allocator, dict->keys);
+        list_destroy(allocator, dict->keys);
 
     if (dict->values != NULL)
-        list_free(allocator, dict->values);
+        list_destroy(allocator, dict->values);
 
     allocator->memory_free(dict, sizeof(dict));
 }
