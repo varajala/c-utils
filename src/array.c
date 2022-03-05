@@ -104,86 +104,61 @@ void array_foreach(Array *array, void (*func)(uint8*))
         func(&array->data[i]);
 }
 
-static void merge(
-    uint8 *array,
-    uint32 member_size,
-    int start,
-    int mid,
-    int end,
-    enum ComparisonResult (*compare)(uint8*, uint8*)
-    )
+
+static void swap(Array *array, uint32 index_a, uint32 index_b)
 {
-    uint32 partition_size = (end - start + 1) * member_size;
-    uint32 offset = start * member_size;
-    
-    uint8 temp[partition_size];
-    uint8 *ptr_a, *ptr_b;
-    uint32 members_in_a, members_in_b, member_index;
-    
-    for (member_index = 0; member_index < partition_size; member_index++)
-    {
-        temp[member_index] = array[offset + member_index];
-    }
+    if (array == NULL)
+        return;
 
-    members_in_a = mid - start + 1;
-    members_in_b = end - mid;
-    ptr_a = temp;
-    ptr_b = temp + (members_in_a * member_size);
-    member_index = 0;
+    if (index_a >= array->member_count || index_b >= array->member_count)
+        return;
 
-    while (members_in_a > 0 && members_in_b > 0)
-    {
-        if (compare(ptr_a, ptr_b) != FIRST_IS_LARGER)
-        {
-            for (uint32 i = 0; i < member_size; i++)
-                array[offset + member_size * member_index + i] = ptr_a[i];
-            ptr_a += member_size;
-            members_in_a--;
-        }
-        else
-        {
-            for (uint32 i = 0; i < member_size; i++)
-                array[offset + member_size * member_index + i] = ptr_b[i];
-            ptr_b += member_size;
-            members_in_b--;
-        }
-        member_index++;
-    }
+    uint8 temp;
+    const uint32 member_size = array->member_size;
+    const uint32 offset_a = member_size * index_a;
+    const uint32 offset_b = member_size * index_b;
 
-    while (members_in_a > 0)
+    for (uint32 i = 0; i < member_size; i++)
     {
-        for (uint32 i = 0; i < member_size; i++)
-            array[offset + member_size * member_index + i] = ptr_a[i];
-        ptr_a += member_size;
-        members_in_a--;
-        member_index++;
-    }
-
-    while (members_in_b > 0)
-    {
-        for (uint32 i = 0; i < member_size; i++)
-            array[offset + member_size * member_index + i] = ptr_b[i];
-        ptr_b += member_size;
-        members_in_b--;
-        member_index++;
+        temp = array->data[offset_a + i];
+        array->data[offset_a + i] = array->data[offset_b + i];
+        array->data[offset_b + i] = temp;
     }
 }
 
-static void mergesort(
-    uint8 *numbers,
-    uint32 member_size,
-    int start,
-    int end,
-    enum ComparisonResult (*compare)(uint8*, uint8*)
-    )
+
+static int64 partition(Array *array, int64 start, int64 end, enum ComparisonResult (*compare)(uint8*, uint8*))
 {
-    if (start < end)
+    uint32 member_size = array->member_size;
+    
+    uint8 *pivot = &array->data[member_size * end];
+    uint8 *comparison;
+    int64 index = start - 1;
+    
+    for (uint32 i = start; i < end; i++)
     {
-        int mid = start + (end-start) / 2;
-        mergesort(numbers, member_size, start, mid, compare);
-        mergesort(numbers, member_size, mid+1, end, compare);
-        merge(numbers, member_size, start, mid, end, compare);   
+        comparison = &array->data[member_size * i];
+        if (compare(comparison, pivot) == FIRST_IS_SMALLER)
+            swap(array, ++index, i);
     }
+
+    swap(array, ++index, end);
+    return index;
+}
+
+
+static void quicksort(Array *array, int64 start, int64 end, enum ComparisonResult (*compare)(uint8*, uint8*))
+{
+    if (array == NULL)
+        return;
+
+    if (start >= end || start < 0 || end < 0)
+        return;
+
+    int64 pivot_index = partition(array, start, end, compare);
+
+    quicksort(array, start, pivot_index - 1, compare);
+    quicksort(array, pivot_index + 1, end, compare);
 }
 
 
@@ -192,7 +167,7 @@ void array_sort(Array *array, enum ComparisonResult (*compare)(uint8*, uint8*))
     if (array == NULL || compare == NULL)
         return;
 
-    mergesort(array->data, array->member_size, 0, array->member_count-1, compare);
+    quicksort(array, 0, ((int64)array->member_count) - 1, compare);
 }
 
 
