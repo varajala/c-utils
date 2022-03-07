@@ -35,9 +35,6 @@ List* list_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_
 
 void list_get(List *list, uint32 index, uint8 *memory)
 {
-    if (list == NULL || memory == NULL)
-        return;
-
     array_get(list_to_array(list), index, memory);
 }
 
@@ -122,8 +119,6 @@ void list_copy_memory(List *list, uint8 *memory, uint32 user_buffer_max_size)
 
 Array* list_create_slice(AllocatorInterface* allocator, List *list, uint32 start, uint32 end)
 {
-    if (list == NULL || allocator == NULL)
-        return NULL;
     return array_create_slice(list_to_array(list), allocator, start, end);
 }
 
@@ -137,6 +132,41 @@ void list_foreach(List *list, void (*func)(uint8*))
 void list_sort(List *list, enum ComparisonResult (*compare)(uint8*, uint8*))
 {
     array_sort(list_to_array(list), compare);
+}
+
+Array* list_map(List *list, AllocatorInterface *allocator, void (*func)(uint8*))
+{
+    return array_map(list_to_array(list), allocator, func);
+}
+
+
+Array* list_filter(List *list, AllocatorInterface *allocator, int (*func)(uint8*))
+{
+    return array_filter(list_to_array(list), allocator, func);
+}
+
+
+Array* list_reverse(List *list, AllocatorInterface *allocator)
+{
+    return array_reverse(list_to_array(list), allocator);
+}
+
+
+int64 list_find_index(List *list, uint32 start_index, int (*func)(uint8*))
+{
+    return array_find_index(list_to_array(list), start_index, func);
+}
+
+
+void list_find_item(List *list, uint32 start_index, int (*func)(uint8*), uint8 *memory)
+{
+    return array_find_item(list_to_array(list), start_index, func, memory);
+}
+
+
+void list_reduce(List *list, void (*func)(uint8*, uint8*, uint8*), uint8 *result)
+{
+    return array_reduce(list_to_array(list), func, result);
 }
 
 

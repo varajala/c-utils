@@ -50,6 +50,20 @@ void list_copy_memory(List*, uint8*, uint32 length);
 
 Array* list_create_slice(AllocatorInterface*, List*, uint32 start_index, uint32 end_index);
 
+Array* list_map(List*, AllocatorInterface*, void (*func)(uint8*));
+
+Array* list_filter(List*, AllocatorInterface*, int (*func)(uint8*));
+
+Array* list_reverse(List*, AllocatorInterface*);
+
+int64 list_find_index(List*, uint32 start_index, int (*func)(uint8*));
+
+void list_find_item(List*, uint32 start_index, int (*func)(uint8*), uint8*);
+
+void list_foreach(List*, void (*func)(uint8*));
+
+void list_reduce(List*, void (*func)(uint8*, uint8*, uint8*), uint8*);
+
 void list_foreach(List*, void (*func)(uint8*));
 
 void list_sort(List*, enum ComparisonResult (*compare)(uint8*, uint8*));
