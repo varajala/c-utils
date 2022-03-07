@@ -274,6 +274,29 @@ void array_find_item(Array *array, uint32 start_index, int (*func)(uint8*), uint
 }
 
 
+void array_reduce(Array *array, void (*func)(uint8*, uint8*, uint8*), uint8 *result)
+{
+    if (array == NULL || func == NULL || result == NULL)
+        return;
+
+    uint8 *current_value = NULL;
+    uint8 *previous_value = NULL;
+    uint64 offset;
+    
+    for (uint32 index = 0; index < array->member_count; index++)
+    {
+        offset = index * array->member_size;
+        current_value = (uint8*)&array->data[offset];
+        
+        if (previous_value == NULL)
+            previous_value = result;
+
+        func(previous_value, current_value, result);
+        previous_value = current_value;
+    }
+}
+
+
 void array_destroy(AllocatorInterface *allocator, Array *array)
 {
     if (allocator == NULL || array == NULL)

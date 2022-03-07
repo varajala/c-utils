@@ -404,3 +404,54 @@ int test_array_find_item(AllocatorInterface *allocator)
         array_destroy(allocator, array);
     return error;
 }
+
+
+int test_array_reduce_simple(AllocatorInterface *allocator)
+{
+    int numbers[9] = {
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+    };
+
+    void sum_func(uint8 *pa, uint8 *pb, uint8* res)
+    {
+        int b = *pb;
+        *res += b;
+    }
+
+    int result;
+    Array *array = array_new(allocator, 8, sizeof(int));
+    memcpy(array->data, numbers, 8 * sizeof(int));
+
+    result = 0;
+    array_reduce(array, sum_func, (uint8*)&result);
+
+    array_destroy(allocator, array);
+    return !(result == 36);
+}
+
+int test_array_reduce_complex(AllocatorInterface *allocator)
+{
+    int numbers[9] = {
+        4, 3, 8, 1,
+        2, 6, 5, 7
+    };
+
+    void conditional_sum_func(uint8 *pa, uint8 *pb, uint8* res)
+    {
+        int a = *pa;
+        int b = *pb;
+        if (b > a)
+            *res += b;
+    }
+
+    int result;
+    Array *array = array_new(allocator, 8, sizeof(int));
+    memcpy(array->data, numbers, 8 * sizeof(int));
+
+    result = 0;
+    array_reduce(array, conditional_sum_func, (uint8*)&result);
+
+    array_destroy(allocator, array);
+    return !(result == 27);
+}

@@ -63,6 +63,8 @@ void array_find_item(Array*, uint32, int (*func)(uint8*), uint8*);
 
 void array_foreach(Array*, void (*func)(uint8*));
 
+void array_reduce(Array*, void (*func)(uint8*, uint8*, uint8*), uint8*);
+
 void array_sort(Array*, enum ComparisonResult (*compare)(uint8*, uint8*));
 
 /*
