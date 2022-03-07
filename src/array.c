@@ -238,7 +238,7 @@ int64 array_find_index(Array *array, uint32 start_index, int (*func)(uint8*))
     if (array == NULL || func == NULL)
         return -2;
     
-    if (start_index >= array->member_count || start_index < 0)
+    if (start_index >= array->member_count)
         return -3;
 
     uint64 offset;
@@ -252,9 +252,25 @@ int64 array_find_index(Array *array, uint32 start_index, int (*func)(uint8*))
 }
 
 
-void array_find_item(Array *array, uint32 start_index, int (*func)(uint8*), uint8*)
+void array_find_item(Array *array, uint32 start_index, int (*func)(uint8*), uint8 *memory)
 {
+    if (array == NULL || func == NULL || memory == NULL)
+        return;
 
+    if (start_index >= array->member_count)
+        return;
+
+    uint64 offset;
+    for (uint32 index = start_index; index < array->member_count; index++)
+    {
+        offset = index * array->member_size;
+        if (func((uint8*)&array->data[offset]))
+        {
+            for (uint32 i = 0; i < array->member_size; i++)
+                memory[i] = array->data[offset + i];
+            return;
+        }
+    }
 }
 
 

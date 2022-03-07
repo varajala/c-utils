@@ -337,14 +337,66 @@ int test_array_find_index(AllocatorInterface *allocator)
     index = array_find_index(array, 12, is_even);
     if (index != 13)
     {
-        error = 2;
+        error = 1;
         goto cleanup;
     }
 
     index = array_find_index(array, 0, always_false);
     if (!(index < 0))
     {
-        error = 3;
+        error = 1;
+        goto cleanup;
+    }
+
+    cleanup:
+        array_destroy(allocator, array);
+    return error;
+}
+
+
+int test_array_find_item(AllocatorInterface *allocator)
+{
+    int error = 0;
+    int numbers[16] = {
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16
+    };
+
+    int is_even(uint8 *memory)
+    {
+        int *number = (int*) memory;
+        return !((*number) & 0x01);
+    }
+
+    int always_false(uint8* memory) { return 0; }
+
+    int result;
+    Array *array = array_new(allocator, 16, sizeof(int));
+    memcpy(array->data, numbers, 16 * sizeof(int));
+
+    result = -1;
+    array_find_item(array, 0, is_even, (uint8*)&result);
+    if (result != 2)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    result = -1;
+    array_find_item(array, 12, is_even, (uint8*)&result);
+    if (result != 14)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    result = -1;
+    array_find_item(array, 0, always_false, (uint8*)&result);
+    if (result != -1)
+    {
+        error = 1;
         goto cleanup;
     }
 

@@ -64,6 +64,7 @@ int (*tests[])(AllocatorInterface*) = {
     test_array_filter,
     test_array_reverse,
     test_array_find_index,
+    test_array_find_item,
 
     test_bump_allocator_memory_allocation,
     test_bump_allocator_bound_check,
