@@ -226,7 +226,7 @@ Array* array_reverse(Array *array, AllocatorInterface *allocator)
     {
         start_offset = (array->member_count - i - 1) * array->member_size;
         end_offset = i * array->member_size;
-        for (uint32 j = 0; j < array->member_size; i++)
+        for (uint32 j = 0; j < array->member_size; j++)
             new_array->data[start_offset + j] = array->data[end_offset + j];
     }
     return new_array;
