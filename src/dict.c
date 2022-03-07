@@ -210,25 +210,25 @@ Array* dict_copy_items(Dict *dict, AllocatorInterface *allocator)
     const uint32 value_size = dict->values->member_size;
     const uint32 member_size = key_size + value_size;
     
-    Array *items = array_new(allocator, dict->keys->member_count, member_size);
+    Array *items = array_new(allocator, dict->member_count, member_size);
 
-    uint64 dst_offset;
+    uint64 dest_offset;
     uint64 src_offset;
     
-    for (uint32 i = 0; items->member_count; i++)
+    for (uint32 i = 0; i < items->member_count; i++)
     {
-        dst_offset = i * member_size;
+        dest_offset = i * member_size;
         src_offset = i * key_size;
         for (uint32 j = 0; j < key_size; j++)
-            items->data[dst_offset + j] = dict->keys->data[src_offset + j];
+            items->data[dest_offset + j] = dict->keys->data[src_offset + j];
     }
 
-    for (uint32 i = key_size; items->member_count; i++)
+    for (uint32 i = 0; i < items->member_count; i++)
     {
-        dst_offset = i * member_size;
+        dest_offset = (i * member_size) + key_size;
         src_offset = i * value_size;
         for (uint32 j = 0; j < value_size; j++)
-            items->data[dst_offset + j] = dict->values->data[src_offset + j];
+            items->data[dest_offset + j] = dict->values->data[src_offset + j];
     }
     
     return items;

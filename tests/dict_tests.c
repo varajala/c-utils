@@ -1,7 +1,7 @@
 #include "datastructures/dict.h"
 
 
-#define INITIAL_DICT_SIZE 10
+#define INITIAL_DICT_SIZE 16
 
 typedef struct DictKey {
     char string[8];
@@ -12,6 +12,11 @@ typedef struct DictValue {
     int x;
     int y;
 } DictValue;
+
+typedef struct DictItem {
+    DictKey key;
+    DictValue value;
+} DictItem;
 
 
 int test_dict_creation(AllocatorInterface *allocator)
@@ -97,3 +102,95 @@ int test_dict_usage(AllocatorInterface *allocator)
         dict_destroy(allocator, dict);
     return error;
 }
+
+
+const DictItem test_data[INITIAL_DICT_SIZE] = {
+    {
+        { "ABCD", 1 },
+        { .x = 100, .y = 200 }
+    },
+    {
+        { "EFGH", 2 },
+        { .x = 300, .y = 400 }
+    },
+    {
+        { "IJKL", 3 },
+        { .x = 500, .y = 600 }
+    },
+    {
+        { "MNOP", 4 },
+        { .x = 700, .y = 800 }
+    },
+};
+
+
+int test_dict_copy_keys(AllocatorInterface *allocator)
+{
+    const DictKey expected_keys[INITIAL_DICT_SIZE] = {
+        { "ABCD", 1 },
+        { "EFGH", 2 },
+        { "IJKL", 3 },
+        { "MNOP", 4 },
+    };
+    
+    Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
+    
+    dict_set(dict, (uint8*)&test_data[0].key, (uint8*)&test_data[0].value);
+    dict_set(dict, (uint8*)&test_data[1].key, (uint8*)&test_data[1].value);
+    dict_set(dict, (uint8*)&test_data[2].key, (uint8*)&test_data[2].value);
+    dict_set(dict, (uint8*)&test_data[3].key, (uint8*)&test_data[3].value);
+
+    Array *dict_keys = dict_copy_keys(dict, allocator);
+
+    int error = memcmp(dict_keys->data, expected_keys, 4 * sizeof(DictKey));
+
+    array_destroy(allocator, dict_keys);
+    dict_destroy(allocator, dict);
+    return !(error == 0);
+}
+
+
+int test_dict_copy_values(AllocatorInterface *allocator)
+{
+    const DictValue expected_values[INITIAL_DICT_SIZE] = {
+        { .x = 100, .y = 200 },
+        { .x = 300, .y = 400 },
+        { .x = 500, .y = 600 },
+        { .x = 700, .y = 800 },
+    };
+    
+    Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
+    
+    dict_set(dict, (uint8*)&test_data[0].key, (uint8*)&test_data[0].value);
+    dict_set(dict, (uint8*)&test_data[1].key, (uint8*)&test_data[1].value);
+    dict_set(dict, (uint8*)&test_data[2].key, (uint8*)&test_data[2].value);
+    dict_set(dict, (uint8*)&test_data[3].key, (uint8*)&test_data[3].value);
+
+    Array *dict_values = dict_copy_values(dict, allocator);
+
+    int error = memcmp(dict_values->data, expected_values, 4 * sizeof(DictValue));
+
+    array_destroy(allocator, dict_values);
+    dict_destroy(allocator, dict);
+    return !(error == 0);
+}
+
+
+int test_dict_copy_items(AllocatorInterface *allocator)
+{
+    Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
+    
+    dict_set(dict, (uint8*)&test_data[0].key, (uint8*)&test_data[0].value);
+    dict_set(dict, (uint8*)&test_data[1].key, (uint8*)&test_data[1].value);
+    dict_set(dict, (uint8*)&test_data[2].key, (uint8*)&test_data[2].value);
+    dict_set(dict, (uint8*)&test_data[3].key, (uint8*)&test_data[3].value);
+
+    Array *dict_items = dict_copy_items(dict, allocator);
+
+    int error = memcmp(dict_items->data, test_data, 4 * sizeof(DictItem));
+
+    array_destroy(allocator, dict_items);
+    dict_destroy(allocator, dict);
+    return !(error == 0);
+}
+

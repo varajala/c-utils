@@ -92,6 +92,9 @@ int (*tests[])(AllocatorInterface*) = {
 
     test_dict_creation,
     test_dict_usage,
+    test_dict_copy_keys,
+    test_dict_copy_values,
+    test_dict_copy_items,
     NULL
 };
 
