@@ -11,7 +11,7 @@ typedef List Queue;
  The queue stores the pointer to the allocator,
  it must be valid for entire lifetime of the queue.
 */
-Queue* queue_new(AllocatorInterface*, uint32, uint32);
+Queue* queue_new(AllocatorInterface*, uint32 max_members, uint32 member_size);
 
 void queue_pop(Queue*, uint8*);
 

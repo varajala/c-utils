@@ -13,13 +13,13 @@ typedef struct Dict {
 } Dict;
 
 
-Dict* dict_new(AllocatorInterface*, uint32, uint32, uint32);
+Dict* dict_new(AllocatorInterface*, uint32 max_members, uint32 key_size, uint32 value_size);
 
-void dict_set(Dict*, uint8*, uint8*);
+void dict_set(Dict*, uint8* key, uint8* value);
 
-void dict_get(Dict*, uint8*, uint8*);
+void dict_get(Dict*, uint8* key, uint8*);
 
-void dict_pop(Dict*, uint8*, uint8*);
+void dict_pop(Dict*, uint8* key, uint8*);
 
 void dict_destroy(AllocatorInterface*, Dict*);
 
