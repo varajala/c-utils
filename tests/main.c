@@ -60,6 +60,8 @@ int (*tests[])(AllocatorInterface*) = {
     test_array_slicing,
     test_array_foreach,
     test_array_sorting,
+    test_array_map,
+    test_array_filter,
 
     test_bump_allocator_memory_allocation,
     test_bump_allocator_bound_check,

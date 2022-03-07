@@ -96,7 +96,7 @@ Array* array_create_slice(Array *src_array, AllocatorInterface *allocator, uint3
 
 void array_foreach(Array *array, void (*func)(uint8*))
 {
-    if (array == NULL)
+    if (array == NULL || func == NULL)
         return;
 
     for (uint64 i = 0; i < array->member_count * array->member_size; i += array->member_size)
@@ -170,21 +170,66 @@ void array_sort(Array *array, enum ComparisonResult (*compare)(uint8*, uint8*))
 }
 
 
-Array* array_map(Array *array, AllocatorInterface *allocator, void (*func)(uint8*, uint8*))
+Array* array_map(Array *array, AllocatorInterface *allocator, void (*func)(uint8*))
 {
-    return NULL;
+    if (array == NULL || allocator == NULL || func == NULL)
+        return NULL;
+
+    Array *new_array = array_new(allocator, array->member_count, array->member_size);
+    if (new_array == NULL)
+        return NULL;
+
+    array_foreach(new_array, func);
+    return new_array;
 }
 
 
 Array* array_filter(Array *array, AllocatorInterface *allocator, int (*func)(uint8*))
 {
-    return NULL;
+    if (array == NULL || allocator == NULL || func == NULL)
+        return NULL;
+
+    uint32 passed_items = 0;
+    for (uint64 i = 0; i < array->member_count; i += array->member_size)
+    {
+        if (func((uint8*)&array->data[i]))
+            passed_items++;
+    }
+
+    Array *new_array = array_new(allocator, array->member_count, array->member_size);
+    if (new_array == NULL)
+        return NULL;
+
+    for (uint64 i = 0; i < array->member_count; i += array->member_size)
+    {
+        if (func((uint8*)&array->data[i]))
+        {
+            for (uint32 j = 0; j < array->member_size; j++)
+                new_array->data[i + j] = array->data[i + j];
+        }
+    }
+    return new_array;
 }
 
 
 Array* array_reverse(Array *array, AllocatorInterface *allocator)
 {
-    return NULL;
+    if (array == NULL || allocator == NULL)
+        return NULL;
+
+    Array *new_array = array_new(allocator, array->member_count, array->member_size);
+    if (new_array == NULL)
+        return NULL;
+
+    uint32 start_offset, end_offset;
+    for (int64 i = array->member_count - 1; i > -1; i--)
+    {
+        start_offset = (array->member_count - i - 1) * array->member_size;
+        end_offset = i * array->member_size;
+        for (uint32 j = 0; j < array->member_size; i++)
+            new_array->data[start_offset + j] = array->data[end_offset + j];
+    }
+    return new_array;
 }
 
 

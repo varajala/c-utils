@@ -51,7 +51,7 @@ void array_copy_memory(Array*, uint8*, uint32);
 */
 Array* array_create_slice(Array*, AllocatorInterface*, uint32, uint32);
 
-Array* array_map(Array*, AllocatorInterface*, void (*func)(uint8*, uint8*));
+Array* array_map(Array*, AllocatorInterface*, void (*func)(uint8*));
 
 Array* array_filter(Array*, AllocatorInterface*, int (*func)(uint8*));
 

@@ -188,3 +188,118 @@ int test_array_sorting(AllocatorInterface *allocator)
     array_destroy(allocator, array);
     return error;
 }
+
+
+int test_array_map(AllocatorInterface *allocator)
+{
+    int error = 0;
+    int numbers[16] = {
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16
+    };
+
+    int squared_numbers[16] = {
+        1, 4, 9, 16,
+        25, 36, 49, 64,
+        81, 100, 121, 144,
+        169, 196, 225, 256
+    };
+
+    void square(uint8 *memory)
+    {
+        int *number = (int*) memory;
+        *number = (*number) * (*number);
+    }
+
+    Array *array, *new_array;
+    array = array_new(allocator, 16, sizeof(int));
+
+    memcpy(array->data, numbers, 16 * sizeof(int));
+    new_array = array_map(array, allocator, square);
+    if (new_array == NULL)
+        error = 1;
+
+    if (new_array != NULL)
+    {
+        error = memcmp(new_array->data, squared_numbers, 16 * sizeof(int));
+        array_destroy(allocator, new_array);
+    }
+
+    array_destroy(allocator, array);
+    return error;
+}
+
+
+int test_array_filter(AllocatorInterface *allocator)
+{
+    int error = 0;
+    int numbers[16] = {
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16
+    };
+
+    int larger_than_6(uint8 *memory)
+    {
+        int *number = (int*) memory;
+        return *number > 6;
+    }
+
+    Array *array, *new_array;
+    array = array_new(allocator, 16, sizeof(int));
+
+    new_array = array_filter(array, allocator, larger_than_6);
+    if (new_array == NULL)
+        error = 1;
+
+    if (new_array != NULL)
+    {
+        error = 2;
+        error -= new_array->member_count == 10;
+        error -= memcmp(&numbers[6], new_array->data, 10 * sizeof(int));
+        
+        array_destroy(allocator, new_array);
+    }
+
+    array_destroy(allocator, array);
+    return error;
+}
+
+
+int test_array_reverse(AllocatorInterface *allocator)
+{
+    int error = 0;
+    int numbers[16] = {
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16
+    };
+
+    int reversed_numbers[16] = {
+        16, 15, 14, 13,
+        12, 11, 10, 9,
+        8, 7, 6, 5,
+        4, 3, 2, 1
+    };
+
+    Array *array, *new_array;
+    array = array_new(allocator, 16, sizeof(int));
+    memcpy(array->data, numbers, 16 * sizeof(int));
+
+    new_array = array_reverse(array, allocator);
+    if (new_array == NULL)
+        error = 1;
+
+    if (new_array != NULL)
+    {
+        error = memcmp(reversed_numbers, new_array->data, 16 * sizeof(int));
+        array_destroy(allocator, new_array);
+    }
+
+    array_destroy(allocator, array);
+    return error;
+}
