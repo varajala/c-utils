@@ -51,6 +51,16 @@ void array_copy_memory(Array*, uint8*, uint32);
 */
 Array* array_create_slice(Array*, AllocatorInterface*, uint32, uint32);
 
+Array* array_map(Array*, AllocatorInterface*, void (*func)(uint8*, uint8*));
+
+Array* array_filter(Array*, AllocatorInterface*, int (*func)(uint8*));
+
+Array* array_reverse(Array*, AllocatorInterface*);
+
+int64 array_find_index(Array*, int (*func)(uint8*));
+
+void array_find_item(Array*, int (*func)(uint8*), uint8*);
+
 void array_foreach(Array*, void (*func)(uint8*));
 
 void array_sort(Array*, enum ComparisonResult (*compare)(uint8*, uint8*));

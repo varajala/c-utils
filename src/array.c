@@ -1,4 +1,3 @@
-#include <stddef.h>
 #include "datastructures/array.h"
 
 
@@ -168,6 +167,36 @@ void array_sort(Array *array, enum ComparisonResult (*compare)(uint8*, uint8*))
         return;
 
     quicksort(array, 0, ((int64)array->member_count) - 1, compare);
+}
+
+
+Array* array_map(Array *array, AllocatorInterface *allocator, void (*func)(uint8*, uint8*))
+{
+    return NULL;
+}
+
+
+Array* array_filter(Array *array, AllocatorInterface *allocator, int (*func)(uint8*))
+{
+    return NULL;
+}
+
+
+Array* array_reverse(Array *array, AllocatorInterface *allocator)
+{
+    return NULL;
+}
+
+
+int64 array_find_index(Array *array, int (*func)(uint8*))
+{
+    return -1;
+}
+
+
+void array_find_item(Array *array, int (*func)(uint8*), uint8*)
+{
+
 }
 
 
