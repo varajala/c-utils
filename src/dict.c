@@ -177,6 +177,64 @@ void dict_pop(Dict *dict, uint8 *key, uint8 *memory)
 }
 
 
+Array* dict_copy_keys(Dict *dict, AllocatorInterface *allocator)
+{
+    if (dict == NULL || allocator == NULL)
+        return NULL;
+
+    Array *keys = list_to_array(dict->keys);
+    Array *copy = array_new(allocator, keys->member_count, keys->member_size);
+    array_copy_memory(copy, (uint8*)keys->data, keys->member_count * keys->member_size);
+    return copy;
+}
+
+
+Array* dict_copy_values(Dict *dict, AllocatorInterface *allocator)
+{
+    if (dict == NULL || allocator == NULL)
+        return NULL;
+
+    Array *values = list_to_array(dict->values);
+    Array *copy = array_new(allocator, values->member_count, values->member_size);
+    array_copy_memory(copy, (uint8*)values->data, values->member_count * values->member_size);
+    return copy;
+}
+
+
+Array* dict_copy_items(Dict *dict, AllocatorInterface *allocator)
+{
+    if (dict == NULL || allocator == NULL)
+        return NULL;
+    
+    const uint32 key_size = dict->keys->member_size;
+    const uint32 value_size = dict->values->member_size;
+    const uint32 member_size = key_size + value_size;
+    
+    Array *items = array_new(allocator, dict->keys->member_count, member_size);
+
+    uint64 dst_offset;
+    uint64 src_offset;
+    
+    for (uint32 i = 0; items->member_count; i++)
+    {
+        dst_offset = i * member_size;
+        src_offset = i * key_size;
+        for (uint32 j = 0; j < key_size; j++)
+            items->data[dst_offset + j] = dict->keys->data[src_offset + j];
+    }
+
+    for (uint32 i = key_size; items->member_count; i++)
+    {
+        dst_offset = i * member_size;
+        src_offset = i * value_size;
+        for (uint32 j = 0; j < value_size; j++)
+            items->data[dst_offset + j] = dict->values->data[src_offset + j];
+    }
+    
+    return items;
+}
+
+
 void dict_destroy(AllocatorInterface *allocator, Dict* dict)
 {
     if (allocator == NULL || dict == NULL)

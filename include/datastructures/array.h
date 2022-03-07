@@ -43,7 +43,7 @@ void array_insert(Array*, uint32 index, uint8*);
  Copy memory into the array from to the provided address
  for a total length of MIN(array.member_count * array.member_size, max_length).
 */
-void array_copy_memory(Array*, uint8*, uint32 length);
+void array_copy_memory(Array*, uint8*, uint64 max_length);
 
 /*
  Create a new array and copy the original array's data into it

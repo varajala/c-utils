@@ -52,9 +52,9 @@ void array_insert(Array *array, uint32 index, uint8 *memory)
 }
 
 
-void array_copy_memory(Array *array, uint8 *memory, uint32 max_length)
+void array_copy_memory(Array *array, uint8 *memory, uint64 max_length)
 {
-    if (array == NULL)
+    if (array == NULL || memory == NULL)
         return;
 
     for (int i = 0; i < array->member_count * array->member_size; i++)

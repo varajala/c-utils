@@ -21,6 +21,12 @@ void dict_get(Dict*, uint8* key, uint8*);
 
 void dict_pop(Dict*, uint8* key, uint8*);
 
+Array* dict_copy_keys(Dict*, AllocatorInterface*);
+
+Array* dict_copy_values(Dict*, AllocatorInterface*);
+
+Array* dict_copy_items(Dict*, AllocatorInterface*);
+
 void dict_destroy(AllocatorInterface*, Dict*);
 
 #endif
