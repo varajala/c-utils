@@ -233,13 +233,26 @@ Array* array_reverse(Array *array, AllocatorInterface *allocator)
 }
 
 
-int64 array_find_index(Array *array, int (*func)(uint8*))
+int64 array_find_index(Array *array, uint32 start_index, int (*func)(uint8*))
 {
+    if (array == NULL || func == NULL)
+        return -2;
+    
+    if (start_index >= array->member_count || start_index < 0)
+        return -3;
+
+    uint64 offset;
+    for (uint32 index = start_index; index < array->member_count; index++)
+    {
+        offset = index * array->member_size;
+        if (func((uint8*)&array->data[offset]))
+            return index;
+    }
     return -1;
 }
 
 
-void array_find_item(Array *array, int (*func)(uint8*), uint8*)
+void array_find_item(Array *array, uint32 start_index, int (*func)(uint8*), uint8*)
 {
 
 }

@@ -303,3 +303,52 @@ int test_array_reverse(AllocatorInterface *allocator)
     array_destroy(allocator, array);
     return error;
 }
+
+
+int test_array_find_index(AllocatorInterface *allocator)
+{
+    int error = 0;
+    int numbers[16] = {
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16
+    };
+
+    int is_even(uint8 *memory)
+    {
+        int *number = (int*) memory;
+        return !((*number) & 0x01);
+    }
+
+    int always_false(uint8* memory) { return 0; }
+
+    int64 index;
+    Array *array = array_new(allocator, 16, sizeof(int));
+    memcpy(array->data, numbers, 16 * sizeof(int));
+
+    index = array_find_index(array, 0, is_even);
+    if (index != 1)
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    index = array_find_index(array, 12, is_even);
+    if (index != 13)
+    {
+        error = 2;
+        goto cleanup;
+    }
+
+    index = array_find_index(array, 0, always_false);
+    if (!(index < 0))
+    {
+        error = 3;
+        goto cleanup;
+    }
+
+    cleanup:
+        array_destroy(allocator, array);
+    return error;
+}

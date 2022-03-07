@@ -57,9 +57,9 @@ Array* array_filter(Array*, AllocatorInterface*, int (*func)(uint8*));
 
 Array* array_reverse(Array*, AllocatorInterface*);
 
-int64 array_find_index(Array*, int (*func)(uint8*));
+int64 array_find_index(Array*, uint32, int (*func)(uint8*));
 
-void array_find_item(Array*, int (*func)(uint8*), uint8*);
+void array_find_item(Array*, uint32, int (*func)(uint8*), uint8*);
 
 void array_foreach(Array*, void (*func)(uint8*));
 
