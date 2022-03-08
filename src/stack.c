@@ -1,13 +1,13 @@
 #include "datastructures/stack.h"
 
 
-Stack* stack_new(AllocatorInterface *allocator, uint32 initial_member_count, uint32 member_size)
+inline Stack* stack_new(AllocatorInterface *allocator, uint32 initial_member_count, uint32 member_size)
 {
     return (Stack*) list_new(allocator, initial_member_count, member_size);
 }
 
 
-void stack_pop(Stack *stack, uint8 *memory)
+inline void stack_pop(Stack *stack, uint8 *memory)
 {
     if (stack == NULL)
         return;
@@ -17,7 +17,7 @@ void stack_pop(Stack *stack, uint8 *memory)
 }
 
 
-void stack_peek(Stack *stack, uint8 *memory)
+inline void stack_peek(Stack *stack, uint8 *memory)
 {
     if (stack == NULL)
         return;
@@ -26,13 +26,13 @@ void stack_peek(Stack *stack, uint8 *memory)
 }
 
 
-void stack_push(Stack *stack, uint8 *memory)
+inline void stack_push(Stack *stack, uint8 *memory)
 {
     list_append((List*) stack, memory);
 }
 
 
-void stack_destroy(Stack *stack, AllocatorInterface *allocator)
+inline void stack_destroy(Stack *stack, AllocatorInterface *allocator)
 {
     list_destroy((List*) stack, allocator);
 }

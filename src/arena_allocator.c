@@ -9,7 +9,7 @@ void arena_allocator_init(ArenaAllocator *allocator, void* (*get_memory)(uint64)
     allocator->num_arenas = 0;
 
     for (uint32 i = 0; i < max_arenas; i++)
-        allocator->arenas[i] = 0x00;
+        allocator->arenas[i] = NULL;
     
     BumpAllocator *arena = get_memory(bump_allocator_size(arena_size));
     if (arena == NULL)

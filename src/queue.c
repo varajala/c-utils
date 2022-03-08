@@ -1,13 +1,13 @@
 #include "datastructures/queue.h"
 
 
-Queue* queue_new(AllocatorInterface *allocator, uint32 initial_member_count, uint32 member_size)
+inline Queue* queue_new(AllocatorInterface *allocator, uint32 initial_member_count, uint32 member_size)
 {
     return (Queue*) list_new(allocator, initial_member_count, member_size);
 }
 
 
-void queue_pop(Queue *queue, uint8 *memory)
+inline void queue_pop(Queue *queue, uint8 *memory)
 {
     if (queue == NULL)
         return;
@@ -17,7 +17,7 @@ void queue_pop(Queue *queue, uint8 *memory)
 }
 
 
-void queue_peek(Queue *queue, uint8 *memory)
+inline void queue_peek(Queue *queue, uint8 *memory)
 {
     if (queue == NULL)
         return;
@@ -26,13 +26,13 @@ void queue_peek(Queue *queue, uint8 *memory)
 }
 
 
-void queue_push(Queue *queue, uint8 *memory)
+inline void queue_push(Queue *queue, uint8 *memory)
 {
     list_insert((List*) queue, 0, memory);
 }
 
 
-void queue_destroy(Queue *queue, AllocatorInterface *allocator)
+inline void queue_destroy(Queue *queue, AllocatorInterface *allocator)
 {
     list_destroy((List*) queue, allocator);
 }
