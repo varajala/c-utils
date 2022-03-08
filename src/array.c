@@ -6,7 +6,7 @@ Array* array_new(AllocatorInterface* allocator, uint32 member_count,  uint32 mem
     if (allocator == NULL)
         return NULL;
     
-    if (member_count <= 0 )
+    if (member_count == 0 || member_size == 0)
         return NULL;
 
     void* memory = allocator->memory_allocate(offsetof(Array, data) + member_count * member_size);
@@ -196,6 +196,9 @@ Array* array_filter(Array *array, AllocatorInterface *allocator, int (*func)(uin
             passed_items++;
     }
 
+    if (passed_items == 0)
+        return NULL;
+    
     Array *new_array = array_new(allocator, array->member_count, array->member_size);
     if (new_array == NULL)
         return NULL;
