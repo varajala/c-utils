@@ -32,7 +32,7 @@ void stack_push(Stack *stack, uint8 *memory)
 }
 
 
-void stack_destroy(AllocatorInterface *allocator, Stack *stack)
+void stack_destroy(Stack *stack, AllocatorInterface *allocator)
 {
-    list_destroy(allocator, (List*) stack);
+    list_destroy((List*) stack, allocator);
 }

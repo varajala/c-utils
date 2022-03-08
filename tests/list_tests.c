@@ -12,7 +12,7 @@ int test_basic_list_use(AllocatorInterface *allocator)
         list_insert(list, list->member_count, (uint8*) &i);
     }
     
-    list_destroy(allocator, list);
+    list_destroy(list, allocator);
     return 0;
 }
 
@@ -74,7 +74,7 @@ int test_list_insertion(AllocatorInterface *allocator)
     memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "DDDDBBBBAAAACCCC") == 0;
 
-    list_destroy(allocator, list);
+    list_destroy(list, allocator);
     return error;
 }
 
@@ -105,7 +105,7 @@ int test_list_removing(AllocatorInterface *allocator)
     memcpy(buffer, list->data, list->member_count * list->member_size);
     error -= strcmp(buffer, "CCCCDDDD") == 0;
 
-    list_destroy(allocator, list);
+    list_destroy(list, allocator);
     return error;
 }
 
@@ -159,7 +159,7 @@ int test_list_getting_items(AllocatorInterface *allocator)
     }
     
     cleanup:
-        list_destroy(allocator, list);
+        list_destroy(list, allocator);
     return error;
 }
 
@@ -193,7 +193,7 @@ int test_list_copy_memory(AllocatorInterface *allocator)
     }
 
     cleanup:
-        list_destroy(allocator, list);
+        list_destroy(list, allocator);
     return error;
 }
 
@@ -207,7 +207,7 @@ int test_list_create_slice(AllocatorInterface *allocator)
     memcpy(list->data, "abcdef", 6);
     list->member_count = 6;
 
-    slice = list_create_slice(allocator, list, 0, 3);
+    slice = list_create_slice(list, allocator, 0, 3);
     if (slice == NULL || memcmp(slice->data, "abc", 3) != 0)
     {
         error = 1;
@@ -215,8 +215,8 @@ int test_list_create_slice(AllocatorInterface *allocator)
     }
 
     cleanup:
-        if (slice != NULL) array_destroy(allocator, slice);
-        list_destroy(allocator, list);
+        if (slice != NULL) array_destroy(slice, allocator);
+        list_destroy(list, allocator);
     return error;
 }
 
@@ -241,7 +241,7 @@ int test_list_foreach(AllocatorInterface *allocator)
     if (memcmp(list->data, modified_data, 8 * sizeof(int)) != 0)
         error = 1;
     
-    list_destroy(allocator, list);
+    list_destroy(list, allocator);
     return error;
 }
 
@@ -283,6 +283,6 @@ int test_list_sort(AllocatorInterface *allocator)
     if (memcmp(list->data, sorted_data, 8 * sizeof(int)) != 0)
         error = 1;
     
-    list_destroy(allocator, list);
+    list_destroy(list, allocator);
     return error;
 }

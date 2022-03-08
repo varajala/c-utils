@@ -24,7 +24,7 @@ int test_basic_array_use(AllocatorInterface *allocator)
         }
     }
 
-    array_destroy(allocator, array);
+    array_destroy(array, allocator);
     return error;
 }
 
@@ -40,7 +40,7 @@ int test_array_bound_check(AllocatorInterface *allocator)
     array_get(array, -4096, (uint8*)&memory);
     array_set(array, 4096, (uint8*)&memory);
     array_set(array, -4096, (uint8*)&memory);
-    array_destroy(allocator, array);
+    array_destroy(array, allocator);
     return 0;
 }
 
@@ -55,7 +55,7 @@ int test_array_copy_memory(AllocatorInterface *allocator)
     array_copy_memory(array, (uint8*)str, strlen(str));
 
     int result = strcmp(str, (char*)array->data);
-    array_destroy(allocator, array);
+    array_destroy(array, allocator);
     return result;
 }
 
@@ -94,8 +94,8 @@ int test_array_slicing(AllocatorInterface *allocator)
     }
 
     cleanup:
-        array_destroy(allocator, array);
-        array_destroy(allocator, slice);
+        array_destroy(array, allocator);
+        array_destroy(slice, allocator);
     
     return error;
 }
@@ -122,7 +122,7 @@ int test_array_foreach(AllocatorInterface *allocator)
     }
     array_foreach(array, write_char_to_buffer);
 
-    array_destroy(allocator, array);
+    array_destroy(array, allocator);
     return strcmp(buffer, str);
 }
 
@@ -185,7 +185,7 @@ int test_array_sorting(AllocatorInterface *allocator)
         }
     }
 
-    array_destroy(allocator, array);
+    array_destroy(array, allocator);
     return error;
 }
 
@@ -224,10 +224,10 @@ int test_array_map(AllocatorInterface *allocator)
     if (new_array != NULL)
     {
         error = memcmp(new_array->data, squared_numbers, 16 * sizeof(int));
-        array_destroy(allocator, new_array);
+        array_destroy(new_array, allocator);
     }
 
-    array_destroy(allocator, array);
+    array_destroy(array, allocator);
     return error;
 }
 
@@ -242,14 +242,11 @@ int test_array_filter(AllocatorInterface *allocator)
         13, 14, 15, 16
     };
 
-    int larger_than_6(uint8 *memory)
-    {
-        int *number = (int*) memory;
-        return *number > 6;
-    }
+    int larger_than_6(uint8 *memory) { return (*memory) > 6; }
 
     Array *array, *new_array;
     array = array_new(allocator, 16, sizeof(int));
+    memcpy(array->data, numbers, 16 * sizeof(int));
 
     new_array = array_filter(array, allocator, larger_than_6);
     if (new_array == NULL)
@@ -259,12 +256,12 @@ int test_array_filter(AllocatorInterface *allocator)
     {
         error = 2;
         error -= new_array->member_count == 10;
-        error -= memcmp(&numbers[6], new_array->data, 10 * sizeof(int));
+        error -= (memcmp(&numbers[6], new_array->data, 10 * sizeof(int)) == 0);
         
-        array_destroy(allocator, new_array);
+        array_destroy(new_array, allocator);
     }
 
-    array_destroy(allocator, array);
+    array_destroy(array, allocator);
     return error;
 }
 
@@ -297,10 +294,10 @@ int test_array_reverse(AllocatorInterface *allocator)
     if (new_array != NULL)
     {
         error = memcmp(reversed_numbers, new_array->data, 16 * sizeof(int));
-        array_destroy(allocator, new_array);
+        array_destroy(new_array, allocator);
     }
 
-    array_destroy(allocator, array);
+    array_destroy(array, allocator);
     return error;
 }
 
@@ -349,7 +346,7 @@ int test_array_find_index(AllocatorInterface *allocator)
     }
 
     cleanup:
-        array_destroy(allocator, array);
+        array_destroy(array, allocator);
     return error;
 }
 
@@ -401,7 +398,7 @@ int test_array_find_item(AllocatorInterface *allocator)
     }
 
     cleanup:
-        array_destroy(allocator, array);
+        array_destroy(array, allocator);
     return error;
 }
 
@@ -426,7 +423,7 @@ int test_array_reduce_simple(AllocatorInterface *allocator)
     result = 0;
     array_reduce(array, sum_func, (uint8*)&result);
 
-    array_destroy(allocator, array);
+    array_destroy(array, allocator);
     return !(result == 36);
 }
 
@@ -452,6 +449,6 @@ int test_array_reduce_complex(AllocatorInterface *allocator)
     result = 0;
     array_reduce(array, conditional_sum_func, (uint8*)&result);
 
-    array_destroy(allocator, array);
+    array_destroy(array, allocator);
     return !(result == 27);
 }

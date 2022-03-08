@@ -12,7 +12,7 @@ List* list_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_
     if (allocator == NULL)
         return NULL;
     
-    if (max_members <= 0 )
+    if (max_members == 0 || member_size == 0)
         return NULL;
 
     uint64 buffer_size = max_members * member_size;
@@ -123,7 +123,7 @@ void list_copy_memory(List *list, uint8 *memory, uint32 user_buffer_max_size)
 }
 
 
-Array* list_create_slice(AllocatorInterface* allocator, List *list, uint32 start, uint32 end)
+Array* list_create_slice(List *list, AllocatorInterface* allocator, uint32 start, uint32 end)
 {
     return array_create_slice(list_to_array(list), allocator, start, end);
 }
@@ -176,7 +176,7 @@ void list_reduce(List *list, void (*func)(uint8*, uint8*, uint8*), uint8 *result
 }
 
 
-void list_destroy(AllocatorInterface *allocator, List *list)
+void list_destroy(List *list, AllocatorInterface *allocator)
 {
     if (list == NULL || allocator == NULL)
         return;

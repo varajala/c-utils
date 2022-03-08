@@ -84,7 +84,7 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
     if (key_list == NULL)
     {
         allocator->memory_free(dict, sizeof(dict));
-        array_destroy(allocator, index_table);
+        array_destroy(index_table, allocator);
         return NULL;
     }
     
@@ -92,8 +92,8 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
     if (value_list == NULL)
     {
         allocator->memory_free(dict, sizeof(dict));
-        array_destroy(allocator, index_table);
-        list_destroy(allocator, key_list);
+        array_destroy(index_table, allocator);
+        list_destroy(key_list, allocator);
         return NULL;
     }
 
@@ -235,19 +235,19 @@ Array* dict_copy_items(Dict *dict, AllocatorInterface *allocator)
 }
 
 
-void dict_destroy(AllocatorInterface *allocator, Dict* dict)
+void dict_destroy(Dict* dict, AllocatorInterface *allocator)
 {
     if (allocator == NULL || dict == NULL)
         return;
 
     if (dict->index_table != NULL)
-        array_destroy(allocator, dict->index_table);
+        array_destroy(dict->index_table, allocator);
     
     if (dict->keys != NULL)
-        list_destroy(allocator, dict->keys);
+        list_destroy(dict->keys, allocator);
 
     if (dict->values != NULL)
-        list_destroy(allocator, dict->values);
+        list_destroy(dict->values, allocator);
 
     allocator->memory_free(dict, sizeof(dict));
 }

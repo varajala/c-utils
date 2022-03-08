@@ -24,6 +24,6 @@ void queue_peek(Queue*, uint8*);
 */
 void queue_push(Queue*, uint8*);
 
-void queue_destroy(AllocatorInterface*, Queue*);
+void queue_destroy(Queue*, AllocatorInterface*);
 
 #endif

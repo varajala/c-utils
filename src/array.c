@@ -189,26 +189,30 @@ Array* array_filter(Array *array, AllocatorInterface *allocator, int (*func)(uin
     if (array == NULL || allocator == NULL || func == NULL)
         return NULL;
 
+    uint64 src_offset;
+    uint64 dest_offset;
     uint32 passed_items = 0;
-    for (uint64 i = 0; i < array->member_count; i += array->member_size)
+    uint32 index = 0;
+    
+    for (uint32 i = 0; i < array->member_count; i++)
     {
-        if (func((uint8*)&array->data[i]))
+        src_offset = i * array->member_size;
+        if (func((uint8*)&array->data[src_offset]))
             passed_items++;
     }
 
-    if (passed_items == 0)
-        return NULL;
-    
-    Array *new_array = array_new(allocator, array->member_count, array->member_size);
+    Array *new_array = array_new(allocator, passed_items, array->member_size);
     if (new_array == NULL)
         return NULL;
 
-    for (uint64 i = 0; i < array->member_count; i += array->member_size)
+    for (uint32 i = 0; i < array->member_count; i++)
     {
-        if (func((uint8*)&array->data[i]))
+        src_offset = i * array->member_size;
+        if (func((uint8*)&array->data[src_offset]))
         {
+            dest_offset = index++ * array->member_size;
             for (uint32 j = 0; j < array->member_size; j++)
-                new_array->data[i + j] = array->data[i + j];
+                new_array->data[dest_offset + j] = array->data[src_offset + j];
         }
     }
     return new_array;
@@ -300,7 +304,7 @@ void array_reduce(Array *array, void (*func)(uint8*, uint8*, uint8*), uint8 *res
 }
 
 
-void array_destroy(AllocatorInterface *allocator, Array *array)
+void array_destroy(Array *array, AllocatorInterface *allocator)
 {
     if (allocator == NULL || array == NULL)
         return;

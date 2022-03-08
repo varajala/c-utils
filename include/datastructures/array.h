@@ -35,6 +35,7 @@ void array_set(Array*, uint32 index, uint8*);
 
 // Copy memory into the array from to the provided address
 // for a total length of MIN(array.member_count * array.member_size, max_length).
+// Overwrites exiting members.
 void array_copy_memory(Array*, uint8*, uint64 max_length);
 
 // Create a new array and copy the original array's data into it
@@ -46,7 +47,7 @@ Array* array_create_slice(Array*, AllocatorInterface*, uint32 start_index, uint3
 Array* array_map(Array*, AllocatorInterface*, void (*func)(uint8*));
 
 // Create a new array with the members of the provided array
-// for which the provided test function returns non zero value.'
+// for which the provided test function returns non zero value.
 // Returns NULL instead of an empty array.
 Array* array_filter(Array*, AllocatorInterface*, int (*func)(uint8*));
 
@@ -83,6 +84,6 @@ void array_reduce(Array*, void (*func)(uint8*, uint8*, uint8*), uint8 *result);
 void array_sort(Array*, enum ComparisonResult (*compare)(uint8*, uint8*));
 
 // Free memory used by the array.
-void array_destroy(AllocatorInterface*, Array*);
+void array_destroy(Array*, AllocatorInterface*);
 
 #endif

@@ -32,7 +32,7 @@ void queue_push(Queue *queue, uint8 *memory)
 }
 
 
-void queue_destroy(AllocatorInterface *allocator, Queue *queue)
+void queue_destroy(Queue *queue, AllocatorInterface *allocator)
 {
-    list_destroy(allocator, (List*) queue);
+    list_destroy((List*) queue, allocator);
 }

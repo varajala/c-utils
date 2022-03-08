@@ -24,6 +24,6 @@ void stack_peek(Stack*, uint8*);
 */
 void stack_push(Stack*, uint8*);
 
-void stack_destroy(AllocatorInterface*, Stack*);
+void stack_destroy(Stack*, AllocatorInterface*);
 
 #endif

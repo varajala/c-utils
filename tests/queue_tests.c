@@ -23,7 +23,7 @@ int test_queue_push(AllocatorInterface *allocator)
 
     error = memcmp(queue->data, numbers, 3 * sizeof(int)) != 0;
 
-    queue_destroy(allocator, queue);
+    queue_destroy(queue, allocator);
     return error;
 }
 
@@ -75,6 +75,6 @@ int test_queue_pop_and_peek(AllocatorInterface *allocator)
     error -= queue->member_count == 0;
     c = 0x00;
     
-    queue_destroy(allocator, queue);
+    queue_destroy(queue, allocator);
     return error;
 }

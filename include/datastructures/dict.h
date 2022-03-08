@@ -27,6 +27,6 @@ Array* dict_copy_values(Dict*, AllocatorInterface*);
 
 Array* dict_copy_items(Dict*, AllocatorInterface*);
 
-void dict_destroy(AllocatorInterface*, Dict*);
+void dict_destroy(Dict*, AllocatorInterface*);
 
 #endif

@@ -40,7 +40,7 @@ int test_dict_creation(AllocatorInterface *allocator)
         }
     }
 
-    dict_destroy(allocator, dict);
+    dict_destroy(dict, allocator);
     return error;
 }
 
@@ -99,7 +99,7 @@ int test_dict_usage(AllocatorInterface *allocator)
     }
     
     cleanup:
-        dict_destroy(allocator, dict);
+        dict_destroy(dict, allocator);
     return error;
 }
 
@@ -144,8 +144,8 @@ int test_dict_copy_keys(AllocatorInterface *allocator)
 
     int error = memcmp(dict_keys->data, expected_keys, 4 * sizeof(DictKey));
 
-    array_destroy(allocator, dict_keys);
-    dict_destroy(allocator, dict);
+    array_destroy(dict_keys, allocator);
+    dict_destroy(dict, allocator);
     return !(error == 0);
 }
 
@@ -170,8 +170,8 @@ int test_dict_copy_values(AllocatorInterface *allocator)
 
     int error = memcmp(dict_values->data, expected_values, 4 * sizeof(DictValue));
 
-    array_destroy(allocator, dict_values);
-    dict_destroy(allocator, dict);
+    array_destroy(dict_values, allocator);
+    dict_destroy(dict, allocator);
     return !(error == 0);
 }
 
@@ -189,8 +189,8 @@ int test_dict_copy_items(AllocatorInterface *allocator)
 
     int error = memcmp(dict_items->data, test_data, 4 * sizeof(DictItem));
 
-    array_destroy(allocator, dict_items);
-    dict_destroy(allocator, dict);
+    array_destroy(dict_items, allocator);
+    dict_destroy(dict, allocator);
     return !(error == 0);
 }
 

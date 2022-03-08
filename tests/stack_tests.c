@@ -23,7 +23,7 @@ int test_stack_push(AllocatorInterface *allocator)
 
     error = memcmp(stack->data, numbers, 3 * sizeof(int)) != 0;
 
-    stack_destroy(allocator, stack);
+    stack_destroy(stack, allocator);
     return error;
 }
 
@@ -75,6 +75,6 @@ int test_stack_pop_and_peek(AllocatorInterface *allocator)
     error -= stack->member_count == 0;
     c = 0x00;
     
-    stack_destroy(allocator, stack);
+    stack_destroy(stack, allocator);
     return error;
 }
