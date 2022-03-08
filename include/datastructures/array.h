@@ -37,7 +37,7 @@ void array_get(Array*, uint32 index, uint8*);
  Copy memory into the array from to the provided address
  for a total of array.member_size bytes.
 */
-void array_insert(Array*, uint32 index, uint8*);
+void array_set(Array*, uint32 index, uint8*);
 
 /*
  Copy memory into the array from to the provided address

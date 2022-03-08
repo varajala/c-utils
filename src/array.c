@@ -38,7 +38,7 @@ void array_get(Array *array, uint32 index, uint8 *memory)
 }
 
 
-void array_insert(Array *array, uint32 index, uint8 *memory)
+void array_set(Array *array, uint32 index, uint8 *memory)
 {
     if (array == NULL || memory == NULL)
         return;

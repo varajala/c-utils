@@ -10,7 +10,7 @@ int test_basic_array_use(AllocatorInterface *allocator)
     for (i = 0; i < array->member_count; i++)
     {
         number = i + 1;
-        array_insert(array, i, (uint8*)&number);
+        array_set(array, i, (uint8*)&number);
     }
 
     number = -1;
@@ -38,8 +38,8 @@ int test_array_bound_check(AllocatorInterface *allocator)
     int32 memory;
     array_get(array, 4096, (uint8*)&memory);
     array_get(array, -4096, (uint8*)&memory);
-    array_insert(array, 4096, (uint8*)&memory);
-    array_insert(array, -4096, (uint8*)&memory);
+    array_set(array, 4096, (uint8*)&memory);
+    array_set(array, -4096, (uint8*)&memory);
     array_destroy(allocator, array);
     return 0;
 }

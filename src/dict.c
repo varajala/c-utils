@@ -105,7 +105,7 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
 
     for (int i = 0; i < max_members; i++)
     {
-        array_insert(index_table, i, (uint8*)&EMPTY_SLOT);
+        array_set(index_table, i, (uint8*)&EMPTY_SLOT);
     }
 
     return dict;
@@ -131,7 +131,7 @@ void dict_set(Dict *dict, uint8 *key, uint8* value)
         if (slot_value == EMPTY_SLOT || slot_value == REMOVED_SLOT)
         {
             slot_value = (int64) dict->member_count;
-            array_insert(dict->index_table, index, (uint8*)&slot_value);
+            array_set(dict->index_table, index, (uint8*)&slot_value);
             list_append(dict->keys, key);
             list_append(dict->values, value);
             dict->member_count++;
@@ -141,7 +141,7 @@ void dict_set(Dict *dict, uint8 *key, uint8* value)
         // Check if key is the same, and do updating instead...
         key_value = &dict->keys->data[slot_value];
         if (mem_equals(key, key_value, key_size)) {
-            array_insert(list_to_array(dict->values), slot_value, value);
+            list_set(dict->values, slot_value, value);
             break;
         }
         tries++;
@@ -169,7 +169,7 @@ void dict_pop(Dict *dict, uint8 *key, uint8 *memory)
     if (index > -1)
     {
         list_get(dict->values, index, memory);
-        array_insert(dict->index_table, index, (uint8*)&REMOVED_SLOT);
+        array_set(dict->index_table, index, (uint8*)&REMOVED_SLOT);
         list_remove_at(dict->keys, index);
         list_remove_at(dict->values, index);
         dict->member_count--;

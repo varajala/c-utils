@@ -77,6 +77,12 @@ void list_insert(List *list, uint32 index, uint8 *memory)
 }
 
 
+void list_set(List *list, uint32 index, uint8 *memory)
+{
+    array_set(list_to_array(list), index, memory);
+}
+
+
 void list_append(List* list, uint8 *memory)
 {
     list_insert(list, list->member_count, memory);
