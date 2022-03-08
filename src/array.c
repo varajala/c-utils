@@ -161,7 +161,7 @@ static void quicksort(Array *array, int64 start, int64 end, enum ComparisonResul
 }
 
 
-void array_sort(Array *array, enum ComparisonResult (*compare)(uint8*, uint8*))
+inline void array_sort(Array *array, enum ComparisonResult (*compare)(uint8*, uint8*))
 {
     if (array == NULL || compare == NULL)
         return;
