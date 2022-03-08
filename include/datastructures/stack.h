@@ -5,25 +5,30 @@
 
 typedef List Stack;
 
-
-/*
- Allocate memory and initialize the stack.
- The stack stores the pointer to the allocator,
- it must be valid for entire lifetime of the stack.
-*/
+// Allocate memory and initialize the stack.
+// All bytes are initialized to 0x00.
+// Returns NULL if max_members * member_sixe == 0.
 Stack* stack_new(AllocatorInterface*, uint32 max_members, uint32 member_size);
 
+// Move the first element from stack into
+// the specified memory location. This location must be
+// atleast stack.member_size bytes.
+// Fails silently if stack is empty.
 void stack_pop(Stack*, uint8*);
 
+// Copy the first element from stack into
+// the specified memory location. This location must be
+// atleast stack.member_size bytes.
+// Does not remove the item from stack.
+// Fails silently if stack is empty.
 void stack_peek(Stack*, uint8*);
 
-/*
- Push the data into the stack and reallocate the stack if needed.
- Returns the pointer to the stack, which can be different than
- the pointer passed in as argument.
-*/
+// Copy stack.member_size bytes from the
+// the specified memory location into the stack.
+// Fails silently if not enough space.
 void stack_push(Stack*, uint8*);
 
+// Free all memory used by the queue.
 void stack_destroy(Stack*, AllocatorInterface*);
 
 #endif
