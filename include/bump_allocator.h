@@ -13,17 +13,16 @@ typedef struct BumpAllocator
 } BumpAllocator;
 
 
+// Calculate the total space used by a bump allocator based on its buffer size.
 static inline uint64 bump_allocator_size(uint64 buf_size)
 {
     return offsetof(BumpAllocator, buffer) + buf_size;
 }
 
-/*
- Initialize the bump allocator, memory needs to be allocated by the caller.
-*/
+// Initialize the bump allocator, memory needs to be allocated by the caller.
 void bump_allocator_init(BumpAllocator*, uint64);
 
+// Allocate memory, returns NULL if out of memory or an error occurs.
 void* bump_allocator_memory_allocate(BumpAllocator*, uint64);
-
 
 #endif
