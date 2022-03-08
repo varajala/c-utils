@@ -17,6 +17,10 @@ typedef struct Dict {
 // Returns NULL if max_members * member_sixe == 0.
 Dict* dict_new(AllocatorInterface*, uint32 max_members, uint32 key_size, uint32 value_size);
 
+// Test if the specified key is in the dict.
+// Returns 1 if key is found, 0 otherwise.
+int dict_contains_key(Dict*, uint8 *key);
+
 // Set the key to point to the provided value.
 // Adds a new value if key does not exist,
 // otherwise updates the value.

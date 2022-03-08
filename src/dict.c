@@ -112,6 +112,17 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
 }
 
 
+int dict_contains_key(Dict *dict, uint8 *key)
+{
+    if (dict == NULL || key == NULL)
+        return 0;
+    
+    int64 index = dict_get_index(dict, key);
+    if (index < 0) return 0;
+    return 1;
+}
+
+
 void dict_set(Dict *dict, uint8 *key, uint8* value)
 {
     if (dict == NULL || key == NULL || value == NULL)

@@ -68,6 +68,21 @@ int test_dict_usage(AllocatorInterface *allocator)
     v.y = 400;
     dict_set(dict, (uint8*)&k, (uint8*)&v);
 
+
+    memcpy(k.string, "ABCD", 5);
+    if (!(dict_contains_key(dict, (uint8*)&k)))
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    memcpy(k.string, "IJKL", 5);
+    if (!(dict_contains_key(dict, (uint8*)&k)))
+    {
+        error = 1;
+        goto cleanup;
+    }
+
     memcpy(k.string, "ABCD", 5);
     dict_get(dict, (uint8*)&k, (uint8*)&v);
     if (!(v.x == 100 && v.y == 200))
