@@ -264,10 +264,10 @@ enum ComparisonResult list_compare(uint8 *a_bytes, uint8 *b_bytes)
     list_read_int(b_bytes, (uint8*)&b);
     
     if (a > b)
-        return FIRST_IS_LARGER;
+        return COMPARISON_RESULT_FIRST_IS_LARGER;
     if (a < b)
-        return FIRST_IS_SMALLER;
-    return ARE_EQUAL;
+        return COMPARISON_RESULT_FIRST_IS_SMALLER;
+    return COMPARISON_RESULT_ARE_EQUAL;
 }
 
 

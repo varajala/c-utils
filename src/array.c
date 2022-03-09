@@ -137,7 +137,7 @@ static int64 partition(Array *array, int64 start, int64 end, enum ComparisonResu
     for (uint32 i = start; i < end; i++)
     {
         comparison = &array->data[member_size * i];
-        if (compare(comparison, pivot) == FIRST_IS_SMALLER)
+        if (compare(comparison, pivot) == COMPARISON_RESULT_FIRST_IS_SMALLER)
             swap(array, ++index, i);
     }
 

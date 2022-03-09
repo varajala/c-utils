@@ -15,9 +15,9 @@ typedef struct Array
 
 enum ComparisonResult
 {
-    FIRST_IS_LARGER,
-    ARE_EQUAL,
-    FIRST_IS_SMALLER
+    COMPARISON_RESULT_FIRST_IS_LARGER,
+    COMPARISON_RESULT_ARE_EQUAL,
+    COMPARISON_RESULT_FIRST_IS_SMALLER
 };
 
 // Allocate space and initialize the array.
