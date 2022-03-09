@@ -3,9 +3,30 @@
 
 void bump_allocator_init(BumpAllocator *allocator, uint64 buffer_size)
 {
+    if (allocator == NULL)
+        return;
+    
     allocator->end_index = 0;
     allocator->buffer_size = buffer_size;
     for (uint64 i = 0; i < buffer_size; i++)
+        allocator->buffer[i] = 0x00;
+}
+
+inline void bump_allocator_reset_fast(BumpAllocator *allocator)
+{
+    if (allocator == NULL)
+        return;
+    allocator->end_index = 0;
+}
+
+
+inline void bump_allocator_reset_overwrite(BumpAllocator *allocator)
+{
+    if (allocator == NULL)
+        return;
+    
+    allocator->end_index = 0;
+    for (uint64 i = 0; i < allocator->buffer_size; i++)
         allocator->buffer[i] = 0x00;
 }
 

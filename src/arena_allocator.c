@@ -3,6 +3,12 @@
 
 void arena_allocator_init(ArenaAllocator *allocator, void* (*get_memory)(uint64), uint64 arena_size, uint32 max_arenas)
 {
+    if (allocator == NULL || get_memory == NULL)
+        return;
+
+    if (arena_size == 0 || max_arenas == 0)
+        return;
+
     allocator->get_memory = get_memory;
     allocator->arena_size = arena_size;
     allocator->max_arenas = max_arenas;
@@ -23,11 +29,15 @@ void arena_allocator_init(ArenaAllocator *allocator, void* (*get_memory)(uint64)
 
 void* arena_allocator_memory_allocate(ArenaAllocator *allocator, uint64 size)
 {
+    if (allocator == NULL)
+        return NULL;
+    
     if (size > allocator->arena_size)
         return NULL;
 
     void *memory;
     BumpAllocator *arena;
+    
     for (uint32 i = 0; i < allocator->num_arenas; i++)
     {
         arena = allocator->arenas[i];
@@ -52,6 +62,9 @@ void* arena_allocator_memory_allocate(ArenaAllocator *allocator, uint64 size)
 
 void arena_allocator_destroy(ArenaAllocator *allocator, void (*free_memory)(void*, uint64))
 {
+    if (allocator == NULL || free_memory == NULL)
+        return;
+    
     for (uint32 i = 0; i < allocator->num_arenas; i++)
         free_memory(allocator->arenas[i], allocator->arena_size);
     free_memory(allocator, arena_allocator_size(allocator->max_arenas));
