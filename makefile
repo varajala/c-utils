@@ -14,7 +14,6 @@ release:
 
 test:
 	$(CC) -I $(INCLUDE_DIRECTORY) $(DEBUG_BUILD_FLAGS) src/*.c tests/main.c -o $(BIN_DIRECTORY)/test-exe
-	valgrind -q --leak-check=full $(BIN_DIRECTORY)/test-exe
 
 
 clean:
