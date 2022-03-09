@@ -57,7 +57,7 @@ void array_copy_memory(Array *array, uint8 *memory, uint64 max_length)
     if (array == NULL || memory == NULL)
         return;
 
-    for (int i = 0; i < array->member_count * array->member_size; i++)
+    for (uint64 i = 0; i < array->member_count * array->member_size; i++)
     {
         if (i >= max_length)
             break;

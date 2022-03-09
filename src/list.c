@@ -44,9 +44,6 @@ void list_insert(List *list, uint32 index, uint8 *memory)
     if (list == NULL || memory == NULL)
         return;
 
-    if (index < 0)
-        return;
-
     if (index > list->member_count)
         index = list->member_count;
     
@@ -95,7 +92,7 @@ void list_remove_at(List *list, uint32 index)
     if (list == NULL)
         return;
 
-    if (index < 0 || index > list->member_count - 1)
+    if (index > list->member_count - 1)
         return;
 
     for (uint32 i = index + 1; i < list->member_count; i++)

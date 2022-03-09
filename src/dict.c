@@ -103,7 +103,7 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
     dict->keys = key_list;
     dict->values = value_list;
 
-    for (int i = 0; i < max_members; i++)
+    for (uint32 i = 0; i < max_members; i++)
     {
         array_set(index_table, i, (uint8*)&EMPTY_SLOT);
     }

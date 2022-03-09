@@ -5,13 +5,13 @@ INCLUDE_DIRECTORY = ./include
 CC = gcc
 
 build:
-	$(CC) -c src/array.c -o $(BIN_DIRECTORY)/array.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
-	$(CC) -c src/list.c -o $(BIN_DIRECTORY)/list.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
-	$(CC) -c src/stack.c -o $(BIN_DIRECTORY)/stack.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
-	$(CC) -c src/queue.c -o $(BIN_DIRECTORY)/queue.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
-	$(CC) -c src/dict.c -o $(BIN_DIRECTORY)/dict.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
-	$(CC) -c src/bump_allocator.c -o $(BIN_DIRECTORY)/bump_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
-	$(CC) -c src/arena_allocator.c -o $(BIN_DIRECTORY)/arena_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
+	$(CC) -c src/array.c -o $(BIN_DIRECTORY)/array.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
+	$(CC) -c src/list.c -o $(BIN_DIRECTORY)/list.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
+	$(CC) -c src/stack.c -o $(BIN_DIRECTORY)/stack.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
+	$(CC) -c src/queue.c -o $(BIN_DIRECTORY)/queue.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
+	$(CC) -c src/dict.c -o $(BIN_DIRECTORY)/dict.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
+	$(CC) -c src/bump_allocator.c -o $(BIN_DIRECTORY)/bump_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
+	$(CC) -c src/arena_allocator.c -o $(BIN_DIRECTORY)/arena_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
 	
 	$(CC) -o $(LIB_DIRECTORY)/libc-utils.so \
 	$(BIN_DIRECTORY)/array.obj \
