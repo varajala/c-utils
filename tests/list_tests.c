@@ -221,6 +221,13 @@ int test_list_create_slice(AllocatorInterface *allocator)
 }
 
 
+static void incr(uint8 *item)
+{
+    int *number = (int*)item;
+    *number = (*number) + 1;
+}
+
+
 int test_list_foreach(AllocatorInterface *allocator)
 {
     int error = 0;
@@ -231,18 +238,36 @@ int test_list_foreach(AllocatorInterface *allocator)
     memcpy(list->data, data, 8 * sizeof(int));
     list->member_count = 8;
 
-    void incr(uint8 *item)
-    {
-        int *number = (int*)item;
-        *number = (*number) + 1;
-    }
-
     list_foreach(list, incr);
     if (memcmp(list->data, modified_data, 8 * sizeof(int)) != 0)
         error = 1;
     
     list_destroy(list, allocator);
     return error;
+}
+
+
+void list_read_int(uint8 *bytes, uint8 *integer)
+{
+    for (uint32 i = 0; i < sizeof(int); i++)
+    {
+        integer[i] = bytes[i];
+    }
+}
+
+
+enum ComparisonResult list_compare(uint8 *a_bytes, uint8 *b_bytes)
+{
+    int a, b;
+
+    list_read_int(a_bytes, (uint8*)&a);
+    list_read_int(b_bytes, (uint8*)&b);
+    
+    if (a > b)
+        return FIRST_IS_LARGER;
+    if (a < b)
+        return FIRST_IS_SMALLER;
+    return ARE_EQUAL;
 }
 
 
@@ -256,29 +281,7 @@ int test_list_sort(AllocatorInterface *allocator)
     memcpy(list->data, data, 8 * sizeof(int));
     list->member_count = 8;
 
-    void read_int(uint8 *bytes, uint8 *integer)
-    {
-        for (int i = 0; i < sizeof(int); i++)
-        {
-            integer[i] = bytes[i];
-        }
-    }
-
-    enum ComparisonResult compare(uint8 *a_bytes, uint8 *b_bytes)
-    {
-        int a, b;
-
-        read_int(a_bytes, (uint8*)&a);
-        read_int(b_bytes, (uint8*)&b);
-        
-        if (a > b)
-            return FIRST_IS_LARGER;
-        if (a < b)
-            return FIRST_IS_SMALLER;
-        return ARE_EQUAL;
-    }
-
-    list_sort(list, compare);
+    list_sort(list, list_compare);
 
     if (memcmp(list->data, sorted_data, 8 * sizeof(int)) != 0)
         error = 1;

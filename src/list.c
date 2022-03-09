@@ -163,13 +163,13 @@ inline int64 list_find_index(List *list, uint32 start_index, int (*func)(uint8*)
 
 inline void list_find_item(List *list, uint32 start_index, int (*func)(uint8*), uint8 *memory)
 {
-    return array_find_item(list_to_array(list), start_index, func, memory);
+    array_find_item(list_to_array(list), start_index, func, memory);
 }
 
 
 inline void list_reduce(List *list, void (*func)(uint8*, uint8*, uint8*), uint8 *result)
 {
-    return array_reduce(list_to_array(list), func, result);
+    array_reduce(list_to_array(list), func, result);
 }
 
 

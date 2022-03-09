@@ -31,28 +31,6 @@ void _memory_free(void* memory, uint64 size)
 }
 
 
-int run_tests(int (*tests[])(AllocatorInterface*), AllocatorInterface* allocator)
-{
-    int errors = 0;
-    int i = 0;
-    
-    while (1)
-    {
-        int (*test_func)(AllocatorInterface*) = tests[i];
-        if (test_func == NULL) break;
-        if (test_func(allocator) > 0)
-        {
-            errors++;
-            printf("Error in testcase %d\n", i + 1);
-        }
-        i++;
-    }
-
-    printf("%d tests executed.\n\n", i);
-    return errors > 0;
-}
-
-
 int (*tests[])(AllocatorInterface*) = {
     test_basic_array_use,
     test_array_bound_check,
@@ -99,11 +77,28 @@ int (*tests[])(AllocatorInterface*) = {
 };
 
 
-int main(int argc, char *argv[])
+int main()
 {
     AllocatorInterface allocator;
     allocator.memory_allocate = _memory_allocate;
     allocator.memory_resize = _memory_resize;
     allocator.memory_free = _memory_free;
-    return run_tests(tests, &allocator);
+
+    int errors = 0;
+    int i = 0;
+    
+    while (1)
+    {
+        int (*test_func)(AllocatorInterface*) = tests[i];
+        if (test_func == NULL) break;
+        if (test_func(&allocator) > 0)
+        {
+            errors++;
+            printf("Error in testcase %d\n", i + 1);
+        }
+        i++;
+    }
+
+    printf("%d tests executed.\n\n", i);
+    return errors > 0;
 }

@@ -2,51 +2,19 @@ BIN_DIRECTORY = ./bin
 LIB_DIRECTORY = ./lib
 INCLUDE_DIRECTORY = ./include
 
+DEBUG_BUILD_FLAGS = -Wall -Wextra -Wno-unused-parameter -pedantic -std=c99 -g
+RELEASE_BUILD_FLAGS = -Wall -Wextra -pedantic -std=c99 -O2
+
 CC = gcc
 
-build:
-	$(CC) -c src/array.c -o $(BIN_DIRECTORY)/array.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
-	$(CC) -c src/list.c -o $(BIN_DIRECTORY)/list.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
-	$(CC) -c src/stack.c -o $(BIN_DIRECTORY)/stack.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
-	$(CC) -c src/queue.c -o $(BIN_DIRECTORY)/queue.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
-	$(CC) -c src/dict.c -o $(BIN_DIRECTORY)/dict.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
-	$(CC) -c src/bump_allocator.c -o $(BIN_DIRECTORY)/bump_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
-	$(CC) -c src/arena_allocator.c -o $(BIN_DIRECTORY)/arena_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -Wextra -std=c99
-	
-	$(CC) -o $(LIB_DIRECTORY)/libc-utils.so \
-	$(BIN_DIRECTORY)/array.obj \
-	$(BIN_DIRECTORY)/list.obj \
-	$(BIN_DIRECTORY)/stack.obj \
-	$(BIN_DIRECTORY)/queue.obj \
-	$(BIN_DIRECTORY)/dict.obj \
-	$(BIN_DIRECTORY)/bump_allocator.obj \
-	$(BIN_DIRECTORY)/arena_allocator.obj \
-	-fPIC -shared
+release:
+	$(CC) -I $(INCLUDE_DIRECTORY) $(RELEASE_BUILD_FLAGS) src/*.c -o $(LIB_DIRECTORY)/libc-utils.so -shared -fPIC
 
 
-build-tests:
-	$(CC) -c src/array.c -o $(BIN_DIRECTORY)/array.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
-	$(CC) -c src/list.c -o $(BIN_DIRECTORY)/list.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
-	$(CC) -c src/stack.c -o $(BIN_DIRECTORY)/stack.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
-	$(CC) -c src/queue.c -o $(BIN_DIRECTORY)/queue.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
-	$(CC) -c src/dict.c -o $(BIN_DIRECTORY)/dict.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
-	$(CC) -c src/bump_allocator.c -o $(BIN_DIRECTORY)/bump_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
-	$(CC) -c src/arena_allocator.c -o $(BIN_DIRECTORY)/arena_allocator.obj -I $(INCLUDE_DIRECTORY) -Wall -std=c99
 
-	$(CC) -c tests/main.c -o $(BIN_DIRECTORY)/test_main.obj -I $(INCLUDE_DIRECTORY) -Wall -g -std=c99
-
-	$(CC) -o $(BIN_DIRECTORY)/tests-exe \
-	$(BIN_DIRECTORY)/array.obj \
-	$(BIN_DIRECTORY)/list.obj \
-	$(BIN_DIRECTORY)/stack.obj \
-	$(BIN_DIRECTORY)/queue.obj \
-	$(BIN_DIRECTORY)/dict.obj \
-	$(BIN_DIRECTORY)/bump_allocator.obj \
-	$(BIN_DIRECTORY)/arena_allocator.obj \
-	$(BIN_DIRECTORY)/test_main.obj
-
-run-tests:
-	valgrind -q --leak-check=full $(BIN_DIRECTORY)/tests-exe
+test:
+	$(CC) -I $(INCLUDE_DIRECTORY) $(DEBUG_BUILD_FLAGS) src/*.c tests/main.c -o $(BIN_DIRECTORY)/test-exe
+	valgrind -q --leak-check=full $(BIN_DIRECTORY)/test-exe
 
 
 clean:
