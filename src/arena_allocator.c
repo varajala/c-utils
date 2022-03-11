@@ -59,6 +59,19 @@ void* arena_allocator_memory_allocate(ArenaAllocator *allocator, uint64 size)
     return bump_allocator_memory_allocate(arena, size);
 }
 
+inline void arena_allocator_reset(ArenaAllocator *allocator)
+{
+    if (allocator == NULL)
+        return;
+    
+    BumpAllocator *bump_allocator
+    for (uint32 i = 0; i < allocator->num_arenas; i++)
+    {
+        bump_allocator = allocator->arenas[i];
+        bump_allocator_reset(bump_allocator);
+    }
+}
+
 
 void arena_allocator_destroy(ArenaAllocator *allocator, void (*free_memory)(void*, uint64))
 {

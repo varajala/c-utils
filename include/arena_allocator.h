@@ -32,6 +32,10 @@ void arena_allocator_init(ArenaAllocator*, void* (*get_memory)(uint64), uint64 a
 // Allocate memory, returns NULL if out of memory, or an error occurs.
 void* arena_allocator_memory_allocate(ArenaAllocator*, uint64);
 
+// Reset all allocated BumpAllocators. Does not overwrite data,
+// or free already allocated buffers.
+void arena_allocator_reset(ArenaAllocator*);
+
 // Free all memory used by the ArenaAllocator,
 // including dynamically allocated bump allocators.
 void arena_allocator_destroy(ArenaAllocator*, void (*free_memory)(void*, uint64));
