@@ -25,6 +25,10 @@ enum ComparisonResult
 // Returns NULL instead of an empty array.
 Array* array_new(AllocatorInterface*, uint32 member_count, uint32 member_size);
 
+// Allocate space and initialize the array.
+// Returns NULL instead of an empty array.
+Array* array_new_no_init(AllocatorInterface*, uint32 member_count, uint32 member_size);
+
 // Copy memory from array at the provided index to the provided address.
 // The provided memory must be atleast array.member_size bytes.
 void array_get(Array*, uint32 index, uint8*);

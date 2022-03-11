@@ -1,7 +1,20 @@
 #include "datastructures/array.h"
 
 
-Array* array_new(AllocatorInterface* allocator, uint32 member_count,  uint32 member_size)
+inline Array* array_new(AllocatorInterface* allocator, uint32 member_count,  uint32 member_size)
+{
+    Array *array = array_new_no_init(allocator, member_count, member_size);
+    if (array == NULL)
+        return NULL;
+
+    for (uint64 i = 0; i < member_count * member_size; i++)
+        array->data[i] = 0x00;
+
+    return array;
+}
+
+
+Array* array_new_no_init(AllocatorInterface* allocator, uint32 member_count,  uint32 member_size)
 {
     if (allocator == NULL)
         return NULL;
@@ -16,10 +29,6 @@ Array* array_new(AllocatorInterface* allocator, uint32 member_count,  uint32 mem
     Array *array = (Array*) memory;
     array->member_count = member_count;
     array->member_size = member_size;
-
-    for (uint64 i = 0; i < member_count * member_size; i++)
-        array->data[i] = 0x00;
-
     return array;
 }
 

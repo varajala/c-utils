@@ -64,7 +64,7 @@ inline void arena_allocator_reset(ArenaAllocator *allocator)
     if (allocator == NULL)
         return;
     
-    BumpAllocator *bump_allocator
+    BumpAllocator *bump_allocator;
     for (uint32 i = 0; i < allocator->num_arenas; i++)
     {
         bump_allocator = allocator->arenas[i];
