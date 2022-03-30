@@ -1,5 +1,3 @@
-#include "arena_allocator.h"
-
 
 int test_arena_allocator_uniform_memory_allocation(AllocatorInterface *allocator)
 {   

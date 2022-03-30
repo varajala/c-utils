@@ -1,5 +1,3 @@
-#include "bump_allocator.h"
-
 
 int test_bump_allocator_memory_allocation(AllocatorInterface *allocator)
 {

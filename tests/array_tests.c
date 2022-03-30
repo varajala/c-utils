@@ -1,5 +1,3 @@
-#include "datastructures/array.h"
-
 
 int test_basic_array_use(AllocatorInterface *allocator)
 {
