@@ -23,6 +23,17 @@ static inline Array* list_to_array(List *list)
 // Returns NULL if max_members * member_sixe == 0.
 List* list_new(AllocatorInterface*, uint32 max_members, uint32 member_size);
 
+// Resize the list.
+// If max_members * member_size is smaller than currently allocated space,
+// the remaining data will be discarded and marked as freed.
+//
+// Returns the given pointer to the list if resizing failed,
+// pointer to new list otherwise. Assumes that the provided allocator
+// is implemented correctly and allocator.memory_resize
+// copies the data into the new memory block and frees the
+// old list.
+List* list_resize(List *list, AllocatorInterface *allocator, uint32 max_members);
+
 // Copy memory from the list at the provided index to the provided address.
 // The provided memory must be atleast list.member_size bytes.
 void list_get(List*, uint32 index, uint8*);

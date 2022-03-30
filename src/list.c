@@ -120,6 +120,30 @@ void list_copy_memory(List *list, uint8 *memory, uint32 user_buffer_max_size)
 }
 
 
+List* list_resize(List *list, AllocatorInterface *allocator, uint32 max_members)
+{
+    if (list == NULL || allocator == NULL)
+        return list;
+    
+    List *new_list;
+    uint32 new_member_count = list->member_count > max_members ? max_members : list->member_count;
+    uint32 base_size = offsetof(List, data);
+    size_t new_buffer_size = max_members * list->member_count;
+    size_t new_size = new_buffer_size + base_size;
+    
+    // Assume the allocator is implemented correctly
+    // and memory is copied into new memory block...
+    new_list = allocator->memory_resize(list, new_size);
+    if (new_list != list)
+    {
+        new_list->_allocated_space = new_size;
+        new_list->member_count = new_member_count;
+    }
+
+    return new_list;
+}
+
+
 inline Array* list_create_slice(List *list, AllocatorInterface* allocator, uint32 start, uint32 end)
 {
     return array_create_slice(list_to_array(list), allocator, start, end);
