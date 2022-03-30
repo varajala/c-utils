@@ -1,9 +1,0 @@
-*bin
-*lib
-*.vscode
-
-# gdb gui
-*venv
-
-# todo list
-.todo
