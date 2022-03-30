@@ -1,9 +1,8 @@
 #ifndef ARENA_ALLOCATOR_H
 #define ARENA_ALLOCATOR_H
 
-#include <stddef.h>
-#include "bump_allocator.h"
 #include "integer_types.h"
+#include "bump_allocator.h"
 
 
 typedef struct ArenaAllocator
@@ -21,7 +20,7 @@ typedef struct ArenaAllocator
 // these are not included in the total.
 static inline uint64 arena_allocator_size(uint32 max_arenas)
 {
-    return offsetof(ArenaAllocator, arenas) + (max_arenas * sizeof(void*));
+    return PLATFORM_POINTER_LENGTH + 128 + (max_arenas * PLATFORM_POINTER_LENGTH);
 }
 
 // Initialize the ArenaAllocator. Memory needs to be allocated by the caller.

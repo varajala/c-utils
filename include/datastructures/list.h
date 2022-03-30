@@ -3,6 +3,8 @@
 
 #include "datastructures/array.h"
 
+#define LIST_DATA_OFFSET 128
+
 typedef struct List
 {
     uint64 _allocated_space;

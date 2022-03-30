@@ -1,9 +1,9 @@
 #ifndef BUMP_ALLOCATOR_H
 #define BUMP_ALLOCATOR_H
 
-#include <stddef.h>
 #include "integer_types.h"
 
+#define BUMP_ALLOCATOR_BUFFER_OFFSET 128
 
 typedef struct BumpAllocator
 {
@@ -16,7 +16,7 @@ typedef struct BumpAllocator
 // Calculate the total space used by a bump allocator based on its buffer size.
 static inline uint64 bump_allocator_size(uint64 buf_size)
 {
-    return offsetof(BumpAllocator, buffer) + buf_size;
+    return BUMP_ALLOCATOR_BUFFER_OFFSET + buf_size;
 }
 
 // Initialize the bump allocator, memory needs to be allocated by the caller.

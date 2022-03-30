@@ -22,7 +22,7 @@ Array* array_new_no_init(AllocatorInterface* allocator, uint32 member_count,  ui
     if (member_count == 0 || member_size == 0)
         return NULL;
 
-    void* memory = allocator->memory_allocate(offsetof(Array, data) + member_count * member_size);
+    void *memory = allocator->memory_allocate(ARRAY_DATA_OFFSET + (member_count * member_size));
     if (memory == NULL)
         return NULL;
 
@@ -317,5 +317,5 @@ void array_destroy(Array *array, AllocatorInterface *allocator)
 {
     if (allocator == NULL || array == NULL)
         return;
-    allocator->memory_free(array, offsetof(Array, data) + array->member_size * array->member_count);
+    allocator->memory_free(array, ARRAY_DATA_OFFSET + (array->member_size * array->member_count));
 }

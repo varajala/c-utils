@@ -3,7 +3,8 @@
 
 #include "integer_types.h"
 #include "allocator.h"
-#include <stddef.h>
+
+#define ARRAY_DATA_OFFSET 64
 
 typedef struct Array
 {

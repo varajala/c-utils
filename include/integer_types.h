@@ -15,4 +15,10 @@
 #define int32 int
 #define int64 long int
 
+#define PLATFORM_POINTER_LENGTH 8
+
+#ifndef NULL
+#define NULL ((void*)0x00)
+#endif
+
 #endif
