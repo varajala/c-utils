@@ -52,6 +52,7 @@ int (*tests[])(AllocatorInterface*) = {
     test_arena_allocator_size_check,
 
     test_basic_list_use,
+    test_list_resize,
     test_list_insertion,
     test_list_removing,
     test_list_getting_items,

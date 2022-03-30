@@ -126,19 +126,16 @@ List* list_resize(List *list, AllocatorInterface *allocator, uint32 max_members)
         return list;
     
     List *new_list;
-    uint32 new_member_count = list->member_count > max_members ? max_members : list->member_count;
-    uint64 new_buffer_size = max_members * list->member_count;
+    uint32 new_member_count = list->member_count < max_members ? list->member_count : max_members;
+    uint64 new_buffer_size = max_members * list->member_size;
     uint64 new_size = new_buffer_size + LIST_DATA_OFFSET;
     
     // Assume the allocator is implemented correctly
     // and memory is copied into new memory block...
     new_list = allocator->memory_resize(list, new_size);
-    if (new_list != list)
-    {
-        new_list->_allocated_space = new_size;
-        new_list->member_count = new_member_count;
-    }
-
+    
+    new_list->_allocated_space = new_size;
+    new_list->member_count = new_member_count;
     return new_list;
 }
 

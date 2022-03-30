@@ -1,19 +1,51 @@
 #include "datastructures/list.h"
 
-const int LIST_INITIAL_SIZE = 16;
+const uint32 LIST_INITIAL_SIZE = 16;
 
 
 int test_basic_list_use(AllocatorInterface *allocator)
 {
     List *list = list_new(allocator, LIST_INITIAL_SIZE, sizeof(int));
 
-    for (int i = 0; i < LIST_INITIAL_SIZE + 1; i++)
+    for (uint32 i = 0; i < LIST_INITIAL_SIZE + 1; i++)
     {
         list_insert(list, list->member_count, (uint8*) &i);
     }
     
     list_destroy(list, allocator);
     return 0;
+}
+
+
+int test_list_resize(AllocatorInterface *allocator)
+{
+    int error = 0;
+    
+    List *list = list_new(allocator, LIST_INITIAL_SIZE, sizeof(int));
+    memset(list->data, 16, LIST_INITIAL_SIZE * sizeof(int));
+    list->member_count = LIST_INITIAL_SIZE;
+
+    list = list_resize(list, allocator, LIST_INITIAL_SIZE * 2);
+    if (list->member_count != LIST_INITIAL_SIZE ||
+        list->_allocated_space != LIST_DATA_OFFSET + LIST_INITIAL_SIZE * 2 * sizeof(int)
+    )
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    list = list_resize(list, allocator, LIST_INITIAL_SIZE / 2);
+    if (list->member_count != LIST_INITIAL_SIZE / 2 ||
+        list->_allocated_space != LIST_DATA_OFFSET + LIST_INITIAL_SIZE / 2 * sizeof(int)
+    )
+    {
+        error = 1;
+        goto cleanup;
+    }
+
+    cleanup:
+        list_destroy(list, allocator);
+    return error;
 }
 
 
