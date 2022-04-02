@@ -182,6 +182,14 @@ typedef struct Dict {
 } Dict;
 
 
+typedef struct Set {
+    uint32 _num_slots;
+    uint32 member_count;
+    Array *index_table;
+    List *items;
+} Set;
+
+
 // Calculate the total space used by a bump allocator based on its buffer size.
 static inline uint64 bump_allocator_size(uint64 buf_size)
 {
@@ -440,6 +448,33 @@ Array* dict_copy_items(Dict*, AllocatorInterface*);
 
 // Free all memory used by the dict.
 void dict_destroy(Dict*, AllocatorInterface*);
+
+// Allocate memory and initialize the set.
+// Returns NULL if max_members * member_sixe == 0.
+Set* set_new(AllocatorInterface*, uint32 max_members, uint32 member_size);
+
+// Test if the specified key is in the dict.
+// Returns 1 if key is found, 0 otherwise.
+int set_contains_item(Set*, uint8 *item);
+
+// Add the item into the set.
+// Fails silently if not enough space, or item already exists in the set.
+// 
+// Note that any unitialized struct padding can interfere with the hashing.
+// Also note that if more than 2/3 of the max capacity of the dict is used,
+// performance will decrease due to hash collisions.
+void set_add(Set*, uint8* item);
+
+// Remove the provided item from the set.
+// Memory pointed by item must be atleast dict.member_size bytes.
+// Fails silently if item is not in the set.
+void set_remove(Set*, uint8* item);
+
+// Copy values from the set into a new array.
+Array* set_copy_items(Set*, AllocatorInterface*);
+
+// Free all memory used by the set.
+void set_destroy(Set*, AllocatorInterface*);
 
 
 #endif

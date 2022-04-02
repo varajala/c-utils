@@ -910,5 +910,162 @@ void dict_destroy(Dict* dict, AllocatorInterface *allocator)
     if (dict->values != NULL)
         list_destroy(dict->values, allocator);
 
-    allocator->memory_free(dict, sizeof(dict));
+    allocator->memory_free(dict, sizeof(Dict));
 }
+
+
+static int64 set_get_index(Set *set, uint8 *item)
+{
+    uint8 *item_value;
+    uint32 member_size = set->items->member_size;
+    int64 slot_value;
+    uint32 index;
+    uint32 tries = 1;
+
+    while (tries < set->_num_slots)
+    {
+        index = probe_index(item, member_size, tries-1, set->_num_slots);
+        array_get(set->index_table, index, (uint8*)&slot_value);
+        
+        if (slot_value == EMPTY_SLOT)
+            return -1;
+
+        if (slot_value != REMOVED_SLOT)
+        {
+            item_value = &set->items->data[member_size * slot_value];
+            if (memory_equal(item, item_value, member_size)) {
+                return slot_value;
+            }
+        }
+        tries++;
+    }
+    return -1;
+}
+
+
+Set* set_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_size)
+{
+    if (allocator == NULL)
+        return NULL;
+    
+    Set *set = allocator->memory_allocate(sizeof(Set));
+    if (set == NULL)
+        return NULL;
+
+    Array *index_table = array_new(allocator, max_members, 8);
+    if (index_table == NULL)
+    {
+        allocator->memory_free(set, sizeof(set));
+        return NULL;
+    }
+    
+    
+    List *item_list = list_new(allocator, max_members, member_size);
+    if (item_list == NULL)
+    {
+        allocator->memory_free(set, sizeof(Set));
+        array_destroy(index_table, allocator);
+        return NULL;
+    }
+    
+    set->_num_slots = max_members;
+    set->member_count = 0;
+    set->index_table = index_table;
+    set->items = item_list;
+
+    for (uint32 i = 0; i < max_members; i++)
+    {
+        array_set(index_table, i, (uint8*)&EMPTY_SLOT);
+    }
+
+    return set;
+}
+
+
+int set_contains_item(Set *set, uint8 *item)
+{
+    if (set == NULL || item == NULL)
+        return 0;
+    
+    int64 index = set_get_index(set, item);
+    if (index < 0) return 0;
+    return 1;
+}
+
+
+void set_add(Set *set, uint8* item)
+{
+    if (set == NULL || item == NULL)
+        return;
+
+    uint8 *item_value;
+    uint64 member_size = set->items->member_size;
+    int64 slot_value;
+    uint32 index;
+    uint32 tries = 1;
+    
+    while (tries < set->_num_slots)
+    {
+        index = probe_index(item, member_size, tries-1, set->_num_slots);
+        array_get(set->index_table, index, (uint8*)&slot_value);
+        
+        if (slot_value == EMPTY_SLOT || slot_value == REMOVED_SLOT)
+        {
+            slot_value = (int64) set->member_count;
+            array_set(set->index_table, index, (uint8*)&slot_value);
+            list_append(set->items, item);
+            set->member_count++;
+            break;
+        }
+
+        // Check if item is the same, and do nothing if true...
+        item_value = &set->items->data[slot_value];
+        if (memory_equal(item, item_value, member_size))
+            return;
+        
+        tries++;
+    }
+}
+
+
+void set_remove(Set *set, uint8* item)
+{
+    if (set == NULL || item == NULL)
+        return;
+    
+    int64 index = set_get_index(set, item);
+    if (index > -1)
+    {
+        array_set(set->index_table, index, (uint8*)&REMOVED_SLOT);
+        list_remove_at(set->items, index);
+        set->member_count--;
+    }
+}
+
+
+Array* set_copy_items(Set *set, AllocatorInterface *allocator)
+{
+    if (set == NULL || allocator == NULL)
+        return NULL;
+
+    Array *items = list_to_array(set->items);
+    Array *copy = array_new(allocator, items->member_count, items->member_size);
+    array_copy_memory(copy, (uint8*)items->data, items->member_count * items->member_size);
+    return copy;
+}
+
+
+void set_destroy(Set *set, AllocatorInterface *allocator)
+{
+    if (allocator == NULL || set == NULL)
+        return;
+
+    if (set->index_table != NULL)
+        array_destroy(set->index_table, allocator);
+    
+    if (set->items != NULL)
+        list_destroy(set->items, allocator);
+
+    allocator->memory_free(set, sizeof(Set));
+}
+
