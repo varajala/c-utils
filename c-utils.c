@@ -683,16 +683,6 @@ static inline uint32 probe_index(uint8 *key, uint32 key_length, uint32 tries, ui
     ) % slots;
 }
 
-static inline int mem_equals(uint8* src, uint8 *cmp, uint64 length)
-{
-    for (uint64 i = 0; i < length; i++)
-    {
-        if (src[i] != cmp[i])
-            return 0;
-    }
-    return 1;
-}
-
 
 static int64 dict_get_index(Dict *dict, uint8 *key)
 {
@@ -713,7 +703,7 @@ static int64 dict_get_index(Dict *dict, uint8 *key)
         if (slot_value != REMOVED_SLOT)
         {
             key_value = &dict->keys->data[key_size * slot_value];
-            if (mem_equals(key, key_value, key_size)) {
+            if (memory_equal(key, key_value, key_size)) {
                 return slot_value;
             }
         }
@@ -811,7 +801,7 @@ void dict_set(Dict *dict, uint8 *key, uint8* value)
 
         // Check if key is the same, and do updating instead...
         key_value = &dict->keys->data[slot_value];
-        if (mem_equals(key, key_value, key_size)) {
+        if (memory_equal(key, key_value, key_size)) {
             list_set(dict->values, slot_value, value);
             break;
         }

@@ -43,6 +43,63 @@
 #define int64 long int
 
 
+#define max(A, B) (A >= B ? A : B)
+
+#define min(A, B) (A <= B ? A : B)
+
+
+static inline void memory_set(uint8 *memory, uint8 value, uint64 length)
+{
+    for (uint64 i = 0; i < length; i++)
+        memory[i] = value;
+}
+
+
+static inline void memory_copy(uint8 *src, uint8 *target, uint64 length)
+{
+    for (uint64 i = 0; i < length; i++)
+        target[i] = src[i];
+}
+
+
+// Compare the two provided memory blocks and return 1 if
+// blocks are equal, 0 otherwise. Reads at most 'length' bytes.
+// This function should not be used for anything where security
+// is required (for example comparing password hashes).
+static inline int memory_equal(uint8* src, uint8 *cmp, uint64 length)
+{
+    for (uint64 i = 0; i < length; i++)
+    {
+        if (src[i] != cmp[i])
+            return 0;
+    }
+    return 1;
+}
+
+
+// Return 1 if host is little endian, 0 otherwise.
+static inline int platform_is_little_endian()
+{
+    uint8 four_bytes[4] = { 0x01, 0x02, 0x03, 0x04 };
+    uint32 *number = (uint32*)&four_bytes;
+    return *number == 0x04030201;
+}
+
+
+// Switch the byteorder of a given memory block.
+// Reads at most 'length' bytes.
+static inline void switch_endianess(uint8 *bytes, uint32 length)
+{
+    uint8 temp;
+    for (uint32 i = 0; i < length / 2; i++)
+    {
+        temp = bytes[i];
+        bytes[i] = bytes[length - i - 1];
+        bytes[length - i - 1] = temp;
+    }
+}
+
+
 enum ComparisonResult
 {
     COMPARISON_RESULT_FIRST_IS_LARGER,
