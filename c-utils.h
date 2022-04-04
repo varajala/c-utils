@@ -121,8 +121,7 @@ typedef struct AllocatorInterface
     // the old block must be copied into the new block
     // for the length of MIN(old_size, new_size) and
     // the old memory block block must be freed.
-    // If allocation fails, pointer to the old
-    // memory block must be returned.
+    // If allocation fails, NULL must be returned.
     void* (*memory_resize)   (void *memory, uint64);
 
     // Mark the memory in segment [memory, memory + n] freed.
@@ -403,6 +402,8 @@ void list_destroy(List*, AllocatorInterface *allocator);
 // Returns NULL if max_members * member_sixe == 0.
 Dict* dict_new(AllocatorInterface*, uint32 max_members, uint32 key_size, uint32 value_size);
 
+int dict_resize(Dict *dict, AllocatorInterface *allocator, uint32 max_members);
+
 // Test if the specified key is in the dict.
 // Returns 1 if key is found, 0 otherwise.
 int dict_contains_key(Dict*, uint8 *key);
@@ -452,6 +453,8 @@ void dict_destroy(Dict*, AllocatorInterface*);
 // Allocate memory and initialize the set.
 // Returns NULL if max_members * member_sixe == 0.
 Set* set_new(AllocatorInterface*, uint32 max_members, uint32 member_size);
+
+int set_resize(Set *set, AllocatorInterface *allocator, uint32 max_members);
 
 // Test if the specified key is in the dict.
 // Returns 1 if key is found, 0 otherwise.

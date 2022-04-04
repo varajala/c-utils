@@ -584,13 +584,15 @@ List* list_resize(List *list, AllocatorInterface *allocator, uint32 max_members)
         return list;
     
     List *new_list;
-    uint32 new_member_count = list->member_count < max_members ? list->member_count : max_members;
+    uint32 new_member_count = min(list->member_count, max_members);
     uint64 new_buffer_size = max_members * list->member_size;
     uint64 new_size = new_buffer_size + LIST_DATA_OFFSET;
     
     // Assume the allocator is implemented correctly
     // and memory is copied into new memory block...
     new_list = allocator->memory_resize(list, new_size);
+    if (new_list == NULL)
+        return list;
     
     new_list->_allocated_space = new_size;
     new_list->member_count = new_member_count;
@@ -762,6 +764,59 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
 }
 
 
+int dict_resize(Dict *dict, AllocatorInterface *allocator, uint32 max_members)
+{
+    if (dict == NULL || allocator == NULL)
+        return 1;
+
+    List *new_keys = list_resize(dict->keys, allocator, max_members);
+    if (new_keys == NULL)
+        return 1;
+
+    List *new_values = list_resize(dict->values, allocator, max_members);
+    if (new_values == NULL)
+        return 1;
+
+    Array *new_index_table = allocator->memory_resize(dict->index_table, 8 * max_members);
+    if (new_index_table == NULL)
+        return 1;
+
+    new_index_table->member_count = max_members;
+    memory_set(new_index_table->data, (uint8)EMPTY_SLOT, 8 * max_members);
+
+    uint8 *key;
+    uint32 key_size = dict->keys->member_size;
+    uint32 index;
+    int64 slot_value;
+    uint32 tries = 1;
+
+    dict->_num_slots = max_members;
+    dict->member_count = min(dict->member_count, max_members);
+    dict->keys = new_keys;
+    dict->values = new_values;
+    dict->index_table = new_index_table;
+
+    for (uint32 i = 0; i < dict->member_count; i++)
+    {
+        key = &new_keys->data[key_size * i];
+        
+        while (tries < dict->_num_slots)
+        {
+            index = probe_index(key, key_size, tries-1, dict->_num_slots);
+            array_get(dict->index_table, index, (uint8*)&slot_value);
+            
+            if (slot_value == EMPTY_SLOT || slot_value == REMOVED_SLOT)
+            {
+                slot_value = (int64) i;
+                break;
+            }
+            tries++;
+        }
+    }
+    return 0;
+}
+
+
 int dict_contains_key(Dict *dict, uint8 *key)
 {
     if (dict == NULL || key == NULL)
@@ -779,7 +834,7 @@ void dict_set(Dict *dict, uint8 *key, uint8* value)
         return;
 
     uint8 *key_value;
-    uint64 key_size = dict->keys->member_size;
+    uint32 key_size = dict->keys->member_size;
     int64 slot_value;
     uint32 index;
     uint32 tries = 1;
@@ -979,6 +1034,12 @@ Set* set_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_si
     }
 
     return set;
+}
+
+
+int set_resize(Set *set, AllocatorInterface *allocator, uint32 max_members)
+{
+    return 0;
 }
 
 
