@@ -116,7 +116,7 @@ int test_dict_usage(AllocatorInterface *allocator)
 }
 
 
-const DictItem test_data[INITIAL_DICT_SIZE] = {
+const DictItem dict_test_data[INITIAL_DICT_SIZE] = {
     {
         { "ABCD", 1 },
         { .x = 100, .y = 200 }
@@ -147,10 +147,10 @@ int test_dict_copy_keys(AllocatorInterface *allocator)
     
     Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
     
-    dict_set(dict, (uint8*)&test_data[0].key, (uint8*)&test_data[0].value);
-    dict_set(dict, (uint8*)&test_data[1].key, (uint8*)&test_data[1].value);
-    dict_set(dict, (uint8*)&test_data[2].key, (uint8*)&test_data[2].value);
-    dict_set(dict, (uint8*)&test_data[3].key, (uint8*)&test_data[3].value);
+    dict_set(dict, (uint8*)&dict_test_data[0].key, (uint8*)&dict_test_data[0].value);
+    dict_set(dict, (uint8*)&dict_test_data[1].key, (uint8*)&dict_test_data[1].value);
+    dict_set(dict, (uint8*)&dict_test_data[2].key, (uint8*)&dict_test_data[2].value);
+    dict_set(dict, (uint8*)&dict_test_data[3].key, (uint8*)&dict_test_data[3].value);
 
     Array *dict_keys = dict_copy_keys(dict, allocator);
 
@@ -173,10 +173,10 @@ int test_dict_copy_values(AllocatorInterface *allocator)
     
     Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
     
-    dict_set(dict, (uint8*)&test_data[0].key, (uint8*)&test_data[0].value);
-    dict_set(dict, (uint8*)&test_data[1].key, (uint8*)&test_data[1].value);
-    dict_set(dict, (uint8*)&test_data[2].key, (uint8*)&test_data[2].value);
-    dict_set(dict, (uint8*)&test_data[3].key, (uint8*)&test_data[3].value);
+    dict_set(dict, (uint8*)&dict_test_data[0].key, (uint8*)&dict_test_data[0].value);
+    dict_set(dict, (uint8*)&dict_test_data[1].key, (uint8*)&dict_test_data[1].value);
+    dict_set(dict, (uint8*)&dict_test_data[2].key, (uint8*)&dict_test_data[2].value);
+    dict_set(dict, (uint8*)&dict_test_data[3].key, (uint8*)&dict_test_data[3].value);
 
     Array *dict_values = dict_copy_values(dict, allocator);
 
@@ -192,14 +192,14 @@ int test_dict_copy_items(AllocatorInterface *allocator)
 {
     Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
     
-    dict_set(dict, (uint8*)&test_data[0].key, (uint8*)&test_data[0].value);
-    dict_set(dict, (uint8*)&test_data[1].key, (uint8*)&test_data[1].value);
-    dict_set(dict, (uint8*)&test_data[2].key, (uint8*)&test_data[2].value);
-    dict_set(dict, (uint8*)&test_data[3].key, (uint8*)&test_data[3].value);
+    dict_set(dict, (uint8*)&dict_test_data[0].key, (uint8*)&dict_test_data[0].value);
+    dict_set(dict, (uint8*)&dict_test_data[1].key, (uint8*)&dict_test_data[1].value);
+    dict_set(dict, (uint8*)&dict_test_data[2].key, (uint8*)&dict_test_data[2].value);
+    dict_set(dict, (uint8*)&dict_test_data[3].key, (uint8*)&dict_test_data[3].value);
 
     Array *dict_items = dict_copy_items(dict, allocator);
 
-    int error = memcmp(dict_items->data, test_data, 4 * sizeof(DictItem));
+    int error = memcmp(dict_items->data, dict_test_data, 4 * sizeof(DictItem));
 
     array_destroy(dict_items, allocator);
     dict_destroy(dict, allocator);

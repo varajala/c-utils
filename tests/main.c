@@ -7,6 +7,7 @@
 #include "array_tests.c"
 #include "list_tests.c"
 #include "dict_tests.c"
+#include "set_tests.c"
 #include "bump_allocator_tests.c"
 #include "arena_allocator_tests.c"
 
@@ -66,6 +67,9 @@ int (*tests[])(AllocatorInterface*) = {
     test_dict_copy_keys,
     test_dict_copy_values,
     test_dict_copy_items,
+
+    test_set_usage,
+    test_set_copy_items,
     NULL
 };
 
