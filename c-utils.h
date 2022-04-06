@@ -129,7 +129,7 @@ typedef struct AllocatorInterface
 } AllocatorInterface;
 
 
-#define BUMP_ALLOCATOR_BUFFER_OFFSET 128
+#define BUMP_ALLOCATOR_BUFFER_OFFSET 16
 
 typedef struct BumpAllocator
 {
@@ -139,7 +139,7 @@ typedef struct BumpAllocator
 } BumpAllocator;
 
 
-#define ARENA_ALLOCATOR_ARENA_ARRAY_OFFSET (PLATFORM_POINTER_LENGTH + 128)
+#define ARENA_ALLOCATOR_ARENA_ARRAY_OFFSET (PLATFORM_POINTER_LENGTH + 16)
 
 typedef struct ArenaAllocator
 {
@@ -151,7 +151,7 @@ typedef struct ArenaAllocator
 } ArenaAllocator;
 
 
-#define ARRAY_DATA_OFFSET 64
+#define ARRAY_DATA_OFFSET 8
 
 typedef struct Array
 {
@@ -161,7 +161,7 @@ typedef struct Array
 } Array;
 
 
-#define LIST_DATA_OFFSET 128
+#define LIST_DATA_OFFSET 16
 
 typedef struct List
 {
