@@ -293,11 +293,8 @@ static int64 partition(Array *array, int64 start, int64 end, enum ComparisonResu
 }
 
 
-static void quicksort(Array *array, int64 start, int64 end, enum ComparisonResult (*compare)(uint8*, uint8*))
+void quicksort(Array *array, int64 start, int64 end, enum ComparisonResult (*compare)(uint8*, uint8*))
 {
-    if (array == NULL)
-        return;
-
     if (start >= end || start < 0 || end < 0)
         return;
 

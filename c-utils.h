@@ -300,10 +300,7 @@ void array_sort(Array*, enum ComparisonResult (*compare)(uint8*, uint8*));
 void array_destroy(Array*, AllocatorInterface*);
 
 // Safely cast List* to Array*
-static inline Array* list_to_array(List *list)
-{
-    return (Array*) &list->member_count;
-}
+#define list_to_array(list) ((Array*)&list->member_count)
 
 // Allocate memory and initialize the list.
 // All bytes are initialized to 0x00.
