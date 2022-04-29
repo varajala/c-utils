@@ -66,7 +66,7 @@ static inline void memory_copy(uint8 *src, uint8 *target, uint64 length)
 // blocks are equal, 0 otherwise. Reads at most 'length' bytes.
 // This function should not be used for anything where security
 // is required (for example comparing password hashes).
-static inline int memory_equal(uint8* src, uint8 *cmp, uint64 length)
+static inline int memory_are_equal(uint8* src, uint8 *cmp, uint64 length)
 {
     for (uint64 i = 0; i < length; i++)
     {
@@ -478,3 +478,4 @@ void set_destroy(Set*, AllocatorInterface*);
 
 
 #endif
+

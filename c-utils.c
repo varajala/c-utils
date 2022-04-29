@@ -697,7 +697,7 @@ static int64 dict_get_index(Dict *dict, uint8 *key)
         if (slot_value != REMOVED_SLOT)
         {
             key_value = &dict->keys->data[key_size * slot_value];
-            if (memory_equal(key, key_value, key_size)) {
+            if (memory_are_equal(key, key_value, key_size)) {
                 return slot_value;
             }
         }
@@ -848,7 +848,7 @@ void dict_set(Dict *dict, uint8 *key, uint8* value)
 
         // Check if key is the same, and do updating instead...
         key_value = &dict->keys->data[slot_value];
-        if (memory_equal(key, key_value, key_size)) {
+        if (memory_are_equal(key, key_value, key_size)) {
             list_set(dict->values, slot_value, value);
             break;
         }
@@ -980,7 +980,7 @@ static int64 set_get_index(Set *set, uint8 *item)
         if (slot_value != REMOVED_SLOT)
         {
             item_value = &set->items->data[member_size * slot_value];
-            if (memory_equal(item, item_value, member_size)) {
+            if (memory_are_equal(item, item_value, member_size)) {
                 return slot_value;
             }
         }
@@ -1117,7 +1117,7 @@ void set_add(Set *set, uint8* item)
 
         // Check if item is the same, and do nothing if true...
         item_value = &set->items->data[slot_value];
-        if (memory_equal(item, item_value, member_size))
+        if (memory_are_equal(item, item_value, member_size))
             return;
 
         tries++;
