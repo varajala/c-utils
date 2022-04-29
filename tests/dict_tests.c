@@ -223,27 +223,30 @@ int test_dict_resize(AllocatorInterface *allocator)
 
     if (!dict_contains_key(dict, (uint8*)&dict_test_data[0].key))
     {
-        err = -1;
+        err = 1;
         goto cleanup;
     }
 
     if (!dict_contains_key(dict, (uint8*)&dict_test_data[1].key))
     {
-        err = 2;
+        err = 1;
         goto cleanup;
     }
 
     if (!dict_contains_key(dict, (uint8*)&dict_test_data[2].key))
     {
-        err = 3;
+        err = 1;
         goto cleanup;
     }
 
     if (!dict_contains_key(dict, (uint8*)&dict_test_data[3].key))
     {
-        err = 4;
+        err = 1;
         goto cleanup;
     }
+
+
+    err = dict->_num_slots != 2 * INITIAL_DICT_SIZE;
 
     cleanup:
         dict_destroy(dict, allocator);

@@ -8,11 +8,11 @@ typedef struct SetItem {
 int test_set_usage(AllocatorInterface *allocator)
 {
     int error = 0;
-    SetItem item;   
+    SetItem item;
     Set *set = set_new(allocator, INITIAL_SET_SIZE, sizeof(SetItem));
     if (set == NULL)
         return 1;
-    
+
     item.x = 1;
     item.y = 2;
     item.z = 3;
@@ -73,9 +73,9 @@ int test_set_copy_items(AllocatorInterface *allocator)
         { 13, 14, 15 },
         { 16, 17, 18 },
     };
-    
+
     Set *set = set_new(allocator, INITIAL_SET_SIZE, sizeof(SetItem));
-    
+
     set_add(set, (uint8*)&set_test_data[0]);
     set_add(set, (uint8*)&set_test_data[1]);
     set_add(set, (uint8*)&set_test_data[2]);
@@ -91,4 +91,50 @@ int test_set_copy_items(AllocatorInterface *allocator)
     array_destroy(set_items, allocator);
     set_destroy(set, allocator);
     return !(error == 0);
+}
+
+
+int test_set_resize(AllocatorInterface *allocator)
+{
+    int err;
+    Set *set = set_new(allocator, INITIAL_SET_SIZE, sizeof(SetItem));
+
+    set_add(set, (uint8*)&set_test_data[0]);
+    set_add(set, (uint8*)&set_test_data[1]);
+    set_add(set, (uint8*)&set_test_data[2]);
+    set_add(set, (uint8*)&set_test_data[3]);
+
+    err = set_resize(set, allocator, 2 * INITIAL_SET_SIZE);
+    if (err)
+        goto cleanup;
+
+    if (!set_contains_item(set, (uint8*)&set_test_data[0]))
+    {
+        err = 1;
+        goto cleanup;
+    }
+
+    if (!set_contains_item(set, (uint8*)&set_test_data[1]))
+    {
+        err = 1;
+        goto cleanup;
+    }
+
+    if (!set_contains_item(set, (uint8*)&set_test_data[2]))
+    {
+        err = 1;
+        goto cleanup;
+    }
+
+    if (!set_contains_item(set, (uint8*)&set_test_data[3]))
+    {
+        err = 1;
+        goto cleanup;
+    }
+
+    err = set->_num_slots != 2 * INITIAL_SET_SIZE;
+
+    cleanup:
+        set_destroy(set, allocator);
+    return err;
 }

@@ -1031,7 +1031,51 @@ Set* set_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_si
 
 int set_resize(Set *set, AllocatorInterface *allocator, uint32 max_members)
 {
-    return 1;
+    if (set == NULL || allocator == NULL)
+        return 1;
+
+    List *new_items= list_resize(set->items, allocator, max_members);
+    if (new_items == NULL)
+        return 1;
+
+    Array *new_index_table = allocator->memory_resize(set->index_table, ARRAY_DATA_OFFSET + (8 * max_members));
+    if (new_index_table == NULL)
+        return 1;
+
+    new_index_table->member_count = max_members;
+    for (uint32 i = 0; i < max_members; i++)
+        array_set(new_index_table, i, (uint8*)&EMPTY_SLOT);
+
+    set->_num_slots = max_members;
+    set->member_count = min(set->member_count, max_members);
+    set->items = new_items;
+    set->index_table = new_index_table;
+
+    uint8 *key;
+    uint32 key_size = set->items->member_size;
+    uint32 index;
+    int64 slot_value;
+    uint32 tries = 1;
+
+    for (uint32 i = 0; i < set->member_count; i++)
+    {
+        key = &new_items->data[key_size * i];
+
+        while (tries < set->_num_slots)
+        {
+            index = probe_index(key, key_size, tries-1, set->_num_slots);
+            array_get(set->index_table, index, (uint8*)&slot_value);
+
+            if (slot_value == EMPTY_SLOT || slot_value == REMOVED_SLOT)
+            {
+                slot_value = (int64) i;
+                array_set(set->index_table, index, (uint8*)&slot_value);
+                break;
+            }
+            tries++;
+        }
+    }
+    return 0;
 }
 
 

@@ -69,8 +69,9 @@ int (*tests[])(AllocatorInterface*) = {
     test_dict_copy_items,
     test_dict_resize,
 
-     test_set_usage,
-     test_set_copy_items,
+    test_set_usage,
+    test_set_copy_items,
+    test_set_resize,
     NULL
 };
 
