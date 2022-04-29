@@ -67,9 +67,10 @@ int (*tests[])(AllocatorInterface*) = {
     test_dict_copy_keys,
     test_dict_copy_values,
     test_dict_copy_items,
+    test_dict_resize,
 
-    test_set_usage,
-    test_set_copy_items,
+     test_set_usage,
+     test_set_copy_items,
     NULL
 };
 
@@ -83,7 +84,7 @@ int main()
 
     int errors = 0;
     int i = 0;
-    
+
     while (1)
     {
         int (*test_func)(AllocatorInterface*) = tests[i];

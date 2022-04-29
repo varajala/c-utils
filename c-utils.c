@@ -479,9 +479,6 @@ List* list_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_
     list->member_count = 0;
     list->member_size = member_size;
 
-    for (uint64 i = 0; i < buffer_size; i++)
-        list->data[i] = 0x00;
-
     return list;
 }
 
@@ -722,7 +719,7 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
     Array *index_table = array_new(allocator, max_members, 8);
     if (index_table == NULL)
     {
-        allocator->memory_free(dict, sizeof(dict));
+        allocator->memory_free(dict, sizeof(Dict));
         return NULL;
     }
 
@@ -730,7 +727,7 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
     List *key_list = list_new(allocator, max_members, key_size);
     if (key_list == NULL)
     {
-        allocator->memory_free(dict, sizeof(dict));
+        allocator->memory_free(dict, sizeof(Dict));
         array_destroy(index_table, allocator);
         return NULL;
     }
@@ -738,7 +735,7 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
     List *value_list = list_new(allocator, max_members, value_size);
     if (value_list == NULL)
     {
-        allocator->memory_free(dict, sizeof(dict));
+        allocator->memory_free(dict, sizeof(Dict));
         array_destroy(index_table, allocator);
         list_destroy(key_list, allocator);
         return NULL;
@@ -751,9 +748,7 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
     dict->values = value_list;
 
     for (uint32 i = 0; i < max_members; i++)
-    {
         array_set(index_table, i, (uint8*)&EMPTY_SLOT);
-    }
 
     return dict;
 }
@@ -761,7 +756,56 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
 
 int dict_resize(Dict *dict, AllocatorInterface *allocator, uint32 max_members)
 {
-    return 1;
+    if (dict == NULL || allocator == NULL)
+        return 1;
+
+    List *new_keys = list_resize(dict->keys, allocator, max_members);
+    if (new_keys == NULL)
+        return 1;
+
+    List *new_values = list_resize(dict->values, allocator, max_members);
+    if (new_values == NULL)
+        return 1;
+
+    Array *new_index_table = allocator->memory_resize(dict->index_table, ARRAY_DATA_OFFSET + (8 * max_members));
+    if (new_index_table == NULL)
+        return 1;
+
+    new_index_table->member_count = max_members;
+    for (uint32 i = 0; i < max_members; i++)
+        array_set(new_index_table, i, (uint8*)&EMPTY_SLOT);
+
+    dict->_num_slots = max_members;
+    dict->member_count = min(dict->member_count, max_members);
+    dict->keys = new_keys;
+    dict->values = new_values;
+    dict->index_table = new_index_table;
+
+    uint8 *key;
+    uint32 key_size = dict->keys->member_size;
+    uint32 index;
+    int64 slot_value;
+    uint32 tries = 1;
+
+    for (uint32 i = 0; i < dict->member_count; i++)
+    {
+        key = &new_keys->data[key_size * i];
+
+        while (tries < dict->_num_slots)
+        {
+            index = probe_index(key, key_size, tries-1, dict->_num_slots);
+            array_get(dict->index_table, index, (uint8*)&slot_value);
+
+            if (slot_value == EMPTY_SLOT || slot_value == REMOVED_SLOT)
+            {
+                slot_value = (int64) i;
+                array_set(dict->index_table, index, (uint8*)&slot_value);
+                break;
+            }
+            tries++;
+        }
+    }
+    return 0;
 }
 
 
@@ -958,7 +1002,7 @@ Set* set_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_si
     Array *index_table = array_new(allocator, max_members, 8);
     if (index_table == NULL)
     {
-        allocator->memory_free(set, sizeof(set));
+        allocator->memory_free(set, sizeof(Set));
         return NULL;
     }
 

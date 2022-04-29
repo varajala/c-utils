@@ -114,7 +114,7 @@ typedef struct AllocatorInterface
     // with the minimium size of provided number of bytes.
     // Returns NULL if allocation fails for any reason.
     void* (*memory_allocate) (uint64);
-    
+
     // Should resize the provided memory block into
     // a new continuous memory block with minimium size
     // of provided number of bytes. The memory from
@@ -267,7 +267,7 @@ Array* array_filter(Array*, AllocatorInterface*, int (*func)(uint8*));
 // Create a reversed copy of the given array.
 Array* array_reverse(Array*, AllocatorInterface*);
 
-// Return the first index after the given start index 
+// Return the first index after the given start index
 // where the test function returns a non zero value.
 // If no mathces are found, or an error occurs, negative value is returned.
 int64 array_find_index(Array*, uint32 start_index, int (*func)(uint8*));
@@ -284,7 +284,7 @@ void array_foreach(Array*, void (*func)(uint8*));
 // This function recieves three arguments:
 // previous_value, current_value, result.
 // If there is no previous value, use the result instead.
-// 
+//
 // EXAMPLE calculate sum of array of integers:
 //
 // void sum_integers(uint8 *prev, uint8 *current, uint8 *result) { int n = *current; *result += n; }
@@ -363,7 +363,7 @@ Array* list_filter(List*, AllocatorInterface*, int (*func)(uint8*));
 // Create a reversed array from the given list.
 Array* list_reverse(List*, AllocatorInterface*);
 
-// Return the first index after the given start index 
+// Return the first index after the given start index
 // where the test function returns a non zero value.
 // If no mathces are found, or an error occurs, negative value is returned.
 int64 list_find_index(List*, uint32 start_index, int (*func)(uint8*));
@@ -380,7 +380,7 @@ void list_foreach(List*, void (*func)(uint8*));
 // This function recieves three arguments:
 // previous_value, current_value, result.
 // If there is no previous value, use the result instead.
-// 
+//
 // EXAMPLE calculate sum of list of integers:
 //
 // void sum_integers(uint8 *prev, uint8 *current, uint8 *result) { int n = *current; *result += n; }
@@ -409,7 +409,7 @@ int dict_contains_key(Dict*, uint8 *key);
 // Adds a new value if key does not exist,
 // otherwise updates the value.
 // Fails silently if not enough space.
-// 
+//
 // Memory pointed by key must be atleast dict.key_size bytes.
 // Memory pointed by value must be atleast dict.value_size bytes.
 // Note that any unitialized struct padding can interfere with the hashing.
@@ -459,7 +459,7 @@ int set_contains_item(Set*, uint8 *item);
 
 // Add the item into the set.
 // Fails silently if not enough space, or item already exists in the set.
-// 
+//
 // Note that any unitialized struct padding can interfere with the hashing.
 // Also note that if more than 2/3 of the max capacity of the dict is used,
 // performance will decrease due to hash collisions.

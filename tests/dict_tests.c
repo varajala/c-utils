@@ -22,7 +22,7 @@ int test_dict_creation(AllocatorInterface *allocator)
     Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
     if (dict == NULL)
         return 1;
-    
+
     if (dict->member_count != 0)
         error = 1;
 
@@ -109,7 +109,7 @@ int test_dict_usage(AllocatorInterface *allocator)
         error = 1;
         goto cleanup;
     }
-    
+
     cleanup:
         dict_destroy(dict, allocator);
     return error;
@@ -118,19 +118,19 @@ int test_dict_usage(AllocatorInterface *allocator)
 
 const DictItem dict_test_data[INITIAL_DICT_SIZE] = {
     {
-        { "ABCD", 1 },
+        { "ABCD\0\0\0\0", 1 },
         { .x = 100, .y = 200 }
     },
     {
-        { "EFGH", 2 },
+        { "EFGH\0\0\0\0", 2 },
         { .x = 300, .y = 400 }
     },
     {
-        { "IJKL", 3 },
+        { "IJKL\0\0\0\0", 3 },
         { .x = 500, .y = 600 }
     },
     {
-        { "MNOP", 4 },
+        { "MNOP\0\0\0\0", 4 },
         { .x = 700, .y = 800 }
     },
 };
@@ -139,14 +139,14 @@ const DictItem dict_test_data[INITIAL_DICT_SIZE] = {
 int test_dict_copy_keys(AllocatorInterface *allocator)
 {
     const DictKey expected_keys[INITIAL_DICT_SIZE] = {
-        { "ABCD", 1 },
-        { "EFGH", 2 },
-        { "IJKL", 3 },
-        { "MNOP", 4 },
+        { "ABCD\0\0\0\0", 1 },
+        { "EFGH\0\0\0\0", 2 },
+        { "IJKL\0\0\0\0", 3 },
+        { "MNOP\0\0\0\0", 4 },
     };
-    
+
     Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
-    
+
     dict_set(dict, (uint8*)&dict_test_data[0].key, (uint8*)&dict_test_data[0].value);
     dict_set(dict, (uint8*)&dict_test_data[1].key, (uint8*)&dict_test_data[1].value);
     dict_set(dict, (uint8*)&dict_test_data[2].key, (uint8*)&dict_test_data[2].value);
@@ -170,9 +170,9 @@ int test_dict_copy_values(AllocatorInterface *allocator)
         { .x = 500, .y = 600 },
         { .x = 700, .y = 800 },
     };
-    
+
     Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
-    
+
     dict_set(dict, (uint8*)&dict_test_data[0].key, (uint8*)&dict_test_data[0].value);
     dict_set(dict, (uint8*)&dict_test_data[1].key, (uint8*)&dict_test_data[1].value);
     dict_set(dict, (uint8*)&dict_test_data[2].key, (uint8*)&dict_test_data[2].value);
@@ -191,7 +191,7 @@ int test_dict_copy_values(AllocatorInterface *allocator)
 int test_dict_copy_items(AllocatorInterface *allocator)
 {
     Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
-    
+
     dict_set(dict, (uint8*)&dict_test_data[0].key, (uint8*)&dict_test_data[0].value);
     dict_set(dict, (uint8*)&dict_test_data[1].key, (uint8*)&dict_test_data[1].value);
     dict_set(dict, (uint8*)&dict_test_data[2].key, (uint8*)&dict_test_data[2].value);
@@ -206,3 +206,46 @@ int test_dict_copy_items(AllocatorInterface *allocator)
     return !(error == 0);
 }
 
+
+int test_dict_resize(AllocatorInterface *allocator)
+{
+    int err;
+    Dict *dict = dict_new(allocator, INITIAL_DICT_SIZE, sizeof(DictKey), sizeof(DictValue));
+
+    dict_set(dict, (uint8*)&dict_test_data[0].key, (uint8*)&dict_test_data[0].value);
+    dict_set(dict, (uint8*)&dict_test_data[1].key, (uint8*)&dict_test_data[1].value);
+    dict_set(dict, (uint8*)&dict_test_data[2].key, (uint8*)&dict_test_data[2].value);
+    dict_set(dict, (uint8*)&dict_test_data[3].key, (uint8*)&dict_test_data[3].value);
+
+    err = dict_resize(dict, allocator, 2 * INITIAL_DICT_SIZE);
+    if (err)
+        goto cleanup;
+
+    if (!dict_contains_key(dict, (uint8*)&dict_test_data[0].key))
+    {
+        err = -1;
+        goto cleanup;
+    }
+
+    if (!dict_contains_key(dict, (uint8*)&dict_test_data[1].key))
+    {
+        err = 2;
+        goto cleanup;
+    }
+
+    if (!dict_contains_key(dict, (uint8*)&dict_test_data[2].key))
+    {
+        err = 3;
+        goto cleanup;
+    }
+
+    if (!dict_contains_key(dict, (uint8*)&dict_test_data[3].key))
+    {
+        err = 4;
+        goto cleanup;
+    }
+
+    cleanup:
+        dict_destroy(dict, allocator);
+    return err;
+}
