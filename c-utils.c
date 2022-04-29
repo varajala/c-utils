@@ -27,11 +27,9 @@ void bump_allocator_init(BumpAllocator *allocator, uint64 buffer_size)
 {
     if (allocator == NULL)
         return;
-    
+
     allocator->end_index = 0;
     allocator->buffer_size = buffer_size;
-    for (uint64 i = 0; i < buffer_size; i++)
-        allocator->buffer[i] = 0x00;
 }
 
 inline void bump_allocator_reset(BumpAllocator *allocator)
@@ -46,10 +44,10 @@ void* bump_allocator_memory_allocate(BumpAllocator *allocator, uint64 size)
 {
     if (allocator == NULL)
         return NULL;
-    
+
     if (size + allocator->end_index > allocator->buffer_size)
         return NULL;
-    
+
     void *memory = allocator->buffer + allocator->end_index;
     allocator->end_index += size;
     return memory;
@@ -71,7 +69,7 @@ void arena_allocator_init(ArenaAllocator *allocator, void* (*get_memory)(uint64)
 
     for (uint32 i = 0; i < max_arenas; i++)
         allocator->arenas[i] = NULL;
-    
+
     BumpAllocator *arena = get_memory(bump_allocator_size(arena_size));
     if (arena == NULL)
         return;
@@ -86,13 +84,13 @@ void* arena_allocator_memory_allocate(ArenaAllocator *allocator, uint64 size)
 {
     if (allocator == NULL)
         return NULL;
-    
+
     if (size > allocator->arena_size)
         return NULL;
 
     void *memory;
     BumpAllocator *arena;
-    
+
     for (uint32 i = 0; i < allocator->num_arenas; i++)
     {
         arena = allocator->arenas[i];
@@ -103,7 +101,7 @@ void* arena_allocator_memory_allocate(ArenaAllocator *allocator, uint64 size)
 
     if (allocator->num_arenas >= allocator->max_arenas)
         return NULL;
-    
+
     arena = allocator->get_memory(bump_allocator_size(allocator->arena_size));
     if (arena == NULL)
         return NULL;
@@ -118,7 +116,7 @@ inline void arena_allocator_reset(ArenaAllocator *allocator)
 {
     if (allocator == NULL)
         return;
-    
+
     BumpAllocator *bump_allocator;
     for (uint32 i = 0; i < allocator->num_arenas; i++)
     {
@@ -132,7 +130,7 @@ void arena_allocator_destroy(ArenaAllocator *allocator, void (*free_memory)(void
 {
     if (allocator == NULL || free_memory == NULL)
         return;
-    
+
     for (uint32 i = 0; i < allocator->num_arenas; i++)
         free_memory(allocator->arenas[i], allocator->arena_size);
     free_memory(allocator, arena_allocator_size(allocator->max_arenas));
@@ -156,7 +154,7 @@ Array* array_new_no_init(AllocatorInterface* allocator, uint32 member_count,  ui
 {
     if (allocator == NULL)
         return NULL;
-    
+
     if (member_count == 0 || member_size == 0)
         return NULL;
 
@@ -175,10 +173,10 @@ void array_get(Array *array, uint32 index, uint8 *memory)
 {
     if (array == NULL || memory == NULL)
         return;
-    
+
     if (index >= array->member_count)
         return;
-    
+
     uint32 offset = array->member_size * index;
     for (uint32 i = 0; i < array->member_size; i++)
         memory[i] = array->data[offset + i];
@@ -189,7 +187,7 @@ void array_set(Array *array, uint32 index, uint8 *memory)
 {
     if (array == NULL || memory == NULL)
         return;
-    
+
     if (index >= array->member_count)
         return;
 
@@ -218,7 +216,7 @@ Array* array_create_slice(Array *src_array, AllocatorInterface *allocator, uint3
 {
     if (src_array == NULL || allocator == NULL)
         return NULL;
-    
+
     if (start >= src_array->member_count)
         return NULL;
 
@@ -236,9 +234,9 @@ Array* array_create_slice(Array *src_array, AllocatorInterface *allocator, uint3
     uint32 i_last = (end-start) * src_array->member_size;
     for (uint64 i = 0; i < i_last; i++)
         slice_array->data[i] = src_array->data[offset+i];
-    
+
     return slice_array;
-}   
+}
 
 
 void array_foreach(Array *array, void (*func)(uint8*))
@@ -276,11 +274,11 @@ static void swap(Array *array, uint32 index_a, uint32 index_b)
 static int64 partition(Array *array, int64 start, int64 end, enum ComparisonResult (*compare)(uint8*, uint8*))
 {
     uint32 member_size = array->member_size;
-    
+
     uint8 *pivot = &array->data[member_size * end];
     uint8 *comparison;
     int64 index = start - 1;
-    
+
     for (uint32 i = start; i < end; i++)
     {
         comparison = &array->data[member_size * i];
@@ -337,7 +335,7 @@ Array* array_filter(Array *array, AllocatorInterface *allocator, int (*func)(uin
     uint64 dest_offset;
     uint32 passed_items = 0;
     uint32 index = 0;
-    
+
     for (uint32 i = 0; i < array->member_count; i++)
     {
         src_offset = i * array->member_size;
@@ -388,7 +386,7 @@ int64 array_find_index(Array *array, uint32 start_index, int (*func)(uint8*))
 {
     if (array == NULL || func == NULL)
         return -2;
-    
+
     if (start_index >= array->member_count)
         return -3;
 
@@ -433,12 +431,12 @@ void array_reduce(Array *array, void (*func)(uint8*, uint8*, uint8*), uint8 *res
     uint8 *current_value = NULL;
     uint8 *previous_value = NULL;
     uint64 offset;
-    
+
     for (uint32 index = 0; index < array->member_count; index++)
     {
         offset = index * array->member_size;
         current_value = (uint8*)&array->data[offset];
-        
+
         if (previous_value == NULL)
             previous_value = result;
 
@@ -466,13 +464,13 @@ List* list_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_
 {
     if (allocator == NULL)
         return NULL;
-    
+
     if (max_members == 0 || member_size == 0)
         return NULL;
 
     uint64 buffer_size = max_members * member_size;
     uint64 required_space = LIST_DATA_OFFSET + buffer_size;
-    
+
     List *list = (List*) allocator->memory_allocate(required_space);
     if (list == NULL)
         return NULL;
@@ -501,10 +499,10 @@ void list_insert(List *list, uint32 index, uint8 *memory)
 
     if (index > list->member_count)
         index = list->member_count;
-    
+
     uint64 used_space = list->member_count * list->member_size;
     uint64 buffer_size = list_get_allocated_buffer_size(list);
-    
+
     if (buffer_size - used_space < list->member_size) {
         return;
     }
@@ -523,7 +521,7 @@ void list_insert(List *list, uint32 index, uint8 *memory)
         }
     }
 
-    uint32 offset = index * list->member_size;    
+    uint32 offset = index * list->member_size;
     for (uint32 i = 0; i < list->member_size; i++)
         list->data[offset + i] = memory[i];
 }
@@ -555,7 +553,7 @@ void list_remove_at(List *list, uint32 index)
         for (uint32 j = 0; j < list->member_size; j++)
         {
             uint64 offset = i * list->member_size;
-            list->data[offset - list->member_size + j] = list->data[offset + j];   
+            list->data[offset - list->member_size + j] = list->data[offset + j];
         }
     }
     list->member_count -= 1;
@@ -579,18 +577,18 @@ List* list_resize(List *list, AllocatorInterface *allocator, uint32 max_members)
 {
     if (list == NULL || allocator == NULL)
         return list;
-    
+
     List *new_list;
     uint32 new_member_count = min(list->member_count, max_members);
     uint64 new_buffer_size = max_members * list->member_size;
     uint64 new_size = new_buffer_size + LIST_DATA_OFFSET;
-    
+
     // Assume the allocator is implemented correctly
     // and memory is copied into new memory block...
     new_list = allocator->memory_resize(list, new_size);
     if (new_list == NULL)
         return list;
-    
+
     new_list->_allocated_space = new_size;
     new_list->member_count = new_member_count;
     return new_list;
@@ -654,7 +652,7 @@ void list_destroy(List *list, AllocatorInterface *allocator)
 {
     if (list == NULL || allocator == NULL)
         return;
-    
+
     allocator->memory_free(list, list->_allocated_space);
 }
 
@@ -695,7 +693,7 @@ static int64 dict_get_index(Dict *dict, uint8 *key)
     {
         index = probe_index(key, key_size, tries-1, dict->_num_slots);
         array_get(dict->index_table, index, (uint8*)&slot_value);
-        
+
         if (slot_value == EMPTY_SLOT)
             return -1;
 
@@ -716,7 +714,7 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
 {
     if (allocator == NULL)
         return NULL;
-    
+
     Dict *dict = allocator->memory_allocate(sizeof(Dict));
     if (dict == NULL)
         return NULL;
@@ -727,8 +725,8 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
         allocator->memory_free(dict, sizeof(dict));
         return NULL;
     }
-    
-    
+
+
     List *key_list = list_new(allocator, max_members, key_size);
     if (key_list == NULL)
     {
@@ -736,7 +734,7 @@ Dict* dict_new(AllocatorInterface *allocator, uint32 max_members, uint32 key_siz
         array_destroy(index_table, allocator);
         return NULL;
     }
-    
+
     List *value_list = list_new(allocator, max_members, value_size);
     if (value_list == NULL)
     {
@@ -771,7 +769,7 @@ int dict_contains_key(Dict *dict, uint8 *key)
 {
     if (dict == NULL || key == NULL)
         return 0;
-    
+
     int64 index = dict_get_index(dict, key);
     if (index < 0) return 0;
     return 1;
@@ -788,12 +786,12 @@ void dict_set(Dict *dict, uint8 *key, uint8* value)
     int64 slot_value;
     uint32 index;
     uint32 tries = 1;
-    
+
     while (tries < dict->_num_slots)
     {
         index = probe_index(key, key_size, tries-1, dict->_num_slots);
         array_get(dict->index_table, index, (uint8*)&slot_value);
-        
+
         if (slot_value == EMPTY_SLOT || slot_value == REMOVED_SLOT)
         {
             slot_value = (int64) dict->member_count;
@@ -830,7 +828,7 @@ void dict_pop(Dict *dict, uint8 *key, uint8 *memory)
 {
     if (dict == NULL || key == NULL || memory == NULL)
         return;
-    
+
     int64 index = dict_get_index(dict, key);
     if (index > -1)
     {
@@ -871,16 +869,16 @@ Array* dict_copy_items(Dict *dict, AllocatorInterface *allocator)
 {
     if (dict == NULL || allocator == NULL)
         return NULL;
-    
+
     const uint32 key_size = dict->keys->member_size;
     const uint32 value_size = dict->values->member_size;
     const uint32 member_size = key_size + value_size;
-    
+
     Array *items = array_new(allocator, dict->member_count, member_size);
 
     uint64 dest_offset;
     uint64 src_offset;
-    
+
     for (uint32 i = 0; i < items->member_count; i++)
     {
         dest_offset = i * member_size;
@@ -896,7 +894,7 @@ Array* dict_copy_items(Dict *dict, AllocatorInterface *allocator)
         for (uint32 j = 0; j < value_size; j++)
             items->data[dest_offset + j] = dict->values->data[src_offset + j];
     }
-    
+
     return items;
 }
 
@@ -908,7 +906,7 @@ void dict_destroy(Dict* dict, AllocatorInterface *allocator)
 
     if (dict->index_table != NULL)
         array_destroy(dict->index_table, allocator);
-    
+
     if (dict->keys != NULL)
         list_destroy(dict->keys, allocator);
 
@@ -931,7 +929,7 @@ static int64 set_get_index(Set *set, uint8 *item)
     {
         index = probe_index(item, member_size, tries-1, set->_num_slots);
         array_get(set->index_table, index, (uint8*)&slot_value);
-        
+
         if (slot_value == EMPTY_SLOT)
             return -1;
 
@@ -952,7 +950,7 @@ Set* set_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_si
 {
     if (allocator == NULL)
         return NULL;
-    
+
     Set *set = allocator->memory_allocate(sizeof(Set));
     if (set == NULL)
         return NULL;
@@ -963,8 +961,8 @@ Set* set_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_si
         allocator->memory_free(set, sizeof(set));
         return NULL;
     }
-    
-    
+
+
     List *item_list = list_new(allocator, max_members, member_size);
     if (item_list == NULL)
     {
@@ -972,7 +970,7 @@ Set* set_new(AllocatorInterface *allocator, uint32 max_members, uint32 member_si
         array_destroy(index_table, allocator);
         return NULL;
     }
-    
+
     set->_num_slots = max_members;
     set->member_count = 0;
     set->index_table = index_table;
@@ -997,7 +995,7 @@ int set_contains_item(Set *set, uint8 *item)
 {
     if (set == NULL || item == NULL)
         return 0;
-    
+
     int64 index = set_get_index(set, item);
     if (index < 0) return 0;
     return 1;
@@ -1014,12 +1012,12 @@ void set_add(Set *set, uint8* item)
     int64 slot_value;
     uint32 index;
     uint32 tries = 1;
-    
+
     while (tries < set->_num_slots)
     {
         index = probe_index(item, member_size, tries-1, set->_num_slots);
         array_get(set->index_table, index, (uint8*)&slot_value);
-        
+
         if (slot_value == EMPTY_SLOT || slot_value == REMOVED_SLOT)
         {
             slot_value = (int64) set->member_count;
@@ -1033,7 +1031,7 @@ void set_add(Set *set, uint8* item)
         item_value = &set->items->data[slot_value];
         if (memory_equal(item, item_value, member_size))
             return;
-        
+
         tries++;
     }
 }
@@ -1043,7 +1041,7 @@ void set_remove(Set *set, uint8* item)
 {
     if (set == NULL || item == NULL)
         return;
-    
+
     int64 index = set_get_index(set, item);
     if (index > -1)
     {
@@ -1073,7 +1071,7 @@ void set_destroy(Set *set, AllocatorInterface *allocator)
 
     if (set->index_table != NULL)
         array_destroy(set->index_table, allocator);
-    
+
     if (set->items != NULL)
         list_destroy(set->items, allocator);
 
